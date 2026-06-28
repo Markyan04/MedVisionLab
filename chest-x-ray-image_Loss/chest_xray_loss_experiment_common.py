@@ -62,7 +62,7 @@ from medical_losses import (  # noqa: E402
 )
 
 
-SEED = 1234
+SEED = int(os.getenv("CHESTXRAY_SEED", os.getenv("GLOBAL_EXPERIMENT_SEED", "1234")))
 DEFAULT_TOPK = (1, 2, 3)
 DEFAULT_LOSS_ORDER = (
     "ce",
@@ -633,6 +633,11 @@ def resolve_losses_to_run() -> List[str]:
     return requested
 
 
+def sanitize_run_tag(run_tag: str) -> str:
+    cleaned = "".join(ch if ch.isalnum() or ch in "._-" else "-" for ch in run_tag.strip())
+    return cleaned.strip("._-")
+
+
 def run_chestxray_medical_losses_experiments(
     script_stem: str,
     model_builder: Callable[[int], nn.Module],
@@ -658,18 +663,22 @@ def run_chestxray_medical_losses_experiments(
     topk = DEFAULT_TOPK
 
     losses_to_run = resolve_losses_to_run()
+    run_tag = sanitize_run_tag(os.getenv("CHESTXRAY_RUN_TAG", ""))
+    run_suffix = f"_{run_tag}" if run_tag else ""
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     logs_dir = THIS_DIR / "logs"
     ckpt_dir = THIS_DIR / "checkpoints"
-    log_path = logs_dir / f"{script_stem}_{timestamp}.log"
-    summary_path = logs_dir / f"{script_stem}_{timestamp}_summary.csv"
+    log_path = logs_dir / f"{script_stem}{run_suffix}_{timestamp}.log"
+    summary_path = logs_dir / f"{script_stem}{run_suffix}_{timestamp}_summary.csv"
     logger = DualLogger(log_path)
     log = logger.log
 
     try:
         log("=" * 90)
         log(f"Script: {script_stem}")
+        if run_tag:
+            log(f"Run tag: {run_tag}")
         log(f"Module: {module_name} | Insert after: {insert_after}")
         log(f"Device: {device}")
         if torch.cuda.is_available():
@@ -677,7 +686,7 @@ def run_chestxray_medical_losses_experiments(
         log(f"Train dir: {train_dir}")
         log(f"Test dir : {test_dir}")
         log(
-            f"Config | batch_size={batch_size}, epochs={epochs}, num_workers={num_workers}, "
+            f"Config | seed={SEED}, batch_size={batch_size}, epochs={epochs}, num_workers={num_workers}, "
             f"image_size={image_size}, base_lr={base_lr}, val_ratio={val_ratio}, patience={patience}"
         )
         log(f"Losses to run: {losses_to_run}")
@@ -857,6 +866,8 @@ def run_chestxray_medical_losses_experiments(
                 log(str(test_metrics["classification_report"]))
 
                 summary_rows.append({
+                    "run_tag": run_tag,
+                    "seed": SEED,
                     "loss_name": loss_name,
                     "status": "success",
                     "trained_epochs": trained_epochs,
@@ -882,6 +893,8 @@ def run_chestxray_medical_losses_experiments(
                 log(f"[ERROR] loss={loss_name} failed: {loss_exc}")
                 log(traceback.format_exc())
                 summary_rows.append({
+                    "run_tag": run_tag,
+                    "seed": SEED,
                     "loss_name": loss_name,
                     "status": "failed",
                     "error": str(loss_exc),
@@ -909,4 +922,3 @@ def run_chestxray_medical_losses_experiments(
         log("=" * 90)
     finally:
         logger.close()
-

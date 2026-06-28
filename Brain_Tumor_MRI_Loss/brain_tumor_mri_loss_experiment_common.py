@@ -64,7 +64,7 @@ from chest_xray_loss_experiment_common import (  # noqa: E402
 from medical_losses import DistanceAwareSoftTargetLoss  # noqa: E402
 
 
-SEED = 1234
+SEED = int(os.getenv('BRAIN_MRI_SEED', os.getenv('GLOBAL_EXPERIMENT_SEED', '1234')))
 DEFAULT_TOPK = (1, 2)
 DEFAULT_LOSS_ORDER = (
     'ce',
@@ -569,7 +569,7 @@ def run_brain_tumor_mri_medical_losses_experiments(
         log(f'Train dir: {train_dir}')
         log(f'Test dir : {test_dir}')
         log(
-            f'Config | batch_size={batch_size}, epochs={epochs}, num_workers={num_workers}, '
+            f'Config | seed={SEED}, batch_size={batch_size}, epochs={epochs}, num_workers={num_workers}, '
             f'image_size={image_size}, base_lr={base_lr}, val_ratio={val_ratio}, patience={patience}'
         )
         log(f'Losses to run: {losses_to_run}')
@@ -769,6 +769,7 @@ def run_brain_tumor_mri_medical_losses_experiments(
 
                 summary_rows.append({
                     'run_tag': run_tag,
+                    'seed': SEED,
                     'loss_name': loss_name,
                     'status': 'success',
                     'dast_tau': dast_hparams['tau'] if loss_name == 'dast' else None,
@@ -797,6 +798,7 @@ def run_brain_tumor_mri_medical_losses_experiments(
                 log(traceback.format_exc())
                 summary_rows.append({
                     'run_tag': run_tag,
+                    'seed': SEED,
                     'loss_name': loss_name,
                     'status': 'failed',
                     'dast_tau': dast_hparams['tau'] if loss_name == 'dast' else None,

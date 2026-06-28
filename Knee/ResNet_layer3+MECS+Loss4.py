@@ -117,7 +117,7 @@ class EarlyStopping:
 # =======================
 # Reproducibility
 # =======================
-SEED = 1234
+SEED = int(os.getenv("KNEE_SEED", os.getenv("GLOBAL_EXPERIMENT_SEED", "1234")))
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
@@ -128,19 +128,30 @@ torch.backends.cudnn.benchmark = False
 # =======================
 # Config
 # =======================
-DATA_ROOT = r"../Knee_Osteoarthritis"
+DATA_ROOT = os.getenv("KNEE_DATA_ROOT", str((PROJECT_ROOT / "Knee_Osteoarthritis").resolve()))
 
-IMG_SIZE = 224
-BATCH_SIZE = 32
-EPOCHS = 60
+IMG_SIZE = int(os.getenv("KNEE_IMAGE_SIZE", "224"))
+BATCH_SIZE = int(os.getenv("KNEE_BATCH_SIZE", "32"))
+EPOCHS = int(os.getenv("KNEE_EPOCHS", "60"))
 
-LR_BACKBONE = 1e-4
-LR_HEAD = 1e-3
-WEIGHT_DECAY = 1e-4
+LR_BACKBONE = float(os.getenv("KNEE_LR_BACKBONE", "1e-4"))
+LR_HEAD = float(os.getenv("KNEE_LR_HEAD", "1e-3"))
+WEIGHT_DECAY = float(os.getenv("KNEE_WEIGHT_DECAY", "1e-4"))
 
-NUM_WORKERS = 4
-PATIENCE = 15
-EARLY_STOP_DELTA = 1e-4
+NUM_WORKERS = int(os.getenv("KNEE_NUM_WORKERS", "4"))
+PATIENCE = int(os.getenv("KNEE_PATIENCE", "15"))
+EARLY_STOP_DELTA = float(os.getenv("KNEE_EARLY_DELTA", "1e-4"))
+DAST_TAU = float(os.getenv("KNEE_DAST_TAU", "1.0"))
+DAST_GAMMA = float(os.getenv("KNEE_DAST_GAMMA", "1.5"))
+RUN_TAG = "".join(ch if ch.isalnum() or ch in "._-" else "-" for ch in os.getenv("KNEE_RUN_TAG", "").strip()).strip("._-")
+RUN_SUFFIX = f"_{RUN_TAG}" if RUN_TAG else ""
+CHECKPOINT_DIR = THIS_DIR / "checkpoints"
+
+
+def resolve_checkpoint_path(filename: str) -> str:
+    CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
+    stem, suffix = os.path.splitext(filename)
+    return str((CHECKPOINT_DIR / f"{stem}{RUN_SUFFIX}{suffix}").resolve())
 
 TOPK = (1, 2, 3)
 
@@ -449,6 +460,10 @@ def main():
     print(f"Using device: {device}")
     if torch.cuda.is_available():
         print(f"CUDA device: {torch.cuda.get_device_name(0)}")
+    if RUN_TAG:
+        print(f"Run tag: {RUN_TAG}")
+    print(f"Config | seed={SEED}, batch_size={BATCH_SIZE}, epochs={EPOCHS}, image_size={IMG_SIZE}")
+    print(f"DAST config | tau={DAST_TAU:.4f}, gamma={DAST_GAMMA:.4f}")
 
     if not os.path.exists(DATA_ROOT):
         print(f"DATA_ROOT not found: {DATA_ROOT}")
@@ -476,7 +491,7 @@ def main():
     # 替换为 DistanceAwareSoftTargetLoss
     # ==========================================
     print("[INFO] Using Clinically Distance-Aware Soft Label Loss (DAST).")
-    criterion = DistanceAwareSoftTargetLoss(num_classes=NUM_CLASSES, tau=1.0, gamma=1.5).to(device)
+    criterion = DistanceAwareSoftTargetLoss(num_classes=NUM_CLASSES, tau=DAST_TAU, gamma=DAST_GAMMA).to(device)
 
     backbone_params = []
     head_params = []
@@ -504,7 +519,7 @@ def main():
         anneal_strategy="cos",
     )
 
-    best_path = "./checkpoints/best_resnet50_mecs_layer3_dast_knee_oa_new.pt"
+    best_path = resolve_checkpoint_path("best_resnet50_mecs_layer3_dast_knee_oa_new.pt")
     early_stopping = EarlyStopping(
         patience=PATIENCE,
         delta=EARLY_STOP_DELTA,

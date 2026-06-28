@@ -1,0 +1,6 @@
+START_CONTROLLED_EXTRA_2SEEDS seeds=42,777 datasets=all 06/28/2026 12:59:50
+[RUN] KOA | ResNet50 | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_125950\controlled_koa_resnet50_seed42.log
+[STOP] KOA | ResNet50 | seed=42 failed: Traceback
+       See log: E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_125950\controlled_koa_resnet50_seed42.log
+Logs written under: E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_125950
+CONTROLLED_EXTRA_2SEEDS_RETURN_CODE 1 06/28/2026 13:14:42

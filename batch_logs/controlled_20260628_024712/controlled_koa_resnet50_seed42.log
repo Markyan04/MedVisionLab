@@ -1,0 +1,111 @@
+DATASET: KOA
+METHOD: ResNet50
+SEED: 42
+SCRIPT: E:\Paper\Computer-Vision-for-Medicine\Knee\ResNet_baseline.py
+RUN_TAG: controlled_koa_resnet50_seed42
+COMMAND: conda run -n Paper python -u E:\Paper\Computer-Vision-for-Medicine\Knee\ResNet_baseline.py
+==========================================================================================
+Starting Knee Osteoarthritis ResNet50 Baseline...
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 4080 SUPER
+Run tag: controlled_koa_resnet50_seed42
+Config | seed=42, batch_size=32, epochs=50, image_size=224
+Class mapping from folders: {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
+
+Train samples: 5778
+Train class distribution:
+  0_Normal: 2286
+  1_Doubtful: 1046
+  2_Mild: 1516
+  3_Moderate: 757
+  4_Severe: 173
+
+Valid samples: 826
+Valid class distribution:
+  0_Normal: 328
+  1_Doubtful: 153
+  2_Mild: 212
+  3_Moderate: 106
+  4_Severe: 27
+
+Test samples: 1656
+Test class distribution:
+  0_Normal: 639
+  1_Doubtful: 296
+  2_Mild: 447
+  3_Moderate: 223
+  4_Severe: 51
+
+AutoTest samples: 1526
+AutoTest class distribution:
+  0_Normal: 604
+  1_Doubtful: 275
+  2_Mild: 403
+  3_Moderate: 200
+  4_Severe: 44
+
+Split sizes | train=5778, valid=826, test=1656, auto_test=1526
+Loading pretrained ResNet50...
+Trainable parameters: 23,518,277
+
+[INFO] Class counts in training set: [2286 1046 1516  757  173]
+[INFO] Using Standard CrossEntropyLoss (No class weights).
+Starting training...
+
+Traceback (most recent call last):
+  File "E:\Paper\Computer-Vision-for-Medicine\Knee\ResNet_baseline.py", line 582, in <module>
+    main()
+  File "E:\Paper\Computer-Vision-for-Medicine\Knee\ResNet_baseline.py", line 478, in main
+    train_loss, train_top = train_one_epoch(
+                            ^^^^^^^^^^^^^^^^
+  File "E:\Paper\Computer-Vision-for-Medicine\Knee\ResNet_baseline.py", line 338, in train_one_epoch
+    logits = model(x)
+             ^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torchvision\models\resnet.py", line 285, in forward
+    return self._forward_impl(x)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torchvision\models\resnet.py", line 274, in _forward_impl
+    x = self.layer2(x)
+        ^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\container.py", line 253, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torchvision\models\resnet.py", line 155, in forward
+    out = self.bn3(out)
+          ^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\modules\batchnorm.py", line 194, in forward
+    return F.batch_norm(
+           ^^^^^^^^^^^^^
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\nn\functional.py", line 2846, in batch_norm
+    return torch.batch_norm(
+           ^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 15.99 GiB of which 12.76 GiB is free. Of the allocated memory 1.84 GiB is allocated by PyTorch, and 39.64 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+ERROR conda.cli.main_run:execute(125): `conda run python -u E:\Paper\Computer-Vision-for-Medicine\Knee\ResNet_baseline.py` failed. (See above for error)
+
+==========================================================================================
+RETURN_CODE: 1

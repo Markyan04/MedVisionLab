@@ -143,7 +143,7 @@ class EarlyStopping:
 # =======================
 # Reproducibility
 # =======================
-SEED = 1234
+SEED = int(os.getenv("KNEE_SEED", os.getenv("GLOBAL_EXPERIMENT_SEED", "1234")))
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
@@ -454,7 +454,7 @@ def main():
     print(f"Data root: {DATA_ROOT}")
     print(
         "Config | "
-        f"img_size={IMG_SIZE}, batch_size={BATCH_SIZE}, epochs={EPOCHS}, "
+        f"seed={SEED}, img_size={IMG_SIZE}, batch_size={BATCH_SIZE}, epochs={EPOCHS}, "
         f"num_workers={NUM_WORKERS}, lr_backbone={LR_BACKBONE}, lr_head={LR_HEAD}, "
         f"weight_decay={WEIGHT_DECAY}, patience={PATIENCE}, early_delta={EARLY_STOP_DELTA}"
     )
@@ -622,6 +622,7 @@ def main():
         "loss_name": "dast",
         "status": "success",
         "run_tag": RUN_TAG,
+        "seed": SEED,
         "dast_tau": DAST_TAU,
         "dast_gamma": DAST_GAMMA,
         "trained_epochs": trained_epochs,

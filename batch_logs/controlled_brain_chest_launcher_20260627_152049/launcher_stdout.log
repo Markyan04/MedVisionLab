@@ -1,0 +1,5 @@
+[RUN] Brain Tumor MRI | ResNet50 | seed=1234 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260627_155759\controlled_brain_tumor_mri_resnet50_seed1234.log
+[STOP] Brain Tumor MRI | ResNet50 | seed=1234 finished but no Test metrics were parsed.
+       See log: E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260627_155759\controlled_brain_tumor_mri_resnet50_seed1234.log
+Logs written under: E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260627_155759
+

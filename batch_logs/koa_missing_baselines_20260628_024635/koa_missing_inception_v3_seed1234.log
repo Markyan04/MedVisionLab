@@ -1,0 +1,162 @@
+DATASET: KOA
+METHOD: Inception V3
+MODEL_KEY: inception_v3
+SEED: 1234
+SCRIPT: E:\Paper\Computer-Vision-for-Medicine\Knee\train_baseline_zoo.py
+RUN_TAG: koa_missing_inception_v3_seed1234
+KNEE_PRETRAINED: 1
+COMMAND: conda run -n Paper python -u E:\Paper\Computer-Vision-for-Medicine\Knee\train_baseline_zoo.py --model inception_v3
+==========================================================================================
+Starting KOA baseline zoo training...
+Model key: inception_v3
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 4080 SUPER
+Config | seed=1234, batch_size=32, epochs=50, image_size=224, pretrained=True
+Run tag: koa_missing_inception_v3_seed1234
+Class mapping from folders: {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
+
+Train samples: 5778
+  0_Normal: 2286
+  1_Doubtful: 1046
+  2_Mild: 1516
+  3_Moderate: 757
+  4_Severe: 173
+
+Valid samples: 826
+  0_Normal: 328
+  1_Doubtful: 153
+  2_Mild: 212
+  3_Moderate: 106
+  4_Severe: 27
+
+Test samples: 1656
+  0_Normal: 639
+  1_Doubtful: 296
+  2_Mild: 447
+  3_Moderate: 223
+  4_Severe: 51
+
+Split sizes | train=5778, valid=826, test=1656
+Downloading: "https://download.pytorch.org/models/inception_v3_google-0cc3c7bd.pth" to C:\Users\YUNXUANPENG/.cache\torch\hub\checkpoints\inception_v3_google-0cc3c7bd.pth
+Display name: Inception V3
+Trainable parameters: 21,795,813
+
+[INFO] Class counts in training set: [2286 1046 1516  757  173]
+[INFO] Using Standard CrossEntropyLoss (No class weights).
+Starting training...
+
+
+  0%|          | 0.00/104M [00:00<?, ?B/s]
+  0%|          | 128k/104M [00:00<03:02, 597kB/s]
+  0%|          | 256k/104M [00:00<02:03, 877kB/s]
+  0%|          | 512k/104M [00:00<01:44, 1.04MB/s]
+  1%|          | 1.25M/104M [00:00<00:42, 2.53MB/s]
+  2%|�\ufffd         | 2.00M/104M [00:00<00:28, 3.70MB/s]
+  3%|�\ufffd         | 3.25M/104M [00:00<00:17, 5.96MB/s]
+  4%|�\ufffd         | 4.00M/104M [00:01<00:19, 5.48MB/s]
+  5%|�\ufffd         | 5.12M/104M [00:01<00:15, 6.86MB/s]
+  6%|�\ufffd         | 6.00M/104M [00:01<00:14, 6.86MB/s]
+  7%|�\ufffd         | 7.50M/104M [00:01<00:11, 9.06MB/s]
+  8%|�\ufffd         | 8.62M/104M [00:01<00:10, 9.76MB/s]
+  9%|�\ufffd         | 9.62M/104M [00:01<00:10, 9.05MB/s]
+ 11%|�\ufffd         | 11.2M/104M [00:01<00:08, 11.1MB/s]
+ 12%|█▏        | 12.5M/104M [00:01<00:08, 11.3MB/s]
+ 13%|█▎        | 13.8M/104M [00:02<00:09, 10.1MB/s]
+ 15%|█▍        | 15.1M/104M [00:02<00:08, 11.1MB/s]
+ 16%|█▌        | 16.2M/104M [00:02<00:08, 11.3MB/s]
+ 17%|█▋        | 17.4M/104M [00:02<00:09, 9.97MB/s]
+ 18%|█▊        | 18.8M/104M [00:02<00:08, 11.1MB/s]
+ 19%|█▉        | 19.9M/104M [00:02<00:07, 11.3MB/s]
+ 20%|██        | 21.0M/104M [00:02<00:08, 9.99MB/s]
+ 22%|██�\ufffd       | 22.5M/104M [00:02<00:07, 11.3MB/s]
+ 23%|██�\ufffd       | 23.8M/104M [00:02<00:07, 11.4MB/s]
+ 24%|██�\ufffd       | 25.0M/104M [00:03<00:08, 10.1MB/s]
+ 26%|██�\ufffd       | 26.5M/104M [00:03<00:07, 11.3MB/s]
+ 27%|██�\ufffd       | 27.8M/104M [00:03<00:07, 11.4MB/s]
+ 28%|██�\ufffd       | 29.0M/104M [00:03<00:07, 10.9MB/s]
+ 29%|██�\ufffd       | 30.4M/104M [00:03<00:07, 10.2MB/s]
+ 30%|██�\ufffd       | 31.5M/104M [00:03<00:07, 10.4MB/s]
+ 32%|███▏      | 33.2M/104M [00:03<00:05, 12.4MB/s]
+ 33%|███▎      | 34.5M/104M [00:03<00:05, 12.2MB/s]
+ 34%|███▍      | 35.8M/104M [00:04<00:06, 10.5MB/s]
+ 36%|███▌      | 37.2M/104M [00:04<00:06, 11.6MB/s]
+ 37%|███▋      | 38.5M/104M [00:04<00:05, 11.6MB/s]
+ 38%|███▊      | 39.8M/104M [00:04<00:06, 10.4MB/s]
+ 40%|███▉      | 41.1M/104M [00:04<00:05, 11.3MB/s]
+ 41%|████      | 42.4M/104M [00:04<00:05, 11.4MB/s]
+ 42%|████�\ufffd     | 43.6M/104M [00:04<00:06, 10.1MB/s]
+ 43%|████�\ufffd     | 45.1M/104M [00:04<00:05, 11.2MB/s]
+ 45%|████�\ufffd     | 46.2M/104M [00:05<00:06, 10.1MB/s]
+ 46%|████�\ufffd     | 47.4M/104M [00:05<00:05, 10.4MB/s]
+ 47%|████�\ufffd     | 48.9M/104M [00:05<00:04, 11.5MB/s]
+ 48%|████�\ufffd     | 50.1M/104M [00:05<00:04, 11.6MB/s]
+ 49%|████�\ufffd     | 51.4M/104M [00:05<00:05, 10.3MB/s]
+ 51%|████�\ufffd     | 52.9M/104M [00:05<00:04, 11.4MB/s]
+ 52%|█████▏    | 54.1M/104M [00:05<00:04, 11.5MB/s]
+ 53%|█████▎    | 55.4M/104M [00:06<00:04, 10.6MB/s]
+ 54%|█████▍    | 56.6M/104M [00:06<00:04, 11.2MB/s]
+ 56%|█████▌    | 57.8M/104M [00:06<00:04, 11.3MB/s]
+ 57%|█████▋    | 58.9M/104M [00:06<00:04, 10.2MB/s]
+ 58%|█████▊    | 60.0M/104M [00:06<00:04, 9.87MB/s]
+ 59%|█████▉    | 61.1M/104M [00:06<00:04, 10.3MB/s]
+ 60%|██████    | 62.4M/104M [00:06<00:04, 10.8MB/s]
+ 61%|██████    | 63.6M/104M [00:06<00:03, 11.1MB/s]
+ 62%|██████�\ufffd   | 64.8M/104M [00:06<00:03, 11.2MB/s]
+ 64%|██████�\ufffd   | 66.0M/104M [00:07<00:03, 11.4MB/s]
+ 65%|██████�\ufffd   | 67.5M/104M [00:07<00:03, 12.3MB/s]
+ 66%|██████�\ufffd   | 68.8M/104M [00:07<00:03, 12.1MB/s]
+ 67%|██████�\ufffd   | 70.0M/104M [00:07<00:03, 10.4MB/s]
+ 69%|██████�\ufffd   | 71.5M/104M [00:07<00:02, 11.7MB/s]
+ 70%|██████�\ufffd   | 72.8M/104M [00:07<00:02, 11.7MB/s]
+ 71%|██████�\ufffd   | 74.0M/104M [00:07<00:02, 10.5MB/s]
+ 73%|███████▎  | 75.4M/104M [00:07<00:02, 11.4MB/s]
+ 74%|███████▎  | 76.6M/104M [00:07<00:02, 11.5MB/s]
+ 75%|███████▍  | 77.9M/104M [00:08<00:02, 10.7MB/s]
+ 76%|███████▌  | 79.1M/104M [00:08<00:02, 11.1MB/s]
+ 77%|███████▋  | 80.2M/104M [00:08<00:02, 10.5MB/s]
+ 78%|███████▊  | 81.4M/104M [00:08<00:02, 10.5MB/s]
+ 79%|███████▉  | 82.5M/104M [00:08<00:02, 9.67MB/s]
+ 81%|████████  | 83.8M/104M [00:08<00:02, 10.3MB/s]
+ 82%|████████�\ufffd | 85.5M/104M [00:08<00:01, 12.3MB/s]
+ 83%|████████�\ufffd | 86.8M/104M [00:08<00:01, 10.9MB/s]
+ 85%|████████�\ufffd | 87.9M/104M [00:09<00:01, 10.8MB/s]
+ 86%|████████�\ufffd | 89.8M/104M [00:09<00:01, 12.7MB/s]
+ 88%|████████�\ufffd | 91.0M/104M [00:09<00:01, 10.9MB/s]
+ 89%|████████�\ufffd | 92.2M/104M [00:09<00:01, 11.1MB/s]
+ 90%|████████�\ufffd | 93.4M/104M [00:09<00:00, 11.2MB/s]
+ 91%|████████�\ufffd | 94.6M/104M [00:09<00:00, 11.4MB/s]
+ 93%|█████████▎| 96.4M/104M [00:09<00:00, 11.4MB/s]
+ 94%|█████████▍| 97.6M/104M [00:09<00:00, 11.5MB/s]
+ 95%|█████████▌| 98.8M/104M [00:10<00:00, 11.5MB/s]
+ 97%|█████████▋| 100M/104M [00:10<00:00, 11.6MB/s] 
+ 98%|█████████▊| 102M/104M [00:10<00:00, 11.6MB/s]
+ 99%|█████████▉| 103M/104M [00:10<00:00, 7.49MB/s]
+100%|█████████▉| 104M/104M [00:10<00:00, 7.67MB/s]
+100%|██████████| 104M/104M [00:10<00:00, 10.1MB/s]
+Traceback (most recent call last):
+  File "E:\Paper\Computer-Vision-for-Medicine\Knee\train_baseline_zoo.py", line 615, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "E:\Paper\Computer-Vision-for-Medicine\Knee\train_baseline_zoo.py", line 540, in main
+    train_loss, train_top = train_one_epoch(model, train_loader, optimizer, criterion, scheduler, device)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Paper\Computer-Vision-for-Medicine\Knee\train_baseline_zoo.py", line 370, in train_one_epoch
+    loss.backward()
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\_tensor.py", line 630, in backward
+    torch.autograd.backward(
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\autograd\__init__.py", line 364, in backward
+    _engine_run_backward(
+  File "D:\ProgramData\miniconda3\envs\Paper\Lib\site-packages\torch\autograd\graph.py", line 865, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+ERROR conda.cli.main_run:execute(125): `conda run python -u E:\Paper\Computer-Vision-for-Medicine\Knee\train_baseline_zoo.py --model inception_v3` failed. (See above for error)
+
+==========================================================================================
+RETURN_CODE: 1

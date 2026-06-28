@@ -1,0 +1,126 @@
+\relax 
+\citation{1}
+\citation{1,23,27}
+\citation{2,3,10}
+\citation{4}
+\citation{5,6,7,8,13,14,15,16}
+\citation{5,6}
+\citation{7,8,13,14}
+\citation{8,23}
+\@writefile{toc}{\contentsline {title}{MESC-DAST: A Unified Framework for Medical Image Classification and Grading}{1}{}\protected@file@percent }
+\@writefile{toc}{\authcount {1}}
+\@writefile{toc}{\contentsline {author}{Anonymous ICIG Submission}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{}\protected@file@percent }
+\citation{9,10}
+\citation{3,9,10}
+\citation{9,10,11}
+\citation{22,25,26,27}
+\citation{10,23,25}
+\citation{1}
+\citation{4}
+\citation{5,6,7,8,15}
+\citation{16}
+\citation{1,23,27}
+\citation{5}
+\citation{6}
+\citation{7,8}
+\citation{18,19,20,21}
+\citation{5,6}
+\citation{6,7,8,13,14}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{3}{}\protected@file@percent }
+\citation{1}
+\citation{13}
+\citation{14,15}
+\citation{7,8,20,22}
+\citation{8}
+\citation{8,20,23}
+\citation{2,3,10,18,19,20,21,22}
+\citation{9,10}
+\citation{11}
+\citation{17}
+\citation{3,9,10}
+\citation{9}
+\citation{24}
+\citation{23}
+\citation{25,26}
+\citation{27}
+\citation{9,10,23,25,26,27}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Proposed Method}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Overall Framework}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Median-enhanced Spatial and Channel Attention (MESC)}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Channel Attention: Robust Statistical Modeling for Medical Noise}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Illustration of the MESC module. The channel branch fuses global average, max, and median descriptors through a shared MLP. The spatial branch uses an initial \(5 \times 5\) depthwise convolution followed by six non-dilated directional depthwise branches with kernels \((1,7)\), \((7,1)\), \((1,11)\), \((11,1)\), \((1,21)\), and \((21,1)\). The symbols \(\oplus \) and \(\odot \) denote element-wise addition and broadcast multiplication, respectively.}}{7}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{figurelabel1}{{1}{7}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Spatial Attention: Multi-scale Modeling for Lesion Structure}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Distance-Aware Soft Target Loss}{8}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Illustration of DAST. For a ground-truth class \(y\), class distances \(d(k,y)=|k-y|\) are converted into a distance-decayed soft target distribution. The loss is applied to the original \(K\)-class softmax output and introduces no inference-time parameters.}}{8}{}\protected@file@percent }
+\newlabel{figurelabel2}{{2}{8}{}{figure.2}{}}
+\citation{28}
+\citation{40}
+\citation{29,30}
+\citation{31,32,33,34}
+\citation{35,36,37,38,39}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Datasets and Evaluation Metrics}{9}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Broad comparison with representative classification backbones and the proposed ResNet50-based framework.}}{9}{}\protected@file@percent }
+\newlabel{tab:performance_comparison}{{1}{9}{}{table.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Datasets}{9}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Dataset statistics and evaluation protocol.}}{10}{}\protected@file@percent }
+\newlabel{tab:dataset_statistics}{{2}{10}{}{table.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Evaluation Metrics}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Comparative Evaluation with Baselines}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Experimental Setup}{11}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Model complexity measured with batch size 1 and \(224 \times 224\) input. FLOPs are counted for convolution and linear layers, and inference time is measured on CPU using the provided complexity script.}}{11}{}\protected@file@percent }
+\newlabel{tab:model_complexity}{{3}{11}{}{table.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Result Analysis}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Ablation Study}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Experimental Setup}{12}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Controlled ResNet50-based ablation experiments of MESC and DAST.}}{12}{}\protected@file@percent }
+\newlabel{tab:ablation_experiments}{{4}{12}{}{table.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Result Analysis}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Grad-CAM Analysis}{13}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Grad-CAM visualization on five representative datasets. For each pair, the original image is shown above the corresponding activation map. The examples illustrate that the model often attends to lesion, organ, tumor, or joint regions that are relevant to the target task.}}{14}{}\protected@file@percent }
+\newlabel{fig:gradcam}{{3}{14}{}{figure.3}{}}
+\bibcite{1}{1}
+\bibcite{2}{2}
+\bibcite{3}{3}
+\bibcite{4}{4}
+\bibcite{5}{5}
+\bibcite{6}{6}
+\bibcite{7}{7}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{15}{}\protected@file@percent }
+\bibcite{8}{8}
+\bibcite{9}{9}
+\bibcite{10}{10}
+\bibcite{11}{11}
+\bibcite{12}{12}
+\bibcite{13}{13}
+\bibcite{14}{14}
+\bibcite{15}{15}
+\bibcite{16}{16}
+\bibcite{17}{17}
+\bibcite{18}{18}
+\bibcite{19}{19}
+\bibcite{20}{20}
+\bibcite{21}{21}
+\bibcite{22}{22}
+\bibcite{23}{23}
+\bibcite{24}{24}
+\bibcite{25}{25}
+\bibcite{26}{26}
+\bibcite{27}{27}
+\bibcite{28}{28}
+\bibcite{29}{29}
+\bibcite{30}{30}
+\bibcite{31}{31}
+\bibcite{32}{32}
+\bibcite{33}{33}
+\bibcite{34}{34}
+\bibcite{35}{35}
+\bibcite{36}{36}
+\bibcite{37}{37}
+\bibcite{38}{38}
+\bibcite{39}{39}
+\bibcite{40}{40}
+\gdef \@abspage@last{18}

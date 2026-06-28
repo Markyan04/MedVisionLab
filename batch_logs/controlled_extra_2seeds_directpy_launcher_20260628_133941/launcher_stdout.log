@@ -1,0 +1,52 @@
+START_CONTROLLED_EXTRA_2SEEDS_DIRECTPY seeds=42,777 datasets=all 06/28/2026 13:39:41
+[RUN] KOA | ResNet50 | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_koa_resnet50_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] KOA | ResNet50 + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_koa_resnet50_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] KOA | ResNet50 + MESC | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_koa_resnet50_plus_mesc_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] KOA | ResNet50 + MESC + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_koa_resnet50_plus_mesc_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] HAM10000 | ResNet50 | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_ham10000_resnet50_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] HAM10000 | ResNet50 + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_ham10000_resnet50_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] HAM10000 | ResNet50 + MESC | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_ham10000_resnet50_plus_mesc_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] HAM10000 | ResNet50 + MESC + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_ham10000_resnet50_plus_mesc_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] ADNI | ResNet50 | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_adni_resnet50_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] ADNI | ResNet50 + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_adni_resnet50_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] ADNI | ResNet50 + MESC | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_adni_resnet50_plus_mesc_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] ADNI | ResNet50 + MESC + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_adni_resnet50_plus_mesc_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] Brain Tumor MRI | ResNet50 | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_brain_tumor_mri_resnet50_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] Brain Tumor MRI | ResNet50 + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_brain_tumor_mri_resnet50_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] Brain Tumor MRI | ResNet50 + MESC | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_brain_tumor_mri_resnet50_plus_mesc_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] Brain Tumor MRI | ResNet50 + MESC + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_brain_tumor_mri_resnet50_plus_mesc_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] Chest X-ray Image | ResNet50 | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_chest_x-ray_image_resnet50_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] Chest X-ray Image | ResNet50 + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_chest_x-ray_image_resnet50_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] Chest X-ray Image | ResNet50 + MESC | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_chest_x-ray_image_resnet50_plus_mesc_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] Chest X-ray Image | ResNet50 + MESC + DAST | seed=42 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_chest_x-ray_image_resnet50_plus_mesc_plus_dast_seed42.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] KOA | ResNet50 | seed=777 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_koa_resnet50_seed777.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] KOA | ResNet50 + DAST | seed=777 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_koa_resnet50_plus_dast_seed777.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] KOA | ResNet50 + MESC | seed=777 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_koa_resnet50_plus_mesc_seed777.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] KOA | ResNet50 + MESC + DAST | seed=777 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_koa_resnet50_plus_mesc_plus_dast_seed777.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] HAM10000 | ResNet50 | seed=777 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_ham10000_resnet50_seed777.log
+[REC] appended to E:\Paper\Computer-Vision-for-Medicine\analysis_tables\experiment_records.csv
+[RUN] HAM10000 | ResNet50 + DAST | seed=777 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\controlled_20260628_133941\controlled_ham10000_resnet50_plus_dast_seed777.log

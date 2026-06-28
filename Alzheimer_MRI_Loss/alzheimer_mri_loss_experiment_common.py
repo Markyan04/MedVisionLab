@@ -67,7 +67,7 @@ from chest_xray_loss_experiment_common import (  # noqa: E402
 from medical_losses import DistanceAwareSoftTargetLoss  # noqa: E402
 
 
-SEED = 1234
+SEED = int(os.getenv("ALZHEIMER_SEED", os.getenv("GLOBAL_EXPERIMENT_SEED", "1234")))
 DEFAULT_TOPK = (1, 2, 3)
 DEFAULT_LOSS_ORDER = ("ce", "dast")
 SUPPORTED_LOSS_ORDER = tuple(CHEST_SUPPORTED_LOSS_ORDER)
@@ -347,7 +347,7 @@ def run_alzheimer_mri_medical_losses_experiments(
             f"(used for labels/QWK/MAE/ordinal losses)"
         )
         log(
-            f"Config | batch_size={batch_size}, epochs={epochs}, num_workers={num_workers}, "
+            f"Config | seed={SEED}, batch_size={batch_size}, epochs={epochs}, num_workers={num_workers}, "
             f"image_size={image_size}, base_lr={base_lr}, test_ratio={test_ratio}, "
             f"val_ratio_within_train={val_ratio}, patience={patience}"
         )
@@ -533,6 +533,7 @@ def run_alzheimer_mri_medical_losses_experiments(
 
                 summary_rows.append({
                     "run_tag": run_tag,
+                    "seed": SEED,
                     "loss_name": loss_name,
                     "status": "success",
                     "dast_tau": dast_tau if loss_name == "dast" else None,
@@ -562,6 +563,7 @@ def run_alzheimer_mri_medical_losses_experiments(
                 log(traceback.format_exc())
                 summary_rows.append({
                     "run_tag": run_tag,
+                    "seed": SEED,
                     "loss_name": loss_name,
                     "status": "failed",
                     "dast_tau": dast_tau if loss_name == "dast" else None,

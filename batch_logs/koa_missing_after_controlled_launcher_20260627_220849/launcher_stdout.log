@@ -1,0 +1,10 @@
+WAITING_FOR_PID 44428 06/27/2026 22:08:49
+START_KOA_MISSING_BASELINES 06/28/2026 02:46:34
+Scheduled KOA missing-baseline runs: 6
+Models: Inception V3, DenseNet169, DenseNet201, ViT, Xception, ResNet50V2
+Rough time: about 25-60 minutes per model on the current KOA protocol, depending on backbone size.
+[RUN] KOA | Inception V3 | seed=1234 -> E:\Paper\Computer-Vision-for-Medicine\batch_logs\koa_missing_baselines_20260628_024635\koa_missing_inception_v3_seed1234.log
+[STOP] KOA | Inception V3 failed: Traceback
+       See log: E:\Paper\Computer-Vision-for-Medicine\batch_logs\koa_missing_baselines_20260628_024635\koa_missing_inception_v3_seed1234.log
+Logs written under: E:\Paper\Computer-Vision-for-Medicine\batch_logs\koa_missing_baselines_20260628_024635
+KOA_MISSING_BASELINES_RETURN_CODE 1 06/28/2026 02:47:12

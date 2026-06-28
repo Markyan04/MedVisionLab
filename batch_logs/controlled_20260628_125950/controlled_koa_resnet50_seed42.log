@@ -1,0 +1,141 @@
+DATASET: KOA
+METHOD: ResNet50
+SEED: 42
+SCRIPT: E:\Paper\Computer-Vision-for-Medicine\Knee\ResNet_baseline.py
+RUN_TAG: controlled_koa_resnet50_seed42
+COMMAND: conda run -n Paper python -u E:\Paper\Computer-Vision-for-Medicine\Knee\ResNet_baseline.py
+==========================================================================================
+
+# >>>>>>>>>>>>>>>>>>>>>> ERROR REPORT <<<<<<<<<<<<<<<<<<<<<<
+
+    Traceback (most recent call last):
+      File "D:\ProgramData\miniconda3\Lib\site-packages\conda\exception_handler.py", line 18, in __call__
+        return func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+      File "D:\ProgramData\miniconda3\Lib\site-packages\conda\cli\main.py", line 61, in main_subshell
+        exit_code = do_call(args, parser)
+                    ^^^^^^^^^^^^^^^^^^^^^
+      File "D:\ProgramData\miniconda3\Lib\site-packages\conda\cli\conda_argparse.py", line 205, in do_call
+        result = getattr(module, func_name)(args, parser)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "D:\ProgramData\miniconda3\Lib\site-packages\conda\cli\main_run.py", line 118, in execute
+        print(response.stdout, file=sys.stdout)
+    UnicodeEncodeError: 'gbk' codec can't encode character '\ufffd' in position 10055: illegal multibyte sequence
+
+`$ D:\ProgramData\miniconda3\Scripts\conda-script.py run -n Paper python -u E:\Paper\Computer-Vision-for-Medicine\Knee\ResNet_baseline.py`
+
+  environment variables:
+                 CIO_TEST=<not set>
+        CONDA_DEFAULT_ENV=base
+                CONDA_EXE=D:\ProgramData\miniconda3\Scripts\conda.exe
+             CONDA_PREFIX=D:\ProgramData\miniconda3
+    CONDA_PROMPT_MODIFIER=(base)
+         CONDA_PYTHON_EXE=D:\ProgramData\miniconda3\python.exe
+               CONDA_ROOT=D:\ProgramData\miniconda3
+              CONDA_SHLVL=1
+                CUDA_PATH=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6
+           CURL_CA_BUNDLE=<not set>
+                 HOMEPATH=\Users\YUNXUANPENG
+               LD_PRELOAD=<not set>
+                     PATH=C:\Users\YUNXUANPENG\.codex\tmp\arg0\codex-
+                          arg0NmFFaZ;C:\Users\YUNXUANPENG\.cache\codex-runtimes\codex-primary-ru
+                          ntime\dependencies\bin;D:\ProgramData\miniconda3;D:\ProgramData\minico
+                          nda3\Library\mingw-
+                          w64\bin;D:\ProgramData\miniconda3\Library\usr\bin;D:\ProgramData\minic
+                          onda3\Library\bin;D:\ProgramData\miniconda3\Scripts;D:\ProgramData\min
+                          iconda3\bin;D:\ProgramData\miniconda3\condabin;C:\VulkanSDK\1.4.328.1\
+                          Bin;C:\Program Files\NVIDIA GPU Computing
+                          Toolkit\CUDA\v12.6\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\C
+                          UDA\v12.6\libnvvp;D:\JDK\bin;D:\JDK\jre\bin;C:\WINDOWS\system32;C:\WIN
+                          DOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1
+                          .0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\dotnet;D:\ProgramData\
+                          miniconda3;D:\ProgramData\miniconda3\Scripts;D:\ProgramData\miniconda3
+                          \Library\bin;D:\Program Files\Git\cmd;D:\czl\omd-windows-
+                          amd64\omd.exe;C:\Program Files\NVIDIA Corporation\Nsight Compute
+                          2024.3.2;C:\Program Files (x86)\NVIDIA
+                          Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA
+                          app\NvDLISR;D:\Program
+                          Files\ffmpeg-7.1.1-full_build\bin;D:\ProgramData\pypy310;D:\Program
+                          Files (x86)\BaseX\bin;d:\Program
+                          Files\cursor\resources\app\bin;C:\Program Files (x86)\Windows
+                          Kits\10\Windows Performance
+                          Toolkit;D:\CMake\bin;D:\COLMAP\bin;D:\adb;D:\Program
+                          Files\Tailscale;D:\Program Files\Pandoc;D:\Program
+                          Files\nodejs;C:\Program Files\Docker\Docker\resources\bin;D:\texlive\2
+                          026\bin\windows;C:\Users\YUNXUANPENG\AppData\Local\Programs\Python\Lau
+                          ncher;C:\Users\YUNXUANPENG\AppData\Local\Microsoft\WindowsApps;C:\User
+                          s\YUNXUANPENG\AppData\Local\Programs\Ollama;D:\Program
+                          Files\JetBrains\PyCharm 2024.3\bin;D:\Program Files\JetBrains\WebStorm
+                          2024.3\bin;D:\Vscode\Microsoft VS Code\bin;C:\Users\YUNXUANPENG\AppDat
+                          a\Local\GitHubDesktop\bin;D:\Program Files\JetBrains\IntelliJ IDEA
+                          2024.3.1\bin;D:\Program Files\JetBrains\DataGrip
+                          2024.3.5\bin;D:\Program Files\cursor\resources\app\bin;C:\Users\YUNXUA
+                          NPENG\AppData\Roaming\npm;C:\Users\YUNXUANPENG\AppData\Local\OpenAI\Co
+                          dex\bin\ada252862d154cdd;C:\Program Files\WindowsApps\OpenAI.Codex_26.
+                          623.5546.0_x64__2p2nqsd0c76g0\app\resources
+             PSMODULEPATH=C:\Users\YUNXUANPENG\Documents\WindowsPowerShell\Modules;C:\Program Fi
+                          les\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1
+                          .0\Modules
+         PYTHONUNBUFFERED=1
+       REQUESTS_CA_BUNDLE=<not set>
+            SSL_CERT_FILE=D:\ProgramData\miniconda3\Library\ssl\cacert.pem
+              VK_SDK_PATH=C:\VulkanSDK\1.4.328.1
+          _NT_SYMBOL_PATH=srv*C:\Symbols*https://msdl.microsoft.com/download/symbols
+
+     active environment : base
+    active env location : D:\ProgramData\miniconda3
+            shell level : 1
+       user config file : C:\Users\YUNXUANPENG\.condarc
+ populated config files : D:\ProgramData\miniconda3\.condarc
+                          C:\Users\YUNXUANPENG\.condarc
+          conda version : 24.11.3
+    conda-build version : not installed
+         python version : 3.12.3.final.0
+                 solver : libmamba (default)
+       virtual packages : __archspec=1=x86_64_v4
+                          __conda=24.11.3=0
+                          __cuda=13.1=0
+                          __win=0=0
+       base environment : D:\ProgramData\miniconda3  (writable)
+      conda av data dir : D:\ProgramData\miniconda3\etc\conda
+  conda av metadata url : None
+           channel URLs : https://repo.anaconda.com/pkgs/main/win-64
+                          https://repo.anaconda.com/pkgs/main/noarch
+                          https://repo.anaconda.com/pkgs/r/win-64
+                          https://repo.anaconda.com/pkgs/r/noarch
+                          https://repo.anaconda.com/pkgs/msys2/win-64
+                          https://repo.anaconda.com/pkgs/msys2/noarch
+          package cache : D:\ProgramData\miniconda3\pkgs
+                          C:\Users\YUNXUANPENG\.conda\pkgs
+                          C:\Users\YUNXUANPENG\AppData\Local\conda\conda\pkgs
+       envs directories : D:\ProgramData\miniconda3\envs
+                          C:\Users\YUNXUANPENG\.conda\envs
+                          C:\Users\YUNXUANPENG\AppData\Local\conda\conda\envs
+               platform : win-64
+             user-agent : conda/24.11.3 requests/2.32.3 CPython/3.12.3 Windows/11 Windows/10.0.26200 solver/libmamba conda-libmamba-solver/24.9.0 libmambapy/1.5.8
+          administrator : False
+             netrc file : None
+           offline mode : False
+
+
+An unexpected error has occurred. Conda has prepared the above report.
+If you suspect this error is being caused by a malfunctioning plugin,
+consider using the --no-plugins option to turn off plugins.
+
+Example: conda --no-plugins install <package>
+
+Alternatively, you can set the CONDA_NO_PLUGINS environment variable on
+the command line to run the command without plugins enabled.
+
+Example: CONDA_NO_PLUGINS=true conda install <package>
+
+If submitted, this report will be used by core maintainers to improve
+future releases of conda.
+Would you like conda to send this report to the core maintainers? [y/N]: 
+No report sent. To permanently opt-out, use
+
+    $ conda config --set report_errors false
+
+
+==========================================================================================
+RETURN_CODE: 1
