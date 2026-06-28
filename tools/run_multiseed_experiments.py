@@ -219,6 +219,14 @@ def build_env(
         env[f"{spec.env_prefix}_EPOCHS"] = str(args.epochs)
     if args.batch_size is not None:
         env[f"{spec.env_prefix}_BATCH_SIZE"] = str(args.batch_size)
+    if args.image_size is not None:
+        env[f"{spec.env_prefix}_IMAGE_SIZE"] = str(args.image_size)
+    if args.num_workers is not None:
+        env[f"{spec.env_prefix}_NUM_WORKERS"] = str(args.num_workers)
+    if args.patience is not None:
+        env[f"{spec.env_prefix}_PATIENCE"] = str(args.patience)
+    if args.early_delta is not None:
+        env[f"{spec.env_prefix}_EARLY_DELTA"] = str(args.early_delta)
     if spec.losses_env and spec.losses_value:
         env[spec.losses_env] = spec.losses_value
     label_smoothing = getattr(args, "label_smoothing", None)
@@ -420,6 +428,10 @@ def main() -> int:
     parser.add_argument("--dast-gamma", type=float, default=1.5)
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=None)
+    parser.add_argument("--image-size", type=int, default=None)
+    parser.add_argument("--num-workers", type=int, default=None)
+    parser.add_argument("--patience", type=int, default=None)
+    parser.add_argument("--early-delta", type=float, default=None)
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument("--conda-env", default="Paper", help="Use 'none' to run --python directly.")
     parser.add_argument("--dry-run", action="store_true")

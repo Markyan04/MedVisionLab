@@ -120,3 +120,43 @@ Epoch 23/50 | Time 0m30s
   Train | loss=0.0097 | top1=99.64% | top2=100.00%
   Valid | loss=0.1078 | top1=98.39% | top2=99.64% | acc=98.39% | bal_acc=98.39% | macro_f1=0.9839 | weighted_f1=0.9839 | precision_macro=0.9840 | recall_macro=0.9839 | mae=0.0179 | qwk=0.9914
         ovr_roc_auc_macro=0.9974 | ovr_pr_auc_macro=0.9917
+Epoch 24/50 | Time 0m31s
+  Train | loss=0.0043 | top1=99.80% | top2=100.00%
+  Valid | loss=0.1197 | top1=98.04% | top2=99.46% | acc=98.04% | bal_acc=98.04% | macro_f1=0.9805 | weighted_f1=0.9805 | precision_macro=0.9808 | recall_macro=0.9804 | mae=0.0232 | qwk=0.9878
+        ovr_roc_auc_macro=0.9979 | ovr_pr_auc_macro=0.9929
+Epoch 25/50 | Time 0m30s
+  Train | loss=0.0045 | top1=99.82% | top2=100.00%
+  Valid | loss=0.0883 | top1=98.04% | top2=99.82% | acc=98.04% | bal_acc=98.04% | macro_f1=0.9804 | weighted_f1=0.9804 | precision_macro=0.9807 | recall_macro=0.9804 | mae=0.0268 | qwk=0.9821
+        ovr_roc_auc_macro=0.9995 | ovr_pr_auc_macro=0.9985
+Epoch 26/50 | Time 0m31s
+  Train | loss=0.0057 | top1=99.78% | top2=100.00%
+  Valid | loss=0.0862 | top1=98.57% | top2=99.64% | acc=98.57% | bal_acc=98.57% | macro_f1=0.9857 | weighted_f1=0.9857 | precision_macro=0.9858 | recall_macro=0.9857 | mae=0.0161 | qwk=0.9922
+        ovr_roc_auc_macro=0.9985 | ovr_pr_auc_macro=0.9939
+  -> early stopping triggered at epoch 26
+
+[TEST] loss=ce
+  Test | loss=0.6642 | top1=94.69% | top2=96.38% | acc=94.69% | bal_acc=94.69% | macro_f1=0.9459 | weighted_f1=0.9459 | precision_macro=0.9514 | recall_macro=0.9469 | mae=0.0744 | qwk=0.9501
+        ovr_roc_auc_macro=0.9878 | ovr_pr_auc_macro=0.9729
+  Confusion Matrix:
+[[327  47  23   3]
+ [  0 396   0   4]
+ [  0   7 393   0]
+ [  0   1   0 399]]
+  Classification Report:
+              precision    recall  f1-score   support
+
+      glioma     1.0000    0.8175    0.8996       400
+  meningioma     0.8780    0.9900    0.9307       400
+     notumor     0.9447    0.9825    0.9632       400
+   pituitary     0.9828    0.9975    0.9901       400
+
+    accuracy                         0.9469      1600
+   macro avg     0.9514    0.9469    0.9459      1600
+weighted avg     0.9514    0.9469    0.9459      1600
+
+
+==========================================================================================
+Summary CSV saved: E:\Paper\Computer-Vision-for-Medicine\Brain_Tumor_MRI_Loss\logs\ResNet_baseline_controlled_brain_tumor_mri_resnet50_seed777_20260629_020918_summary.csv
+Top results by test_macro_f1:
+  ce: macro_f1=0.9459, qwk=0.9501, mae=0.0744, acc=0.9469, top1=0.9469
+==========================================================================================
