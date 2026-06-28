@@ -174,3 +174,66 @@ Epoch 34/50 | Time 1m6s
   Train | loss=0.0180 | top1=99.35% | top2=99.98% | top3=100.00%
   Valid | loss=0.0682 | top1=97.43% | top2=100.00% | top3=100.00% | acc=97.28% | bal_acc=96.97% | macro_f1=0.9690 | weighted_f1=0.9728 | precision_macro=0.9683 | recall_macro=0.9697 | qwk=0.9581 | mae=0.0292
         ovr_roc_auc_macro=0.9983 | ovr_pr_auc_macro=0.9969
+Epoch 35/50 | Time 1m4s
+  Train | loss=0.0135 | top1=99.50% | top2=100.00% | top3=100.00%
+  Valid | loss=0.0768 | top1=97.24% | top2=100.00% | top3=100.00% | acc=97.08% | bal_acc=97.17% | macro_f1=0.9675 | weighted_f1=0.9710 | precision_macro=0.9637 | recall_macro=0.9717 | qwk=0.9557 | mae=0.0311
+        ovr_roc_auc_macro=0.9982 | ovr_pr_auc_macro=0.9967
+Epoch 36/50 | Time 1m2s
+  Train | loss=0.0141 | top1=99.55% | top2=100.00% | top3=100.00%
+  Valid | loss=0.0866 | top1=97.06% | top2=100.00% | top3=100.00% | acc=96.89% | bal_acc=96.32% | macro_f1=0.9619 | weighted_f1=0.9691 | precision_macro=0.9612 | recall_macro=0.9632 | qwk=0.9530 | mae=0.0331
+        ovr_roc_auc_macro=0.9982 | ovr_pr_auc_macro=0.9963
+Epoch 37/50 | Time 1m0s
+  Train | loss=0.0146 | top1=99.35% | top2=100.00% | top3=100.00%
+  Valid | loss=0.0670 | top1=97.61% | top2=100.00% | top3=100.00% | acc=97.47% | bal_acc=97.07% | macro_f1=0.9707 | weighted_f1=0.9747 | precision_macro=0.9707 | recall_macro=0.9707 | qwk=0.9605 | mae=0.0272
+        ovr_roc_auc_macro=0.9984 | ovr_pr_auc_macro=0.9969
+Epoch 38/50 | Time 1m4s
+  Train | loss=0.0108 | top1=99.70% | top2=100.00% | top3=100.00%
+  Valid | loss=0.0789 | top1=97.06% | top2=100.00% | top3=100.00% | acc=96.89% | bal_acc=96.17% | macro_f1=0.9618 | weighted_f1=0.9690 | precision_macro=0.9623 | recall_macro=0.9617 | qwk=0.9529 | mae=0.0331
+        ovr_roc_auc_macro=0.9981 | ovr_pr_auc_macro=0.9962
+Epoch 39/50 | Time 0m58s
+  Train | loss=0.0161 | top1=99.46% | top2=100.00% | top3=100.00%
+  Valid | loss=0.0693 | top1=97.61% | top2=100.00% | top3=100.00% | acc=97.47% | bal_acc=97.07% | macro_f1=0.9707 | weighted_f1=0.9747 | precision_macro=0.9707 | recall_macro=0.9707 | qwk=0.9605 | mae=0.0272
+        ovr_roc_auc_macro=0.9982 | ovr_pr_auc_macro=0.9966
+Epoch 40/50 | Time 0m53s
+  Train | loss=0.0146 | top1=99.50% | top2=100.00% | top3=100.00%
+  Valid | loss=0.0651 | top1=97.24% | top2=100.00% | top3=100.00% | acc=97.08% | bal_acc=96.87% | macro_f1=0.9673 | weighted_f1=0.9709 | precision_macro=0.9659 | recall_macro=0.9687 | qwk=0.9556 | mae=0.0311
+        ovr_roc_auc_macro=0.9985 | ovr_pr_auc_macro=0.9973
+Epoch 41/50 | Time 0m51s
+  Train | loss=0.0128 | top1=99.70% | top2=100.00% | top3=100.00%
+  Valid | loss=0.0631 | top1=97.24% | top2=100.00% | top3=100.00% | acc=97.08% | bal_acc=96.87% | macro_f1=0.9673 | weighted_f1=0.9709 | precision_macro=0.9659 | recall_macro=0.9687 | qwk=0.9556 | mae=0.0311
+        ovr_roc_auc_macro=0.9986 | ovr_pr_auc_macro=0.9974
+Epoch 42/50 | Time 1m5s
+  Train | loss=0.0142 | top1=99.61% | top2=100.00% | top3=100.00%
+  Valid | loss=0.0614 | top1=97.61% | top2=100.00% | top3=100.00% | acc=97.47% | bal_acc=97.07% | macro_f1=0.9707 | weighted_f1=0.9747 | precision_macro=0.9707 | recall_macro=0.9707 | qwk=0.9605 | mae=0.0272
+        ovr_roc_auc_macro=0.9987 | ovr_pr_auc_macro=0.9976
+Epoch 43/50 | Time 0m59s
+  Train | loss=0.0111 | top1=99.63% | top2=99.98% | top3=100.00%
+  Valid | loss=0.0768 | top1=97.43% | top2=100.00% | top3=100.00% | acc=97.28% | bal_acc=97.27% | macro_f1=0.9692 | weighted_f1=0.9729 | precision_macro=0.9659 | recall_macro=0.9727 | qwk=0.9581 | mae=0.0292
+        ovr_roc_auc_macro=0.9985 | ovr_pr_auc_macro=0.9970
+  -> early stopping triggered at epoch 43
+
+[TEST] loss=ce
+  Test | loss=0.1168 | top1=96.65% | top2=100.00% | top3=100.00% | acc=96.58% | bal_acc=96.32% | macro_f1=0.9671 | weighted_f1=0.9657 | precision_macro=0.9712 | recall_macro=0.9632 | qwk=0.9569 | mae=0.0349
+        ovr_roc_auc_macro=0.9954 | ovr_pr_auc_macro=0.9913
+  Confusion Matrix:
+[[115   0   1]
+ [  0 291  26]
+ [  0  17 838]]
+  Classification Report:
+              precision    recall  f1-score   support
+
+     COVID19     1.0000    0.9914    0.9957       116
+      NORMAL     0.9448    0.9180    0.9312       317
+   PNEUMONIA     0.9688    0.9801    0.9744       855
+
+    accuracy                         0.9658      1288
+   macro avg     0.9712    0.9632    0.9671      1288
+weighted avg     0.9657    0.9658    0.9657      1288
+
+
+==========================================================================================
+Summary CSV saved: E:\Paper\Computer-Vision-for-Medicine\chest-x-ray-image_Loss\logs\ResNet_baseline_controlled_chest_x-ray_image_resnet50_seed777_20260629_025755_summary.csv
+Top results by test_macro_f1:
+  ce: macro_f1=0.9671, acc=96.58%, bal_acc=96.32%
+Log file saved: E:\Paper\Computer-Vision-for-Medicine\chest-x-ray-image_Loss\logs\ResNet_baseline_controlled_chest_x-ray_image_resnet50_seed777_20260629_025755.log
+==========================================================================================

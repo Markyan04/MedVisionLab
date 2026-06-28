@@ -39,7 +39,7 @@ ATTENTION_COMPARISONS = (
     ("MESC", "ECA"),
     ("MESC", "MSCA"),
 )
-ATTENTION_DATASETS = {"KOA", "ADNI", "Chest X-ray Image"}
+ATTENTION_DATASETS = {"KOA", "ADNI", "Chest X-ray Image", "Brain Tumor MRI", "HAM10000"}
 LOSS_ORDER = ("CE", "Label Smoothing", "SORD-CE", "DAST")
 LOSS_COMPARISONS = (
     ("CE", "Label Smoothing"),
@@ -78,6 +78,10 @@ def canonical_dataset_name(raw: object) -> str:
         return "KOA"
     if key in {"adni", "alzheimer", "alzheimer mri"}:
         return "ADNI"
+    if key in {"brain", "brain tumor", "brain tumor mri", "brain-tumor-mri"}:
+        return "Brain Tumor MRI"
+    if key in {"ham10000", "ham", "isic"}:
+        return "HAM10000"
     if key in {"chest", "chest-x-ray image", "chest x-ray image", "chest xray image", "chest-xray"}:
         return "Chest X-ray Image"
     return text

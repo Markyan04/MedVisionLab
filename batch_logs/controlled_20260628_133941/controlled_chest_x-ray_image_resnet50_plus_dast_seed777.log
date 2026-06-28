@@ -1,0 +1,64 @@
+DATASET: Chest X-ray Image
+METHOD: ResNet50 + DAST
+SEED: 777
+SCRIPT: E:\Paper\Computer-Vision-for-Medicine\chest-x-ray-image_Loss\ResNet_baseline.py
+RUN_TAG: controlled_chest_x-ray_image_resnet50_plus_dast_seed777
+CHESTXRAY_LOSSES: dast
+COMMAND: D:\ProgramData\miniconda3\envs\Paper\python.exe -u E:\Paper\Computer-Vision-for-Medicine\chest-x-ray-image_Loss\ResNet_baseline.py
+==========================================================================================
+==========================================================================================
+Script: ResNet_baseline
+Run tag: controlled_chest_x-ray_image_resnet50_plus_dast_seed777
+Module: Baseline | Insert after: none
+Device: cuda
+CUDA: NVIDIA GeForce RTX 4080 SUPER
+Train dir: E:\Paper\Computer-Vision-for-Medicine\CPN\train
+Test dir : E:\Paper\Computer-Vision-for-Medicine\CPN\test
+Config | seed=777, batch_size=32, epochs=50, num_workers=2, image_size=224, base_lr=0.0001, val_ratio=0.1, patience=15
+Losses to run: ['dast']
+==========================================================================================
+Split sizes | train=4630, valid=514, test=1288
+Classes (3): ['COVID19', 'NORMAL', 'PNEUMONIA']
+Train class counts: [421, 1132, 3077]
+Loading torchvision ResNet50 pretrained weights once...
+Pretrained state keys: 320
+
+##########################################################################################
+Starting loss: dast
+##########################################################################################
+Model params: 23,514,179 | pretrained loaded: 320/320 | feat_dim=2048
+Criterion: DistanceAwareSoftTargetLoss
+Criterion trainable params: 0
+Epoch 01/50 | Time 1m0s
+  Train | loss=0.5742 | top1=51.71% | top2=80.26% | top3=100.00%
+  Valid | loss=0.5404 | top1=67.83% | top2=91.36% | top3=100.00% | acc=65.95% | bal_acc=35.25% | macro_f1=0.3209 | weighted_f1=0.5690 | precision_macro=0.3914 | recall_macro=0.3525 | qwk=0.0207 | mae=0.4202
+        ovr_roc_auc_macro=0.6540 | ovr_pr_auc_macro=0.4323
+  -> best macro_f1 updated to 0.3209 (epoch 1)
+Epoch 02/50 | Time 1m5s
+  Train | loss=0.5194 | top1=66.36% | top2=90.75% | top3=100.00%
+  Valid | loss=0.4823 | top1=68.93% | top2=93.38% | top3=100.00% | acc=67.12% | bal_acc=34.33% | macro_f1=0.2865 | weighted_f1=0.5468 | precision_macro=0.5562 | recall_macro=0.3433 | qwk=0.0162 | mae=0.4047
+        ovr_roc_auc_macro=0.8095 | ovr_pr_auc_macro=0.6036
+Epoch 03/50 | Time 0m58s
+  Train | loss=0.4742 | top1=66.72% | top2=91.16% | top3=100.00%
+  Valid | loss=0.4414 | top1=69.49% | top2=92.83% | top3=100.00% | acc=67.70% | bal_acc=35.23% | macro_f1=0.3052 | weighted_f1=0.5624 | precision_macro=0.5207 | recall_macro=0.3523 | qwk=0.0294 | mae=0.3988
+        ovr_roc_auc_macro=0.8847 | ovr_pr_auc_macro=0.7345
+Epoch 04/50 | Time 1m4s
+  Train | loss=0.4404 | top1=68.97% | top2=90.94% | top3=100.00%
+  Valid | loss=0.4082 | top1=78.12% | top2=92.83% | top3=100.00% | acc=76.85% | bal_acc=47.07% | macro_f1=0.4774 | weighted_f1=0.7164 | precision_macro=0.5647 | recall_macro=0.4707 | qwk=0.2242 | mae=0.3054
+        ovr_roc_auc_macro=0.9351 | ovr_pr_auc_macro=0.8261
+  -> best macro_f1 updated to 0.4774 (epoch 4)
+Epoch 05/50 | Time 1m0s
+  Train | loss=0.4097 | top1=77.44% | top2=91.21% | top3=100.00%
+  Valid | loss=0.3830 | top1=85.29% | top2=93.57% | top3=100.00% | acc=84.44% | bal_acc=57.98% | macro_f1=0.5686 | weighted_f1=0.8089 | precision_macro=0.5613 | recall_macro=0.5798 | qwk=0.4639 | mae=0.2121
+        ovr_roc_auc_macro=0.9643 | ovr_pr_auc_macro=0.9177
+  -> best macro_f1 updated to 0.5686 (epoch 5)
+Epoch 06/50 | Time 1m3s
+  Train | loss=0.3862 | top1=84.01% | top2=93.17% | top3=100.00%
+  Valid | loss=0.3640 | top1=86.58% | top2=96.88% | top3=100.00% | acc=85.80% | bal_acc=63.20% | macro_f1=0.6249 | weighted_f1=0.8332 | precision_macro=0.8852 | recall_macro=0.6320 | qwk=0.6087 | mae=0.1770
+        ovr_roc_auc_macro=0.9758 | ovr_pr_auc_macro=0.9491
+  -> best macro_f1 updated to 0.6249 (epoch 6)
+Epoch 07/50 | Time 0m59s
+  Train | loss=0.3649 | top1=87.11% | top2=97.00% | top3=100.00%
+  Valid | loss=0.3461 | top1=91.54% | top2=98.71% | top3=100.00% | acc=91.05% | bal_acc=80.97% | macro_f1=0.8434 | weighted_f1=0.9083 | precision_macro=0.9197 | recall_macro=0.8097 | qwk=0.8262 | mae=0.1012
+        ovr_roc_auc_macro=0.9825 | ovr_pr_auc_macro=0.9643
+  -> best macro_f1 updated to 0.8434 (epoch 7)
