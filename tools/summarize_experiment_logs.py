@@ -28,10 +28,18 @@ TEST_LINE_RE = re.compile(
 )
 METRIC_VALUE_RE = re.compile(r"([A-Za-z0-9_]+)=(-?[0-9]+(?:\.[0-9]+)?)%?")
 HEADER_RE = re.compile(
-    r"^(DATASET|METHOD|SEED|RUN_TAG|LOSS|LABEL_SMOOTHING|SORD_TAU|DAST_TAU|DAST_GAMMA):\s*(.*)$"
+    r"^(DATASET|METHOD|SEED|RUN_TAG|ATTENTION|LOSS|LABEL_SMOOTHING|SORD_TAU|DAST_TAU|DAST_GAMMA):\s*(.*)$"
 )
 SEED_RE = re.compile(r"seed(\d+)", re.IGNORECASE)
 
+ATTENTION_ORDER = ("SE", "CBAM", "ECA", "MSCA", "MESC")
+ATTENTION_COMPARISONS = (
+    ("MESC", "SE"),
+    ("MESC", "CBAM"),
+    ("MESC", "ECA"),
+    ("MESC", "MSCA"),
+)
+ATTENTION_DATASETS = {"KOA", "ADNI", "Chest X-ray Image"}
 LOSS_ORDER = ("CE", "Label Smoothing", "SORD-CE", "DAST")
 LOSS_COMPARISONS = (
     ("CE", "Label Smoothing"),
@@ -60,6 +68,43 @@ def dataset_from_path(path: Path) -> str:
         return "Brain Tumor MRI"
     if "chest-x-ray-image_Loss" in parts:
         return "Chest X-ray Image"
+    return ""
+
+
+def canonical_dataset_name(raw: object) -> str:
+    text = str(raw or "").strip()
+    key = text.lower().replace("_", "-")
+    if key in {"koa", "knee", "knee osteoarthritis"}:
+        return "KOA"
+    if key in {"adni", "alzheimer", "alzheimer mri"}:
+        return "ADNI"
+    if key in {"chest", "chest-x-ray image", "chest x-ray image", "chest xray image", "chest-xray"}:
+        return "Chest X-ray Image"
+    return text
+
+
+def canonical_attention_name(raw: object) -> str:
+    key = str(raw or "").strip().lower().replace("-", "_").replace(" ", "_")
+    aliases = {
+        "se": "SE",
+        "senet": "SE",
+        "squeeze_excitation": "SE",
+        "cbam": "CBAM",
+        "eca": "ECA",
+        "eca_block": "ECA",
+        "msca": "MSCA",
+        "mesc": "MESC",
+        "mecs": "MESC",
+        "full": "MESC",
+    }
+    return aliases.get(key, "")
+
+
+def attention_from_text(raw: object) -> str:
+    text = str(raw or "").lower().replace("-", "_")
+    for token in ("msca", "cbam", "eca", "mesc", "mecs", "se"):
+        if re.search(rf"(^|[^a-z0-9]){token}([^a-z0-9]|$)", text):
+            return canonical_attention_name(token)
     return ""
 
 
@@ -96,6 +141,11 @@ def loss_from_method(method: object, loss_name: object = "") -> str:
 def method_from_script(script_name: str, loss_name: str) -> str:
     text = script_name.lower()
     loss = canonical_loss_name(loss_name)
+    attention = attention_from_text(text)
+    if loss == "DAST" and attention == "MESC":
+        return "ResNet50 + MESC + DAST"
+    if attention:
+        return f"ResNet50 + layer3 {attention.lower()}"
     has_mesc = "mecs" in text
     if loss == "Label Smoothing":
         return "ResNet50 + Label Smoothing"
@@ -152,7 +202,7 @@ def seed_from_row(row: Dict[str, str]) -> str:
 
 
 def read_summary_csv(path: Path) -> Iterable[Dict[str, object]]:
-    dataset = dataset_from_path(path)
+    dataset = canonical_dataset_name(dataset_from_path(path))
     script_hint = path.stem.replace("_summary", "")
     with path.open("r", encoding="utf-8-sig", newline="") as fp:
         for row in csv.DictReader(fp):
@@ -161,9 +211,16 @@ def read_summary_csv(path: Path) -> Iterable[Dict[str, object]]:
             script_name = row.get("script_name") or script_hint
             loss_name = row.get("loss_name", "")
             method = method_from_script(script_name, loss_name)
+            attention = (
+                canonical_attention_name(row.get("attention_module", ""))
+                or attention_from_text(script_name)
+                or attention_from_text(method)
+                or attention_from_text(row.get("run_tag", ""))
+            )
             yield {
                 "dataset": dataset,
                 "method": method,
+                "attention": attention,
                 "loss": loss_from_method(method, loss_name),
                 "loss_name": loss_name,
                 "seed": seed_from_row(row),
@@ -186,9 +243,17 @@ def read_experiment_records_csv(path: Path) -> Iterable[Dict[str, object]]:
                 continue
             method = row.get("method", "")
             loss_name = row.get("loss") or row.get("loss_name", "")
+            attention = (
+                canonical_attention_name(row.get("attention", ""))
+                or canonical_attention_name(row.get("attention_module", ""))
+                or attention_from_text(method)
+                or attention_from_text(row.get("run_tag", ""))
+                or attention_from_text(row.get("source", ""))
+            )
             yield {
-                "dataset": row.get("dataset", ""),
+                "dataset": canonical_dataset_name(row.get("dataset", "")),
                 "method": method,
+                "attention": attention,
                 "loss": loss_from_method(method, loss_name),
                 "loss_name": loss_name,
                 "seed": seed_from_row(row),
@@ -220,9 +285,16 @@ def read_batch_log(path: Path) -> Optional[Dict[str, object]]:
     loss_name = header.get("loss", "")
     tau = header.get("sord_tau", "") or header.get("dast_tau", "")
     gamma = header.get("dast_gamma", "")
+    attention = (
+        canonical_attention_name(header.get("attention", ""))
+        or attention_from_text(method)
+        or attention_from_text(header.get("run_tag", ""))
+        or attention_from_text(path.name)
+    )
     return {
-        "dataset": header["dataset"],
+        "dataset": canonical_dataset_name(header["dataset"]),
         "method": method,
+        "attention": attention,
         "loss": loss_from_method(method, loss_name),
         "loss_name": loss_name,
         "seed": header.get("seed", ""),
@@ -262,10 +334,11 @@ def one_off_accuracy_from_confusion(path: Path) -> Optional[float]:
     return ok / total if total else None
 
 
-def record_identity(rec: Dict[str, object], identity: str) -> Tuple[str, str, str, str, str]:
+def record_identity(rec: Dict[str, object], identity: str) -> Tuple[str, str, str, str, str, str]:
     return (
         str(rec.get("dataset") or ""),
         str(rec.get("method") or ""),
+        str(rec.get("attention") or ""),
         str(rec.get("loss") or ""),
         str(rec.get("seed") or ""),
         identity,
@@ -280,9 +353,9 @@ def record_preference(rec: Dict[str, object]) -> Tuple[int, int]:
 
 
 def dedupe_records(records: Iterable[Dict[str, object]]) -> List[Dict[str, object]]:
-    dedup: Dict[Tuple[str, str, str, str, str], Dict[str, object]] = {}
-    source_index: Dict[Tuple[str, str, str, str, str], Tuple[str, str, str, str, str]] = {}
-    tag_index: Dict[Tuple[str, str, str, str, str], Tuple[str, str, str, str, str]] = {}
+    dedup: Dict[Tuple[str, str, str, str, str, str], Dict[str, object]] = {}
+    source_index: Dict[Tuple[str, str, str, str, str, str], Tuple[str, str, str, str, str, str]] = {}
+    tag_index: Dict[Tuple[str, str, str, str, str, str], Tuple[str, str, str, str, str, str]] = {}
     for rec in records:
         source = str(rec.get("source") or "")
         run_tag = str(rec.get("run_tag") or "")
@@ -354,6 +427,7 @@ def write_controlled_outputs(records: List[Dict[str, object]], out_dir: Path) ->
     raw_fields = [
         "dataset",
         "method",
+        "attention",
         "loss",
         "loss_name",
         "seed",
@@ -648,10 +722,223 @@ def write_loss_comparison_outputs(records: List[Dict[str, object]], out_dir: Pat
     print(f"Wrote {tests_md_path}")
 
 
+def is_attention_comparison_record(rec: Dict[str, object]) -> bool:
+    dataset = str(rec.get("dataset") or "")
+    attention = str(rec.get("attention") or "")
+    seed = str(rec.get("seed") or "")
+    method = str(rec.get("method") or "")
+    loss = str(rec.get("loss") or "")
+    tag_source = f"{rec.get('run_tag', '')} {rec.get('source', '')}".lower()
+    if dataset not in ATTENTION_DATASETS or attention not in ATTENTION_ORDER or not seed:
+        return False
+    if "dast" in method.lower() or loss == "DAST":
+        return False
+    if attention == "MESC" and "mesc" in method.lower():
+        return True
+    return (
+        "attention_" in tag_source
+        or "resnet_layer3+" in tag_source
+        or "layer3" in method.lower()
+    )
+
+
+def attention_record_preference(rec: Dict[str, object]) -> Tuple[int, int, int]:
+    tag_source = f"{rec.get('run_tag', '')} {rec.get('source', '')}".lower()
+    return (
+        1 if "attention_" in tag_source else 0,
+        1 if str(rec.get("source", "")).lower().endswith("_summary.csv") else 0,
+        1 if rec.get("run_tag") else 0,
+    )
+
+
+def collect_attention_records(records: List[Dict[str, object]]) -> List[Dict[str, object]]:
+    selected = [r for r in records if is_attention_comparison_record(r)]
+    by_key: Dict[Tuple[str, str, str], Dict[str, object]] = {}
+    for rec in selected:
+        key = (str(rec["dataset"]), str(rec["attention"]), str(rec["seed"]))
+        if key not in by_key or attention_record_preference(rec) > attention_record_preference(by_key[key]):
+            by_key[key] = rec
+    return sorted(
+        by_key.values(),
+        key=lambda r: (
+            str(r["dataset"]),
+            ATTENTION_ORDER.index(str(r["attention"])) if str(r["attention"]) in ATTENTION_ORDER else 99,
+            int(str(r["seed"])) if str(r["seed"]).isdigit() else 999999,
+        ),
+    )
+
+
+def write_attention_comparison_outputs(records: List[Dict[str, object]], out_dir: Path) -> None:
+    attention_records = collect_attention_records(records)
+    if not attention_records:
+        return
+
+    raw_path = out_dir / "attention_comparison_records.csv"
+    summary_path = out_dir / "attention_comparison_summary.csv"
+    md_path = out_dir / "attention_comparison_summary.md"
+    tex_path = out_dir / "attention_comparison_summary.tex"
+    tests_path = out_dir / "attention_comparison_paired_tests.csv"
+    tests_md_path = out_dir / "attention_comparison_paired_tests.md"
+
+    raw_fields = [
+        "dataset",
+        "attention",
+        "method",
+        "seed",
+        "acc",
+        "macro_f1",
+        "mae",
+        "qwk",
+        "run_tag",
+        "source",
+    ]
+    with raw_path.open("w", encoding="utf-8-sig", newline="") as fp:
+        writer = csv.DictWriter(fp, fieldnames=raw_fields, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(attention_records)
+
+    grouped: Dict[Tuple[str, str], List[Dict[str, object]]] = defaultdict(list)
+    for rec in attention_records:
+        grouped[(str(rec["dataset"]), str(rec["attention"]))].append(rec)
+
+    with summary_path.open("w", encoding="utf-8-sig", newline="") as fp:
+        writer = csv.writer(fp)
+        writer.writerow([
+            "dataset",
+            "attention_module",
+            "n",
+            "acc_mean",
+            "acc_std",
+            "macro_f1_mean",
+            "macro_f1_std",
+            "mae_mean",
+            "mae_std",
+            "qwk_mean",
+            "qwk_std",
+        ])
+        for dataset in sorted({d for d, _ in grouped}):
+            for attention in ATTENTION_ORDER:
+                rows = grouped.get((dataset, attention), [])
+                if not rows:
+                    continue
+                writer.writerow([
+                    dataset,
+                    attention,
+                    len(rows),
+                    *fmt_mean_std(table_values(rows, "acc")),
+                    *fmt_mean_std(table_values(rows, "macro_f1")),
+                    *fmt_mean_std(table_values(rows, "mae")),
+                    *fmt_mean_std(table_values(rows, "qwk")),
+                ])
+
+    md_lines = [
+        "| Dataset | Module | ACC | Macro-F1 | MAE | QWK | n |",
+        "|---|---|---:|---:|---:|---:|---:|",
+    ]
+    tex_lines = [
+        "\\begin{tabular}{llccccc}",
+        "\\toprule",
+        "Dataset & Module & ACC (\\%) & Macro-F1 & MAE & QWK & n \\\\",
+        "\\midrule",
+    ]
+    for dataset in sorted({d for d, _ in grouped}):
+        for attention in ATTENTION_ORDER:
+            rows = grouped.get((dataset, attention), [])
+            if not rows:
+                continue
+            acc = table_values(rows, "acc")
+            f1 = table_values(rows, "macro_f1")
+            mae = table_values(rows, "mae")
+            qwk = table_values(rows, "qwk")
+            md_lines.append(
+                f"| {dataset} | {attention} | {metric_cell(acc, percent=True, latex=False)} | "
+                f"{metric_cell(f1, latex=False)} | {metric_cell(mae, latex=False)} | "
+                f"{metric_cell(qwk, latex=False)} | {len(rows)} |"
+            )
+            tex_lines.append(
+                f"{dataset} & {attention} & {metric_cell(acc, percent=True)} & "
+                f"{metric_cell(f1)} & {metric_cell(mae)} & {metric_cell(qwk)} & {len(rows)} \\\\"
+            )
+    tex_lines.extend(["\\bottomrule", "\\end{tabular}", ""])
+    md_path.write_text("\n".join(md_lines) + "\n", encoding="utf-8")
+    tex_path.write_text("\n".join(tex_lines), encoding="utf-8")
+
+    by_dataset_module_seed: Dict[Tuple[str, str, str], Dict[str, object]] = {
+        (str(r["dataset"]), str(r["attention"]), str(r["seed"])): r for r in attention_records
+    }
+
+    test_rows: List[Dict[str, object]] = []
+    for dataset in sorted({str(r["dataset"]) for r in attention_records}):
+        for mesc_module, other_module in ATTENTION_COMPARISONS:
+            mesc_seeds = {seed for d, module, seed in by_dataset_module_seed if d == dataset and module == mesc_module}
+            other_seeds = {seed for d, module, seed in by_dataset_module_seed if d == dataset and module == other_module}
+            common_seeds = sorted(
+                mesc_seeds & other_seeds,
+                key=lambda s: (0, int(s)) if str(s).isdigit() else (1, str(s)),
+            )
+            for metric, metric_label, _ in LOSS_METRICS:
+                other_values = [float(by_dataset_module_seed[(dataset, other_module, seed)][metric]) for seed in common_seeds]
+                mesc_values = [float(by_dataset_module_seed[(dataset, mesc_module, seed)][metric]) for seed in common_seeds]
+                test_name, statistic, p_value = paired_t_test(other_values, mesc_values)
+                mean_delta = statistics.mean([m - o for o, m in zip(other_values, mesc_values)]) if common_seeds else math.nan
+                test_rows.append({
+                    "dataset": dataset,
+                    "comparison": f"{mesc_module} vs {other_module}",
+                    "metric": metric_label,
+                    "n": len(common_seeds),
+                    "mean_delta_mesc_minus_other": mean_delta,
+                    "test": test_name,
+                    "statistic": statistic,
+                    "p_value": p_value,
+                    "seeds": ",".join(common_seeds),
+                })
+
+    with tests_path.open("w", encoding="utf-8-sig", newline="") as fp:
+        writer = csv.DictWriter(
+            fp,
+            fieldnames=[
+                "dataset",
+                "comparison",
+                "metric",
+                "n",
+                "mean_delta_mesc_minus_other",
+                "test",
+                "statistic",
+                "p_value",
+                "seeds",
+            ],
+        )
+        writer.writeheader()
+        writer.writerows(test_rows)
+
+    tests_md_lines = [
+        "| Dataset | Comparison | Metric | n | MESC Delta | p-value | Test |",
+        "|---|---|---|---:|---:|---:|---|",
+    ]
+    for row in test_rows:
+        delta = row["mean_delta_mesc_minus_other"]
+        p_value = row["p_value"]
+        tests_md_lines.append(
+            f"| {row['dataset']} | {row['comparison']} | {row['metric']} | {row['n']} | "
+            f"{float(delta):.6f} | {float(p_value):.6g} | {row['test']} |"
+            if not math.isnan(float(delta)) and not math.isnan(float(p_value))
+            else f"| {row['dataset']} | {row['comparison']} | {row['metric']} | {row['n']} | -- | -- | {row['test']} |"
+        )
+    tests_md_path.write_text("\n".join(tests_md_lines) + "\n", encoding="utf-8")
+
+    print(f"Wrote {raw_path}")
+    print(f"Wrote {summary_path}")
+    print(f"Wrote {md_path}")
+    print(f"Wrote {tex_path}")
+    print(f"Wrote {tests_path}")
+    print(f"Wrote {tests_md_path}")
+
+
 def write_outputs(records: List[Dict[str, object]], out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     write_controlled_outputs(records, out_dir)
     write_loss_comparison_outputs(records, out_dir)
+    write_attention_comparison_outputs(records, out_dir)
 
 
 def main() -> int:

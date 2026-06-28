@@ -67,6 +67,37 @@ class CBAMBlock(nn.Module):
         return x * spatial_att
 
 
+class MSCABlock(nn.Module):
+    """SegNeXt-style multi-scale convolutional spatial attention."""
+    def __init__(self, channels: int):
+        super().__init__()
+        self.proj_in = nn.Conv2d(channels, channels, kernel_size=1)
+        self.act = nn.GELU()
+        self.conv0 = nn.Conv2d(channels, channels, kernel_size=5, padding=2, groups=channels)
+        self.conv0_1 = nn.Conv2d(channels, channels, kernel_size=(1, 7), padding=(0, 3), groups=channels)
+        self.conv0_2 = nn.Conv2d(channels, channels, kernel_size=(7, 1), padding=(3, 0), groups=channels)
+        self.conv1_1 = nn.Conv2d(channels, channels, kernel_size=(1, 11), padding=(0, 5), groups=channels)
+        self.conv1_2 = nn.Conv2d(channels, channels, kernel_size=(11, 1), padding=(5, 0), groups=channels)
+        self.conv2_1 = nn.Conv2d(channels, channels, kernel_size=(1, 21), padding=(0, 10), groups=channels)
+        self.conv2_2 = nn.Conv2d(channels, channels, kernel_size=(21, 1), padding=(10, 0), groups=channels)
+        self.proj_attn = nn.Conv2d(channels, channels, kernel_size=1)
+        self.proj_out = nn.Conv2d(channels, channels, kernel_size=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        shortcut = x
+        x = self.act(self.proj_in(x))
+        attn = self.conv0(x)
+        attn = (
+            attn
+            + self.conv0_2(self.conv0_1(attn))
+            + self.conv1_2(self.conv1_1(attn))
+            + self.conv2_2(self.conv2_1(attn))
+        )
+        attn = self.proj_attn(attn)
+        x = self.proj_out(x * attn)
+        return x + shortcut
+
+
 class MESCVariant(nn.Module):
     def __init__(
         self,
@@ -136,6 +167,8 @@ def build_attention_module(name: str, channels: int = 1024) -> nn.Module:
         return CBAMBlock(channels)
     if key == "eca":
         return ECABlock(channels)
+    if key == "msca":
+        return MSCABlock(channels)
     if key in {"mesc", "full"}:
         return MECS_VersionA(channels, channels)
     if key == "avg_only":

@@ -30,6 +30,14 @@ def run_chest_attention(args, module_factory) -> None:
         os.environ["CHESTXRAY_EPOCHS"] = str(args.epochs)
     if args.batch_size is not None:
         os.environ["CHESTXRAY_BATCH_SIZE"] = str(args.batch_size)
+    if args.image_size is not None:
+        os.environ["CHESTXRAY_IMAGE_SIZE"] = str(args.image_size)
+    if args.num_workers is not None:
+        os.environ["CHESTXRAY_NUM_WORKERS"] = str(args.num_workers)
+    if args.patience is not None:
+        os.environ["CHESTXRAY_PATIENCE"] = str(args.patience)
+    if args.early_delta is not None:
+        os.environ["CHESTXRAY_EARLY_DELTA"] = str(args.early_delta)
 
     def build_model(num_classes: int):
         return ResNet50WithInsertedModule(num_classes, module_factory(args.attention, 1024), "layer3")
