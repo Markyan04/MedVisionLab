@@ -23,7 +23,7 @@ from typing import Dict, Iterable, List, Optional, Sequence
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SEEDS = (1234, 2024, 3407)
+DEFAULT_SEEDS = (42, 777, 1234, 2024, 3407)
 EXPERIMENT_RECORDS_PATH = PROJECT_ROOT / "analysis_tables" / "experiment_records.csv"
 TEST_LINE_RE = re.compile(
     r"Test\s*\|.*?acc=(?P<acc>[0-9.]+)%.*?macro_f1=(?P<f1>[0-9.]+)"
@@ -80,6 +80,63 @@ CONTROLLED_SPECS: Dict[str, Sequence[RunSpec]] = {
     ),
 }
 
+LOSS_COMPARISON_SPECS: Dict[str, Dict[str, RunSpec]] = {
+    "koa": {
+        "ce": RunSpec("KOA", "ResNet50", PROJECT_ROOT / "Knee" / "ResNet_baseline.py", "KNEE"),
+        "label_smoothing_ce": RunSpec(
+            "KOA",
+            "ResNet50 + Label Smoothing",
+            PROJECT_ROOT / "Knee" / "ResNet_baseline_loss_compare.py",
+            "KNEE",
+            "KNEE_LOSS",
+            "label_smoothing_ce",
+        ),
+        "sord_ce": RunSpec(
+            "KOA",
+            "ResNet50 + SORD-CE",
+            PROJECT_ROOT / "Knee" / "ResNet_baseline_loss_compare.py",
+            "KNEE",
+            "KNEE_LOSS",
+            "sord_ce",
+        ),
+        "dast": RunSpec("KOA", "ResNet50 + DAST", PROJECT_ROOT / "Knee" / "ResNet_baseline+Loss4.py", "KNEE"),
+    },
+    "adni": {
+        "ce": RunSpec(
+            "ADNI",
+            "ResNet50",
+            PROJECT_ROOT / "Alzheimer_MRI_Loss" / "ResNet_baseline.py",
+            "ALZHEIMER",
+            "ALZHEIMER_LOSSES",
+            "ce",
+        ),
+        "label_smoothing_ce": RunSpec(
+            "ADNI",
+            "ResNet50 + Label Smoothing",
+            PROJECT_ROOT / "Alzheimer_MRI_Loss" / "ResNet_baseline.py",
+            "ALZHEIMER",
+            "ALZHEIMER_LOSSES",
+            "label_smoothing_ce",
+        ),
+        "sord_ce": RunSpec(
+            "ADNI",
+            "ResNet50 + SORD-CE",
+            PROJECT_ROOT / "Alzheimer_MRI_Loss" / "ResNet_baseline.py",
+            "ALZHEIMER",
+            "ALZHEIMER_LOSSES",
+            "sord_ce",
+        ),
+        "dast": RunSpec(
+            "ADNI",
+            "ResNet50 + DAST",
+            PROJECT_ROOT / "Alzheimer_MRI_Loss" / "ResNet_baseline.py",
+            "ALZHEIMER",
+            "ALZHEIMER_LOSSES",
+            "dast",
+        ),
+    },
+}
+
 
 def parse_csv_list(raw: str) -> List[str]:
     return [x.strip().lower() for x in raw.split(",") if x.strip()]
@@ -90,7 +147,32 @@ def parse_ints(raw: str) -> List[int]:
 
 
 def method_slug(method: str) -> str:
-    return method.lower().replace("+", "plus").replace(" ", "_")
+    return method.lower().replace("+", "plus").replace("-", "_").replace(" ", "_")
+
+
+LOSS_ALIASES = {
+    "cross_entropy": "ce",
+    "ls": "label_smoothing_ce",
+    "ls_ce": "label_smoothing_ce",
+    "label_smoothing": "label_smoothing_ce",
+    "label-smoothing": "label_smoothing_ce",
+    "label_smoothing_ce": "label_smoothing_ce",
+    "sord": "sord_ce",
+    "sord-ce": "sord_ce",
+    "sord_ce": "sord_ce",
+}
+
+
+def normalize_loss_name(raw: str) -> str:
+    key = raw.strip().lower()
+    return LOSS_ALIASES.get(key, key)
+
+
+def parse_loss_list(raw: str) -> List[str]:
+    losses = [normalize_loss_name(x) for x in raw.split(",") if x.strip()]
+    if len(losses) == 1 and losses[0] == "all":
+        return ["ce", "label_smoothing_ce", "sord_ce", "dast"]
+    return losses
 
 
 def parse_test_metrics_line(line: str) -> Optional[Dict[str, str]]:
@@ -139,6 +221,12 @@ def build_env(
         env[f"{spec.env_prefix}_BATCH_SIZE"] = str(args.batch_size)
     if spec.losses_env and spec.losses_value:
         env[spec.losses_env] = spec.losses_value
+    label_smoothing = getattr(args, "label_smoothing", None)
+    sord_tau = getattr(args, "sord_tau", None)
+    if label_smoothing is not None:
+        env[f"{spec.env_prefix}_LABEL_SMOOTHING"] = str(label_smoothing)
+    if sord_tau is not None:
+        env[f"{spec.env_prefix}_SORD_TAU"] = str(sord_tau)
     if tau is not None:
         env[f"{spec.env_prefix}_DAST_TAU"] = str(tau)
     if gamma is not None:
@@ -154,6 +242,14 @@ def write_header(fp, spec: RunSpec, seed: int, cmd: Sequence[str], env: Dict[str
     fp.write(f"RUN_TAG: {env.get(f'{spec.env_prefix}_RUN_TAG', '')}\n")
     if spec.losses_env:
         fp.write(f"{spec.losses_env}: {env.get(spec.losses_env, '')}\n")
+    if spec.losses_value:
+        fp.write(f"LOSS: {spec.losses_value}\n")
+    smoothing_key = f"{spec.env_prefix}_LABEL_SMOOTHING"
+    sord_tau_key = f"{spec.env_prefix}_SORD_TAU"
+    if smoothing_key in env:
+        fp.write(f"LABEL_SMOOTHING: {env.get(smoothing_key, '')}\n")
+    if sord_tau_key in env:
+        fp.write(f"SORD_TAU: {env.get(sord_tau_key, '')}\n")
     tau_key = f"{spec.env_prefix}_DAST_TAU"
     gamma_key = f"{spec.env_prefix}_DAST_GAMMA"
     if tau_key in env or gamma_key in env:
@@ -272,14 +368,56 @@ def iter_controlled_specs(datasets: Iterable[str]) -> Iterable[RunSpec]:
         yield from CONTROLLED_SPECS[name]
 
 
+def iter_loss_comparison_specs(datasets: Iterable[str], losses: Sequence[str]) -> Iterable[RunSpec]:
+    for dataset_name in datasets:
+        if dataset_name == "all":
+            dataset_keys = ("koa", "adni")
+        else:
+            dataset_keys = (dataset_name,)
+        for key in dataset_keys:
+            if key not in LOSS_COMPARISON_SPECS:
+                raise ValueError(
+                    f"Unknown loss-comparison dataset '{key}'. Choose from {sorted(LOSS_COMPARISON_SPECS)} or all."
+                )
+            for loss_name in losses:
+                if loss_name not in LOSS_COMPARISON_SPECS[key]:
+                    raise ValueError(
+                        f"Unsupported loss '{loss_name}' for dataset '{key}'. "
+                        f"Choose from {sorted(LOSS_COMPARISON_SPECS[key])} or all."
+                    )
+                yield LOSS_COMPARISON_SPECS[key][loss_name]
+
+
+def spec_loss_name(spec: RunSpec) -> str:
+    if spec.losses_value:
+        return normalize_loss_name(spec.losses_value)
+    method = spec.method.lower()
+    if "dast" in method:
+        return "dast"
+    if "sord" in method:
+        return "sord_ce"
+    if "label" in method:
+        return "label_smoothing_ce"
+    return "ce"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--suite", choices=("controlled", "koa-dast-grid"), default="controlled")
-    parser.add_argument("--datasets", default="koa,ham10000,adni", help="Comma-separated datasets or 'all'.")
+    parser.add_argument("--suite", choices=("controlled", "loss-comparison", "koa-dast-grid"), default="controlled")
+    parser.add_argument("--datasets", default=None, help="Comma-separated datasets or 'all'.")
+    parser.add_argument(
+        "--losses",
+        default="label_smoothing_ce,sord_ce",
+        help="Losses for --suite loss-comparison. Use 'all' for CE, label smoothing, SORD-CE, and DAST.",
+    )
     parser.add_argument("--seeds", default=",".join(map(str, DEFAULT_SEEDS)))
     parser.add_argument("--hparam-seed", type=int, default=1234, help="Single seed used by koa-dast-grid.")
     parser.add_argument("--taus", default="0.5,1.0,1.5,2.0")
     parser.add_argument("--gammas", default="0.0,1.0,1.5,2.0")
+    parser.add_argument("--label-smoothing", type=float, default=0.1)
+    parser.add_argument("--sord-tau", type=float, default=1.0)
+    parser.add_argument("--dast-tau", type=float, default=1.0)
+    parser.add_argument("--dast-gamma", type=float, default=1.5)
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--python", default=sys.executable)
@@ -294,9 +432,10 @@ def main() -> int:
 
     rc = 0
     scheduled_index = 0
+    dataset_arg = args.datasets or ("koa,adni" if args.suite == "loss-comparison" else "koa,ham10000,adni")
     if args.suite == "controlled":
         seeds = parse_ints(args.seeds)
-        specs = list(iter_controlled_specs(parse_csv_list(args.datasets)))
+        specs = list(iter_controlled_specs(parse_csv_list(dataset_arg)))
         for seed in seeds:
             for spec in specs:
                 scheduled_index += 1
@@ -304,6 +443,29 @@ def main() -> int:
                     print(f"[SKIP] {spec.dataset} | {spec.method} | seed={seed}", flush=True)
                     continue
                 rc = run_one(spec, seed, args, out_dir, "controlled")
+                if rc != 0:
+                    print(f"Logs written under: {out_dir}")
+                    return rc
+    elif args.suite == "loss-comparison":
+        seeds = parse_ints(args.seeds)
+        losses = parse_loss_list(args.losses)
+        specs = list(iter_loss_comparison_specs(parse_csv_list(dataset_arg), losses))
+        for seed in seeds:
+            for spec in specs:
+                scheduled_index += 1
+                loss_name = spec_loss_name(spec)
+                tau = None
+                gamma = None
+                if loss_name == "dast":
+                    tau = args.dast_tau
+                    gamma = args.dast_gamma
+                elif loss_name == "sord_ce":
+                    tau = args.sord_tau
+                    gamma = 0.0
+                if scheduled_index <= args.skip_runs:
+                    print(f"[SKIP] {spec.dataset} | {spec.method} | seed={seed}", flush=True)
+                    continue
+                rc = run_one(spec, seed, args, out_dir, "loss_comparison", tau=tau, gamma=gamma)
                 if rc != 0:
                     print(f"Logs written under: {out_dir}")
                     return rc

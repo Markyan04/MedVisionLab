@@ -24,6 +24,42 @@ def _soft_cross_entropy(logits: torch.Tensor, soft_targets: torch.Tensor) -> tor
     return -(soft_targets * log_probs).sum(dim=1).mean()
 
 
+class LabelSmoothingCrossEntropyLoss(nn.Module):
+    """Cross entropy with uniform one-hot label smoothing."""
+    def __init__(self, smoothing: float = 0.1):
+        super().__init__()
+        if not 0.0 <= smoothing < 1.0:
+            raise ValueError("smoothing must satisfy 0 <= smoothing < 1.")
+        self.smoothing = smoothing
+
+    def forward(self, logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+        soft_targets = _label_smoothing_one_hot(target, logits.size(1), self.smoothing)
+        return _soft_cross_entropy(logits, soft_targets)
+
+
+class OrdinalSoftCrossEntropyLoss(nn.Module):
+    """
+    SORD-CE: ordinal distance-decayed soft targets followed by soft CE.
+
+    q_k = exp(-|k-y| / tau) / sum_j exp(-|j-y| / tau)
+    No focal modulation is applied.
+    """
+    def __init__(self, num_classes: int, tau: float = 1.0):
+        super().__init__()
+        if tau <= 0:
+            raise ValueError("tau must be > 0.")
+        self.num_classes = num_classes
+        self.tau = tau
+        self.register_buffer("class_ids", torch.arange(num_classes, dtype=torch.float))
+
+    def forward(self, logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+        target_f = target.float().unsqueeze(1)
+        dist = torch.abs(self.class_ids.unsqueeze(0) - target_f)
+        soft_targets = torch.exp(-dist / self.tau)
+        soft_targets = soft_targets / soft_targets.sum(dim=1, keepdim=True)
+        return _soft_cross_entropy(logits, soft_targets)
+
+
 class ClassBalancedFocalCELoss(nn.Module):
     """
     CE + focal modulation + effective-number reweighting + optional label smoothing.
@@ -214,6 +250,10 @@ class AdaptiveOrdinalMarginLoss(nn.Module):
 # -----------------------------
 def build_loss(name: str, **kwargs):
     name = name.lower()
+    if name in {"label_smoothing_ce", "ls_ce"}:
+        return LabelSmoothingCrossEntropyLoss(**kwargs)
+    if name in {"sord_ce", "sord"}:
+        return OrdinalSoftCrossEntropyLoss(**kwargs)
     if name == "cb_focal_ce":
         return ClassBalancedFocalCELoss(**kwargs)
     if name == "ordinal_focal_mse":

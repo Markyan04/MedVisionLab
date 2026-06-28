@@ -47,7 +47,7 @@ for path_str in reversed(preferred_sys_path_order):
     sys.path.insert(0, path_str)
 
 from chest_xray_loss_experiment_common import (  # noqa: E402
-    DEFAULT_LOSS_ORDER as CHEST_SUPPORTED_LOSS_ORDER,
+    SUPPORTED_LOSS_ORDER as CHEST_SUPPORTED_LOSS_ORDER,
     Bottleneck,
     DualLogger,
     EarlyStopping,
@@ -64,7 +64,11 @@ from chest_xray_loss_experiment_common import (  # noqa: E402
     set_seed,
     train_one_epoch,
 )
-from medical_losses import DistanceAwareSoftTargetLoss  # noqa: E402
+from medical_losses import (  # noqa: E402
+    DistanceAwareSoftTargetLoss,
+    LabelSmoothingCrossEntropyLoss,
+    OrdinalSoftCrossEntropyLoss,
+)
 
 
 SEED = int(os.getenv("ALZHEIMER_SEED", os.getenv("GLOBAL_EXPERIMENT_SEED", "1234")))
@@ -271,12 +275,24 @@ def create_alzheimer_medical_loss(
     device: torch.device,
     dast_tau: float,
     dast_gamma: float,
+    sord_tau: float,
+    label_smoothing: float,
 ) -> nn.Module:
-    if loss_name.lower() == "dast":
+    loss_name = loss_name.lower()
+    if loss_name == "dast":
         return DistanceAwareSoftTargetLoss(
             num_classes=num_classes,
             tau=dast_tau,
             gamma=dast_gamma,
+        ).to(device)
+    if loss_name == "sord_ce":
+        return OrdinalSoftCrossEntropyLoss(
+            num_classes=num_classes,
+            tau=sord_tau,
+        ).to(device)
+    if loss_name == "label_smoothing_ce":
+        return LabelSmoothingCrossEntropyLoss(
+            smoothing=label_smoothing,
         ).to(device)
     return base_create_medical_loss(
         loss_name=loss_name,
@@ -314,6 +330,8 @@ def run_alzheimer_mri_medical_losses_experiments(
     early_delta = float(os.getenv("ALZHEIMER_EARLY_DELTA", "1e-4"))
     dast_tau = float(os.getenv("ALZHEIMER_DAST_TAU", "1.0"))
     dast_gamma = float(os.getenv("ALZHEIMER_DAST_GAMMA", "1.5"))
+    sord_tau = float(os.getenv("ALZHEIMER_SORD_TAU", os.getenv("ALZHEIMER_DAST_TAU", "1.0")))
+    label_smoothing = float(os.getenv("ALZHEIMER_LABEL_SMOOTHING", "0.1"))
     run_tag = sanitize_run_tag(os.getenv("ALZHEIMER_RUN_TAG", ""))
     run_suffix = f"_{run_tag}" if run_tag else ""
     topk = DEFAULT_TOPK
@@ -323,6 +341,10 @@ def run_alzheimer_mri_medical_losses_experiments(
         raise ValueError("ALZHEIMER_DAST_TAU must be > 0.")
     if dast_gamma < 0:
         raise ValueError("ALZHEIMER_DAST_GAMMA must be >= 0.")
+    if sord_tau <= 0:
+        raise ValueError("ALZHEIMER_SORD_TAU must be > 0.")
+    if not 0.0 <= label_smoothing < 1.0:
+        raise ValueError("ALZHEIMER_LABEL_SMOOTHING must satisfy 0 <= value < 1.")
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     logs_dir = THIS_DIR / "logs"
@@ -354,6 +376,10 @@ def run_alzheimer_mri_medical_losses_experiments(
         log(f"Losses to run: {losses_to_run}")
         if "dast" in losses_to_run:
             log(f"DAST config | tau={dast_tau:.4f}, gamma={dast_gamma:.4f}")
+        if "sord_ce" in losses_to_run:
+            log(f"SORD-CE config | tau={sord_tau:.4f}")
+        if "label_smoothing_ce" in losses_to_run:
+            log(f"Label smoothing config | epsilon={label_smoothing:.4f}")
         log("=" * 90)
 
         data_bundle = build_alzheimer_mri_dataloaders(
@@ -407,11 +433,17 @@ def run_alzheimer_mri_medical_losses_experiments(
                     device=device,
                     dast_tau=dast_tau,
                     dast_gamma=dast_gamma,
+                    sord_tau=sord_tau,
+                    label_smoothing=label_smoothing,
                 )
                 log(f"Criterion: {criterion.__class__.__name__}")
                 log(f"Criterion trainable params: {count_parameters(criterion):,}")
                 if loss_name == "dast":
                     log(f"Criterion hparams | tau={dast_tau:.4f}, gamma={dast_gamma:.4f}")
+                elif loss_name == "sord_ce":
+                    log(f"Criterion hparams | tau={sord_tau:.4f}, gamma=0.0000")
+                elif loss_name == "label_smoothing_ce":
+                    log(f"Criterion hparams | epsilon={label_smoothing:.4f}")
 
                 extra_modules = None
                 if has_trainable_parameters(criterion):
@@ -536,8 +568,9 @@ def run_alzheimer_mri_medical_losses_experiments(
                     "seed": SEED,
                     "loss_name": loss_name,
                     "status": "success",
-                    "dast_tau": dast_tau if loss_name == "dast" else None,
-                    "dast_gamma": dast_gamma if loss_name == "dast" else None,
+                    "dast_tau": dast_tau if loss_name == "dast" else (sord_tau if loss_name == "sord_ce" else None),
+                    "dast_gamma": dast_gamma if loss_name == "dast" else (0.0 if loss_name == "sord_ce" else None),
+                    "label_smoothing": label_smoothing if loss_name == "label_smoothing_ce" else None,
                     "trained_epochs": trained_epochs,
                     "best_epoch": best_epoch,
                     "best_valid_macro_f1": best_val_macro,
@@ -566,8 +599,9 @@ def run_alzheimer_mri_medical_losses_experiments(
                     "seed": SEED,
                     "loss_name": loss_name,
                     "status": "failed",
-                    "dast_tau": dast_tau if loss_name == "dast" else None,
-                    "dast_gamma": dast_gamma if loss_name == "dast" else None,
+                    "dast_tau": dast_tau if loss_name == "dast" else (sord_tau if loss_name == "sord_ce" else None),
+                    "dast_gamma": dast_gamma if loss_name == "dast" else (0.0 if loss_name == "sord_ce" else None),
+                    "label_smoothing": label_smoothing if loss_name == "label_smoothing_ce" else None,
                     "error": str(loss_exc),
                 })
 

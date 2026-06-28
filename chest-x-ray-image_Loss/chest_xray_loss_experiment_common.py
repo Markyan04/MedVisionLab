@@ -57,6 +57,8 @@ from medical_losses import (  # noqa: E402
     SymmetricCrossEntropyLoss,
     GeneralizedCrossEntropyLoss,
     DistanceAwareSoftTargetLoss,
+    LabelSmoothingCrossEntropyLoss,
+    OrdinalSoftCrossEntropyLoss,
     PrototypeConsistencyOrdinalLoss,
     AdaptiveOrdinalMarginLoss,
 )
@@ -74,6 +76,11 @@ DEFAULT_LOSS_ORDER = (
     "pcol",
     "aom",
 )
+SUPPORTED_LOSS_ORDER = tuple(dict.fromkeys((
+    *DEFAULT_LOSS_ORDER,
+    "label_smoothing_ce",
+    "sord_ce",
+)))
 
 
 def set_seed(seed: int = SEED) -> None:
@@ -403,6 +410,10 @@ def create_medical_loss(
     loss_name = loss_name.lower()
     if loss_name == "ce":
         criterion = nn.CrossEntropyLoss()
+    elif loss_name == "label_smoothing_ce":
+        criterion = LabelSmoothingCrossEntropyLoss(smoothing=0.1)
+    elif loss_name == "sord_ce":
+        criterion = OrdinalSoftCrossEntropyLoss(num_classes=num_classes, tau=1.0)
     elif loss_name == "cb_focal_ce":
         criterion = ClassBalancedFocalCELoss(
             class_counts=class_counts,
@@ -627,7 +638,7 @@ def resolve_losses_to_run() -> List[str]:
         return list(DEFAULT_LOSS_ORDER)
 
     requested = [x.strip().lower() for x in env_losses.split(",") if x.strip()]
-    invalid = [x for x in requested if x not in DEFAULT_LOSS_ORDER]
+    invalid = [x for x in requested if x not in SUPPORTED_LOSS_ORDER]
     if invalid:
         raise ValueError(f"Invalid loss names in CHESTXRAY_LOSSES: {invalid}")
     return requested
