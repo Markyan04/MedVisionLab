@@ -1,0 +1,177 @@
+DATASET: KOA
+METHOD: DenseNet169
+MODEL_KEY: densenet169
+SEED: 1234
+SCRIPT: /root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py
+RUN_TAG: koa_missing_densenet169_seed1234
+KNEE_PRETRAINED: 1
+COMMAND: /root/miniconda3/bin/python -u /root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py --model densenet169
+==========================================================================================
+Starting KOA baseline zoo training...
+Model key: densenet169
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 4090 D
+Config | seed=1234, batch_size=16, epochs=50, image_size=224, pretrained=True
+Run tag: koa_missing_densenet169_seed1234
+Class mapping from folders: {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
+
+Train samples: 5778
+  0_Normal: 2286
+  1_Doubtful: 1046
+  2_Mild: 1516
+  3_Moderate: 757
+  4_Severe: 173
+
+Valid samples: 826
+  0_Normal: 328
+  1_Doubtful: 153
+  2_Mild: 212
+  3_Moderate: 106
+  4_Severe: 27
+
+Test samples: 1656
+  0_Normal: 639
+  1_Doubtful: 296
+  2_Mild: 447
+  3_Moderate: 223
+  4_Severe: 51
+
+Split sizes | train=5778, valid=826, test=1656
+Downloading: "https://download.pytorch.org/models/densenet169-b2777c0a.pth" to /root/.cache/torch/hub/checkpoints/densenet169-b2777c0a.pth
+  0%|                                                                                                                                                            | 0.00/54.7M [00:00<?, ?B/s]  0%|▎                                                                                                                                                    | 128k/54.7M [00:00<03:43, 256kB/s]  0%|▋                                                                                                                                                    | 256k/54.7M [00:00<02:21, 404kB/s]  1%|█                                                                                                                                                    | 384k/54.7M [00:00<01:43, 553kB/s]  1%|█▋                                                                                                                                                   | 640k/54.7M [00:00<01:03, 892kB/s]  1%|██                                                                                                                                                   | 768k/54.7M [00:01<01:13, 773kB/s]  3%|████                                                                                                                                               | 1.50M/54.7M [00:01<00:25, 2.15MB/s]  3%|█████                                                                                                                                              | 1.88M/54.7M [00:01<00:22, 2.41MB/s]  5%|██████▋                                                                                                                                            | 2.50M/54.7M [00:01<00:16, 3.29MB/s]  6%|████████▍                                                                                                                                          | 3.12M/54.7M [00:01<00:13, 3.92MB/s]  7%|█████████▋                                                                                                                                         | 3.62M/54.7M [00:01<00:17, 2.98MB/s] 12%|█████████████████▊                                                                                                                                 | 6.62M/54.7M [00:02<00:07, 6.98MB/s] 15%|██████████████████████▌                                                                                                                            | 8.38M/54.7M [00:02<00:06, 7.41MB/s] 21%|██████████████████████████████▌                                                                                                                    | 11.4M/54.7M [00:02<00:04, 9.63MB/s] 26%|██████████████████████████████████████▋                                                                                                            | 14.4M/54.7M [00:02<00:03, 11.0MB/s] 29%|██████████████████████████████████████████▎                                                                                                        | 15.8M/54.7M [00:02<00:03, 11.5MB/s] 31%|██████████████████████████████████████████████                                                                                                     | 17.1M/54.7M [00:03<00:03, 12.1MB/s] 34%|█████████████████████████████████████████████████▋                                                                                                 | 18.5M/54.7M [00:03<00:03, 12.5MB/s] 36%|█████████████████████████████████████████████████████▍                                                                                             | 19.9M/54.7M [00:03<00:02, 12.9MB/s] 39%|█████████████████████████████████████████████████████████                                                                                          | 21.2M/54.7M [00:03<00:02, 13.2MB/s] 41%|████████████████████████████████████████████████████████████▊                                                                                      | 22.6M/54.7M [00:03<00:02, 13.5MB/s] 44%|████████████████████████████████████████████████████████████████▍                                                                                  | 24.0M/54.7M [00:03<00:02, 13.7MB/s] 46%|████████████████████████████████████████████████████████████████████▏                                                                              | 25.4M/54.7M [00:03<00:02, 13.8MB/s] 49%|███████████████████████████████████████████████████████████████████████▉                                                                           | 26.8M/54.7M [00:03<00:02, 13.6MB/s] 52%|███████████████████████████████████████████████████████████████████████████▉                                                                       | 28.2M/54.7M [00:03<00:01, 14.1MB/s] 54%|███████████████████████████████████████████████████████████████████████████████▌                                                                   | 29.6M/54.7M [00:03<00:01, 13.7MB/s] 57%|███████████████████████████████████████████████████████████████████████████████████▎                                                               | 31.0M/54.7M [00:04<00:01, 13.8MB/s] 59%|██████████████████████████████████████████████████████████████████████████████████████▉                                                            | 32.4M/54.7M [00:04<00:01, 13.8MB/s] 62%|██████████████████████████████████████████████████████████████████████████████████████████▋                                                        | 33.8M/54.7M [00:04<00:01, 13.9MB/s] 64%|██████████████████████████████████████████████████████████████████████████████████████████████▍                                                    | 35.1M/54.7M [00:04<00:01, 14.0MB/s] 67%|██████████████████████████████████████████████████████████████████████████████████████████████████                                                 | 36.5M/54.7M [00:04<00:01, 14.0MB/s] 69%|█████████████████████████████████████████████████████████████████████████████████████████████████████▊                                             | 37.9M/54.7M [00:04<00:01, 14.0MB/s] 72%|█████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                         | 39.2M/54.7M [00:04<00:01, 13.6MB/s] 74%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                     | 40.8M/54.7M [00:04<00:01, 14.0MB/s] 77%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                 | 42.1M/54.7M [00:04<00:00, 13.7MB/s] 80%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                             | 43.6M/54.7M [00:05<00:00, 13.9MB/s] 82%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                          | 45.0M/54.7M [00:05<00:00, 13.5MB/s] 85%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                      | 46.5M/54.7M [00:05<00:00, 13.8MB/s] 88%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                  | 47.9M/54.7M [00:05<00:00, 13.6MB/s] 90%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎              | 49.2M/54.7M [00:05<00:00, 8.60MB/s] 94%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍        | 51.5M/54.7M [00:05<00:00, 9.27MB/s] 97%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████     | 52.9M/54.7M [00:06<00:00, 10.1MB/s] 99%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊ | 54.2M/54.7M [00:06<00:00, 10.9MB/s]100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 54.7M/54.7M [00:06<00:00, 9.00MB/s]
+Display name: DenseNet169
+Trainable parameters: 12,492,805
+
+[INFO] Class counts in training set: [2286 1046 1516  757  173]
+[INFO] Using Standard CrossEntropyLoss (No class weights).
+Starting training...
+
+Epoch 01/50 | Time 0m 23s
+  Train | loss=1.3519 | top1=42.47% | top2=66.54% | top3=85.00%
+  Valid | loss=1.2362 | top1=46.39% | top2=71.39% | top3=89.66% | acc=46.73% | bal_acc=28.24% | macro_f1=0.2370 | qwk=0.4657 | mae=0.7942 | weighted_f1=0.3824 | precision_macro=0.3001 | recall_macro=0.2824
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet169_koa_koa_missing_densenet169_seed1234.pt (QWK=0.4657)
+
+Epoch 02/50 | Time 0m 21s
+  Train | loss=1.0688 | top1=55.02% | top2=78.88% | top3=95.06%
+  Valid | loss=1.0578 | top1=58.22% | top2=80.53% | top3=97.00% | acc=57.99% | bal_acc=54.92% | macro_f1=0.5111 | qwk=0.6581 | mae=0.6211 | weighted_f1=0.5064 | precision_macro=0.5263 | recall_macro=0.5492
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet169_koa_koa_missing_densenet169_seed1234.pt (QWK=0.6581)
+
+Epoch 03/50 | Time 0m 21s
+  Train | loss=0.9273 | top1=61.22% | top2=84.06% | top3=97.31%
+  Valid | loss=1.0150 | top1=57.86% | top2=79.50% | top3=97.36% | acc=57.63% | bal_acc=58.52% | macro_f1=0.5353 | qwk=0.6727 | mae=0.5884 | weighted_f1=0.5233 | precision_macro=0.5528 | recall_macro=0.5852
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet169_koa_koa_missing_densenet169_seed1234.pt (QWK=0.6727)
+
+Epoch 04/50 | Time 0m 20s
+  Train | loss=0.8748 | top1=62.79% | top2=85.50% | top3=98.17%
+  Valid | loss=0.8506 | top1=64.06% | top2=87.98% | top3=97.72% | acc=63.80% | bal_acc=63.40% | macro_f1=0.5545 | qwk=0.7666 | mae=0.4843 | weighted_f1=0.5778 | precision_macro=0.5714 | recall_macro=0.6340
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet169_koa_koa_missing_densenet169_seed1234.pt (QWK=0.7666)
+
+Epoch 05/50 | Time 0m 21s
+  Train | loss=0.8412 | top1=65.42% | top2=87.74% | top3=98.58%
+  Valid | loss=0.8806 | top1=65.12% | top2=87.19% | top3=98.56% | acc=65.01% | bal_acc=60.72% | macro_f1=0.6226 | qwk=0.7645 | mae=0.4564 | weighted_f1=0.6158 | precision_macro=0.6981 | recall_macro=0.6072
+No improvement. Bad epochs: 1/10
+
+Epoch 06/50 | Time 0m 21s
+  Train | loss=0.7826 | top1=67.02% | top2=89.23% | top3=99.10%
+  Valid | loss=0.9386 | top1=57.02% | top2=87.26% | top3=98.44% | acc=56.78% | bal_acc=67.53% | macro_f1=0.6318 | qwk=0.7552 | mae=0.5000 | weighted_f1=0.5727 | precision_macro=0.6488 | recall_macro=0.6753
+No improvement. Bad epochs: 2/10
+
+Epoch 07/50 | Time 0m 21s
+  Train | loss=0.7451 | top1=68.70% | top2=90.73% | top3=99.19%
+  Valid | loss=0.8482 | top1=61.51% | top2=88.22% | top3=98.56% | acc=61.38% | bal_acc=66.15% | macro_f1=0.6573 | qwk=0.7541 | mae=0.4734 | weighted_f1=0.6218 | precision_macro=0.6716 | recall_macro=0.6615
+No improvement. Bad epochs: 3/10
+
+Epoch 08/50 | Time 0m 21s
+  Train | loss=0.7021 | top1=70.55% | top2=91.30% | top3=99.24%
+  Valid | loss=0.9898 | top1=63.70% | top2=88.70% | top3=98.44% | acc=63.44% | bal_acc=64.14% | macro_f1=0.5814 | qwk=0.7632 | mae=0.4927 | weighted_f1=0.5777 | precision_macro=0.6099 | recall_macro=0.6414
+No improvement. Bad epochs: 4/10
+
+Epoch 09/50 | Time 0m 21s
+  Train | loss=0.6565 | top1=72.81% | top2=92.04% | top3=99.48%
+  Valid | loss=0.8885 | top1=67.48% | top2=88.70% | top3=98.80% | acc=67.31% | bal_acc=68.35% | macro_f1=0.6736 | qwk=0.8091 | mae=0.4044 | weighted_f1=0.6583 | precision_macro=0.6842 | recall_macro=0.6835
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet169_koa_koa_missing_densenet169_seed1234.pt (QWK=0.8091)
+
+Epoch 10/50 | Time 0m 21s
+  Train | loss=0.6339 | top1=73.60% | top2=93.09% | top3=99.52%
+  Valid | loss=0.8936 | top1=68.41% | top2=90.38% | top3=98.92% | acc=68.40% | bal_acc=63.83% | macro_f1=0.6664 | qwk=0.8007 | mae=0.3935 | weighted_f1=0.6647 | precision_macro=0.7303 | recall_macro=0.6383
+No improvement. Bad epochs: 1/10
+
+Epoch 11/50 | Time 0m 21s
+  Train | loss=0.5882 | top1=76.40% | top2=94.13% | top3=99.46%
+  Valid | loss=0.9909 | top1=62.69% | top2=88.27% | top3=98.85% | acc=62.71% | bal_acc=55.86% | macro_f1=0.5924 | qwk=0.7798 | mae=0.4540 | weighted_f1=0.6059 | precision_macro=0.6718 | recall_macro=0.5586
+No improvement. Bad epochs: 2/10
+
+Epoch 12/50 | Time 0m 23s
+  Train | loss=0.5393 | top1=78.69% | top2=95.06% | top3=99.65%
+  Valid | loss=1.0650 | top1=64.95% | top2=87.02% | top3=98.56% | acc=64.77% | bal_acc=65.43% | macro_f1=0.6649 | qwk=0.7804 | mae=0.4395 | weighted_f1=0.6418 | precision_macro=0.6869 | recall_macro=0.6543
+No improvement. Bad epochs: 3/10
+
+Epoch 13/50 | Time 0m 21s
+  Train | loss=0.5111 | top1=79.33% | top2=95.77% | top3=99.79%
+  Valid | loss=1.1416 | top1=64.71% | top2=86.42% | top3=98.44% | acc=64.53% | bal_acc=62.70% | macro_f1=0.6122 | qwk=0.7819 | mae=0.4516 | weighted_f1=0.6067 | precision_macro=0.6411 | recall_macro=0.6270
+No improvement. Bad epochs: 4/10
+
+Epoch 14/50 | Time 0m 21s
+  Train | loss=0.4511 | top1=82.34% | top2=96.20% | top3=99.76%
+  Valid | loss=1.1248 | top1=57.69% | top2=86.06% | top3=98.20% | acc=57.38% | bal_acc=64.75% | macro_f1=0.6362 | qwk=0.7403 | mae=0.5133 | weighted_f1=0.5826 | precision_macro=0.6517 | recall_macro=0.6475
+No improvement. Bad epochs: 5/10
+
+Epoch 15/50 | Time 0m 22s
+  Train | loss=0.4115 | top1=83.67% | top2=96.74% | top3=99.81%
+  Valid | loss=1.0982 | top1=63.10% | top2=87.50% | top3=98.80% | acc=62.83% | bal_acc=68.54% | macro_f1=0.6778 | qwk=0.7832 | mae=0.4370 | weighted_f1=0.6409 | precision_macro=0.6922 | recall_macro=0.6854
+No improvement. Bad epochs: 6/10
+
+Epoch 16/50 | Time 0m 21s
+  Train | loss=0.3743 | top1=85.53% | top2=97.27% | top3=99.84%
+  Valid | loss=1.1739 | top1=64.93% | top2=87.74% | top3=98.68% | acc=64.89% | bal_acc=62.34% | macro_f1=0.6530 | qwk=0.7680 | mae=0.4419 | weighted_f1=0.6434 | precision_macro=0.7045 | recall_macro=0.6234
+No improvement. Bad epochs: 7/10
+
+Epoch 17/50 | Time 0m 21s
+  Train | loss=0.3154 | top1=87.76% | top2=97.88% | top3=99.97%
+  Valid | loss=1.1841 | top1=62.86% | top2=87.14% | top3=98.68% | acc=62.59% | bal_acc=65.47% | macro_f1=0.6382 | qwk=0.7516 | mae=0.4794 | weighted_f1=0.6168 | precision_macro=0.6519 | recall_macro=0.6547
+No improvement. Bad epochs: 8/10
+
+Epoch 18/50 | Time 0m 21s
+  Train | loss=0.2961 | top1=88.78% | top2=97.79% | top3=99.86%
+  Valid | loss=1.3069 | top1=65.02% | top2=87.86% | top3=98.68% | acc=64.77% | bal_acc=66.62% | macro_f1=0.6438 | qwk=0.7864 | mae=0.4431 | weighted_f1=0.6293 | precision_macro=0.6429 | recall_macro=0.6662
+No improvement. Bad epochs: 9/10
+
+Epoch 19/50 | Time 0m 21s
+  Train | loss=0.2832 | top1=89.99% | top2=98.39% | top3=99.67%
+  Valid | loss=1.2837 | top1=65.26% | top2=87.14% | top3=97.72% | acc=65.01% | bal_acc=66.25% | macro_f1=0.6508 | qwk=0.7667 | mae=0.4564 | weighted_f1=0.6372 | precision_macro=0.6511 | recall_macro=0.6625
+No improvement. Bad epochs: 10/10
+Early stopping triggered.
+Training stopped early at epoch 19.
+
+Loading best model and evaluating on test set...
+Best validation QWK: 0.8091
+
+Test | loss=0.8612 | top1=67.73% | top2=89.42% | top3=99.16% | acc=67.57% | bal_acc=68.54% | macro_f1=0.6774 | qwk=0.8110 | mae=0.4040 | weighted_f1=0.6584 | precision_macro=0.6885 | recall_macro=0.6854
+     ovr_roc_auc_macro=0.8956 | ovr_pr_auc_macro=0.7451
+
+Confusion Matrix:
+[[569  54  15   1   0]
+ [173  84  33   6   0]
+ [101  71 237  38   0]
+ [  3   1  26 183  10]
+ [  0   0   1   4  46]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+    0_Normal     0.6726    0.8905    0.7663       639
+  1_Doubtful     0.4000    0.2838    0.3320       296
+      2_Mild     0.7596    0.5302    0.6245       447
+  3_Moderate     0.7888    0.8206    0.8044       223
+    4_Severe     0.8214    0.9020    0.8598        51
+
+    accuracy                         0.6757      1656
+   macro avg     0.6885    0.6854    0.6774      1656
+weighted avg     0.6676    0.6757    0.6584      1656
+
+
+Summary CSV saved: /root/autodl-tmp/MedVisionLab/Knee/logs/baseline_zoo_densenet169_koa_missing_densenet169_seed1234_20260629_165121_summary.csv
+KOA baseline zoo completed for DenseNet169.
+
+==========================================================================================
+RETURN_CODE: 0

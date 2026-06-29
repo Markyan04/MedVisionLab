@@ -1,0 +1,61 @@
+DATASET: KOA
+METHOD: ResNet50V2
+MODEL_KEY: resnet50v2
+SEED: 1234
+SCRIPT: /root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py
+RUN_TAG: koa_missing_resnet50v2_seed1234
+KNEE_PRETRAINED: 1
+COMMAND: /root/miniconda3/bin/python -u /root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py --model resnet50v2
+==========================================================================================
+Starting KOA baseline zoo training...
+Model key: resnet50v2
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 4090 D
+Config | seed=1234, batch_size=16, epochs=50, image_size=224, pretrained=True
+Run tag: koa_missing_resnet50v2_seed1234
+Class mapping from folders: {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
+
+Train samples: 5778
+  0_Normal: 2286
+  1_Doubtful: 1046
+  2_Mild: 1516
+  3_Moderate: 757
+  4_Severe: 173
+
+Valid samples: 826
+  0_Normal: 328
+  1_Doubtful: 153
+  2_Mild: 212
+  3_Moderate: 106
+  4_Severe: 27
+
+Test samples: 1656
+  0_Normal: 639
+  1_Doubtful: 296
+  2_Mild: 447
+  3_Moderate: 223
+  4_Severe: 51
+
+Split sizes | train=5778, valid=826, test=1656
+'[Errno 99] Cannot assign requested address' thrown while requesting HEAD https://huggingface.co/timm/resnetv2_50.a1h_in1k/resolve/main/model.safetensors
+Retrying in 1s [Retry 1/5].
+'[Errno 99] Cannot assign requested address' thrown while requesting HEAD https://huggingface.co/timm/resnetv2_50x1_bit.goog_distilled_in1k/resolve/main/model.safetensors
+Retrying in 1s [Retry 1/5].
+'[Errno 99] Cannot assign requested address' thrown while requesting HEAD https://huggingface.co/timm/resnetv2_50x1_bit.goog_in21k_ft_in1k/resolve/main/model.safetensors
+Retrying in 1s [Retry 1/5].
+Traceback (most recent call last):
+  File "/root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py", line 615, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py", line 499, in main
+    model, display_name = build_model(model_key, args.pretrained)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py", line 233, in build_model
+    return build_timm_model(model_key, pretrained)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py", line 226, in build_timm_model
+    raise RuntimeError(f"Could not create timm model for {display_name}. Last error: {last_error}")
+RuntimeError: Could not create timm model for ResNet50V2. Last error: Cannot send a request, as the client has been closed.
+
+==========================================================================================
+RETURN_CODE: 1

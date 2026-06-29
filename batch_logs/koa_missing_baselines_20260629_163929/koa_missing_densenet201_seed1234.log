@@ -1,0 +1,172 @@
+DATASET: KOA
+METHOD: DenseNet201
+MODEL_KEY: densenet201
+SEED: 1234
+SCRIPT: /root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py
+RUN_TAG: koa_missing_densenet201_seed1234
+KNEE_PRETRAINED: 1
+COMMAND: /root/miniconda3/bin/python -u /root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py --model densenet201
+==========================================================================================
+Starting KOA baseline zoo training...
+Model key: densenet201
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 4090 D
+Config | seed=1234, batch_size=16, epochs=50, image_size=224, pretrained=True
+Run tag: koa_missing_densenet201_seed1234
+Class mapping from folders: {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
+
+Train samples: 5778
+  0_Normal: 2286
+  1_Doubtful: 1046
+  2_Mild: 1516
+  3_Moderate: 757
+  4_Severe: 173
+
+Valid samples: 826
+  0_Normal: 328
+  1_Doubtful: 153
+  2_Mild: 212
+  3_Moderate: 106
+  4_Severe: 27
+
+Test samples: 1656
+  0_Normal: 639
+  1_Doubtful: 296
+  2_Mild: 447
+  3_Moderate: 223
+  4_Severe: 51
+
+Split sizes | train=5778, valid=826, test=1656
+Downloading: "https://download.pytorch.org/models/densenet201-c1103571.pth" to /root/.cache/torch/hub/checkpoints/densenet201-c1103571.pth
+  0%|                                                                                                                                                            | 0.00/77.4M [00:00<?, ?B/s]  0%|▏                                                                                                                                                    | 128k/77.4M [00:00<04:00, 337kB/s]  0%|▋                                                                                                                                                    | 384k/77.4M [00:00<01:30, 891kB/s]  1%|█▍                                                                                                                                                  | 768k/77.4M [00:00<00:49, 1.63MB/s]  1%|█▉                                                                                                                                                 | 1.00M/77.4M [00:00<00:52, 1.53MB/s]  3%|████▉                                                                                                                                              | 2.62M/77.4M [00:01<00:19, 3.96MB/s]  5%|███████▊                                                                                                                                           | 4.12M/77.4M [00:01<00:12, 6.22MB/s]  7%|██████████▍                                                                                                                                        | 5.50M/77.4M [00:01<00:09, 7.83MB/s]  9%|████████████▊                                                                                                                                      | 6.75M/77.4M [00:01<00:10, 7.08MB/s] 13%|██████████████████▌                                                                                                                                | 9.75M/77.4M [00:01<00:06, 11.7MB/s] 14%|█████████████████████▏                                                                                                                             | 11.1M/77.4M [00:01<00:06, 10.4MB/s] 16%|███████████████████████▌                                                                                                                           | 12.4M/77.4M [00:01<00:06, 10.6MB/s] 17%|█████████████████████████▋                                                                                                                         | 13.5M/77.4M [00:02<00:06, 9.64MB/s] 20%|████████████████████████████▋                                                                                                                      | 15.1M/77.4M [00:02<00:06, 9.95MB/s] 21%|██████████████████████████████▊                                                                                                                    | 16.2M/77.4M [00:02<00:08, 7.85MB/s] 22%|████████████████████████████████▌                                                                                                                  | 17.1M/77.4M [00:02<00:07, 8.00MB/s] 23%|██████████████████████████████████▏                                                                                                                | 18.0M/77.4M [00:02<00:08, 7.55MB/s] 24%|███████████████████████████████████▊                                                                                                               | 18.9M/77.4M [00:02<00:07, 7.74MB/s] 26%|█████████████████████████████████████▌                                                                                                             | 19.8M/77.4M [00:02<00:08, 7.34MB/s] 28%|████████████████████████████████████████▊                                                                                                          | 21.5M/77.4M [00:03<00:06, 9.76MB/s] 29%|██████████████████████████████████████████▉                                                                                                        | 22.6M/77.4M [00:03<00:06, 8.43MB/s] 31%|████████████████████████████████████████████▉                                                                                                      | 23.6M/77.4M [00:03<00:06, 8.34MB/s] 33%|████████████████████████████████████████████████▍                                                                                                  | 25.5M/77.4M [00:03<00:06, 8.45MB/s] 35%|███████████████████████████████████████████████████▌                                                                                               | 27.1M/77.4M [00:03<00:05, 10.1MB/s] 37%|██████████████████████████████████████████████████████▏                                                                                            | 28.5M/77.4M [00:03<00:04, 10.9MB/s] 38%|████████████████████████████████████████████████████████▎                                                                                          | 29.6M/77.4M [00:04<00:05, 8.81MB/s] 42%|█████████████████████████████████████████████████████████████                                                                                      | 32.1M/77.4M [00:04<00:05, 8.64MB/s] 45%|██████████████████████████████████████████████████████████████████▍                                                                                | 35.0M/77.4M [00:04<00:03, 11.6MB/s] 47%|█████████████████████████████████████████████████████████████████████                                                                              | 36.4M/77.4M [00:04<00:04, 9.24MB/s] 50%|█████████████████████████████████████████████████████████████████████████▍                                                                         | 38.6M/77.4M [00:04<00:03, 11.4MB/s] 52%|███████████████████████████████████████████████████████████████████████████▉                                                                       | 40.0M/77.4M [00:05<00:04, 9.19MB/s] 55%|█████████████████████████████████████████████████████████████████████████████████▏                                                                 | 42.8M/77.4M [00:05<00:03, 10.7MB/s] 57%|███████████████████████████████████████████████████████████████████████████████████▌                                                               | 44.0M/77.4M [00:05<00:03, 9.41MB/s] 59%|██████████████████████████████████████████████████████████████████████████████████████▍                                                            | 45.5M/77.4M [00:05<00:03, 10.3MB/s] 60%|████████████████████████████████████████████████████████████████████████████████████████▌                                                          | 46.6M/77.4M [00:05<00:03, 9.04MB/s] 62%|██████████████████████████████████████████████████████████████████████████████████████████▍                                                        | 47.6M/77.4M [00:06<00:04, 7.76MB/s] 63%|█████████████████████████████████████████████████████████████████████████████████████████████▎                                                     | 49.1M/77.4M [00:06<00:03, 8.93MB/s] 66%|█████████████████████████████████████████████████████████████████████████████████████████████████▎                                                 | 51.2M/77.4M [00:06<00:02, 11.5MB/s] 68%|████████████████████████████████████████████████████████████████████████████████████████████████████▋                                              | 53.0M/77.4M [00:06<00:02, 9.88MB/s] 70%|██████████████████████████████████████████████████████████████████████████████████████████████████████▊                                            | 54.1M/77.4M [00:06<00:02, 9.44MB/s] 72%|██████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                        | 56.0M/77.4M [00:06<00:01, 11.2MB/s] 74%|████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                      | 57.2M/77.4M [00:06<00:01, 10.9MB/s] 77%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                  | 59.2M/77.4M [00:07<00:01, 10.1MB/s] 79%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                               | 61.0M/77.4M [00:07<00:01, 11.5MB/s] 80%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                            | 62.2M/77.4M [00:07<00:01, 10.5MB/s] 82%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                          | 63.4M/77.4M [00:07<00:01, 7.67MB/s] 84%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                       | 65.0M/77.4M [00:08<00:02, 6.16MB/s] 88%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                  | 67.8M/77.4M [00:08<00:01, 8.89MB/s] 89%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                | 68.9M/77.4M [00:08<00:01, 8.86MB/s] 90%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉              | 70.0M/77.4M [00:08<00:00, 8.05MB/s] 93%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎          | 71.8M/77.4M [00:08<00:00, 8.88MB/s] 94%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏        | 72.8M/77.4M [00:08<00:00, 8.78MB/s] 95%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎      | 73.9M/77.4M [00:09<00:00, 7.72MB/s] 97%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████     | 74.8M/77.4M [00:09<00:00, 7.21MB/s] 99%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████ | 76.9M/77.4M [00:09<00:00, 9.97MB/s]100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 77.4M/77.4M [00:09<00:00, 8.67MB/s]
+Display name: DenseNet201
+Trainable parameters: 18,102,533
+
+[INFO] Class counts in training set: [2286 1046 1516  757  173]
+[INFO] Using Standard CrossEntropyLoss (No class weights).
+Starting training...
+
+Epoch 01/50 | Time 0m 28s
+  Train | loss=1.3423 | top1=42.28% | top2=67.20% | top3=85.27%
+  Valid | loss=1.2306 | top1=47.96% | top2=73.20% | top3=89.42% | acc=48.31% | bal_acc=28.83% | macro_f1=0.2434 | qwk=0.4591 | mae=0.7918 | weighted_f1=0.3901 | precision_macro=0.2842 | recall_macro=0.2883
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet201_koa_koa_missing_densenet201_seed1234.pt (QWK=0.4591)
+
+Epoch 02/50 | Time 0m 26s
+  Train | loss=1.0509 | top1=55.61% | top2=79.39% | top3=95.46%
+  Valid | loss=0.9539 | top1=59.88% | top2=83.05% | top3=96.88% | acc=59.81% | bal_acc=58.45% | macro_f1=0.5486 | qwk=0.6814 | mae=0.5908 | weighted_f1=0.5306 | precision_macro=0.6583 | recall_macro=0.5845
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet201_koa_koa_missing_densenet201_seed1234.pt (QWK=0.6814)
+
+Epoch 03/50 | Time 0m 26s
+  Train | loss=0.9027 | top1=62.36% | top2=84.53% | top3=97.74%
+  Valid | loss=0.9614 | top1=62.12% | top2=85.62% | top3=98.25% | acc=61.99% | bal_acc=59.30% | macro_f1=0.5713 | qwk=0.7337 | mae=0.5194 | weighted_f1=0.5528 | precision_macro=0.6197 | recall_macro=0.5930
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet201_koa_koa_missing_densenet201_seed1234.pt (QWK=0.7337)
+
+Epoch 04/50 | Time 0m 26s
+  Train | loss=0.8639 | top1=63.43% | top2=86.50% | top3=98.45%
+  Valid | loss=0.9943 | top1=60.22% | top2=83.89% | top3=97.36% | acc=59.93% | bal_acc=60.66% | macro_f1=0.6100 | qwk=0.7406 | mae=0.5000 | weighted_f1=0.5897 | precision_macro=0.6568 | recall_macro=0.6066
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet201_koa_koa_missing_densenet201_seed1234.pt (QWK=0.7406)
+
+Epoch 05/50 | Time 0m 26s
+  Train | loss=0.8234 | top1=65.42% | top2=87.91% | top3=98.72%
+  Valid | loss=0.8241 | top1=65.26% | top2=88.34% | top3=98.68% | acc=65.01% | bal_acc=67.86% | macro_f1=0.6494 | qwk=0.7708 | mae=0.4552 | weighted_f1=0.6231 | precision_macro=0.6479 | recall_macro=0.6786
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet201_koa_koa_missing_densenet201_seed1234.pt (QWK=0.7708)
+
+Epoch 06/50 | Time 0m 26s
+  Train | loss=0.7794 | top1=67.52% | top2=89.71% | top3=98.81%
+  Valid | loss=0.8520 | top1=66.83% | top2=89.06% | top3=99.04% | acc=66.59% | bal_acc=64.29% | macro_f1=0.6305 | qwk=0.7877 | mae=0.4249 | weighted_f1=0.6405 | precision_macro=0.6673 | recall_macro=0.6429
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet201_koa_koa_missing_densenet201_seed1234.pt (QWK=0.7877)
+
+Epoch 07/50 | Time 0m 26s
+  Train | loss=0.7429 | top1=68.51% | top2=90.19% | top3=99.12%
+  Valid | loss=0.9561 | top1=61.71% | top2=85.99% | top3=98.80% | acc=61.50% | bal_acc=66.07% | macro_f1=0.6679 | qwk=0.7985 | mae=0.4334 | weighted_f1=0.6275 | precision_macro=0.7124 | recall_macro=0.6607
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet201_koa_koa_missing_densenet201_seed1234.pt (QWK=0.7985)
+
+Epoch 08/50 | Time 0m 26s
+  Train | loss=0.6928 | top1=71.20% | top2=91.90% | top3=99.22%
+  Valid | loss=0.8506 | top1=67.12% | top2=89.83% | top3=99.16% | acc=66.95% | bal_acc=66.45% | macro_f1=0.6803 | qwk=0.8216 | mae=0.3862 | weighted_f1=0.6667 | precision_macro=0.7003 | recall_macro=0.6645
+Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_densenet201_koa_koa_missing_densenet201_seed1234.pt (QWK=0.8216)
+
+Epoch 09/50 | Time 0m 26s
+  Train | loss=0.6428 | top1=73.36% | top2=92.85% | top3=99.45%
+  Valid | loss=0.8956 | top1=65.24% | top2=88.15% | top3=98.80% | acc=65.13% | bal_acc=65.84% | macro_f1=0.6580 | qwk=0.7873 | mae=0.4334 | weighted_f1=0.6454 | precision_macro=0.6798 | recall_macro=0.6584
+No improvement. Bad epochs: 1/10
+
+Epoch 10/50 | Time 0m 26s
+  Train | loss=0.5978 | top1=75.50% | top2=93.97% | top3=99.62%
+  Valid | loss=1.0859 | top1=63.37% | top2=86.47% | top3=98.49% | acc=63.32% | bal_acc=59.25% | macro_f1=0.6308 | qwk=0.7785 | mae=0.4455 | weighted_f1=0.6306 | precision_macro=0.6975 | recall_macro=0.5925
+No improvement. Bad epochs: 2/10
+
+Epoch 11/50 | Time 0m 26s
+  Train | loss=0.5685 | top1=76.54% | top2=94.42% | top3=99.65%
+  Valid | loss=0.9856 | top1=58.82% | top2=88.87% | top3=98.68% | acc=58.60% | bal_acc=64.56% | macro_f1=0.6408 | qwk=0.7575 | mae=0.4831 | weighted_f1=0.6012 | precision_macro=0.6629 | recall_macro=0.6456
+No improvement. Bad epochs: 3/10
+
+Epoch 12/50 | Time 0m 25s
+  Train | loss=0.5145 | top1=79.23% | top2=95.13% | top3=99.74%
+  Valid | loss=1.2015 | top1=65.55% | top2=85.58% | top3=98.20% | acc=65.38% | bal_acc=63.32% | macro_f1=0.6046 | qwk=0.7825 | mae=0.4431 | weighted_f1=0.6074 | precision_macro=0.6396 | recall_macro=0.6332
+No improvement. Bad epochs: 4/10
+
+Epoch 13/50 | Time 0m 26s
+  Train | loss=0.4754 | top1=81.09% | top2=95.77% | top3=99.81%
+  Valid | loss=1.2717 | top1=65.07% | top2=87.55% | top3=98.68% | acc=64.89% | bal_acc=61.93% | macro_f1=0.6148 | qwk=0.7713 | mae=0.4576 | weighted_f1=0.6017 | precision_macro=0.6691 | recall_macro=0.6193
+No improvement. Bad epochs: 5/10
+
+Epoch 14/50 | Time 0m 26s
+  Train | loss=0.4341 | top1=82.87% | top2=96.65% | top3=99.71%
+  Valid | loss=1.3131 | top1=62.12% | top2=86.75% | top3=97.45% | acc=62.35% | bal_acc=56.03% | macro_f1=0.5810 | qwk=0.7490 | mae=0.4915 | weighted_f1=0.5956 | precision_macro=0.6538 | recall_macro=0.5603
+No improvement. Bad epochs: 6/10
+
+Epoch 15/50 | Time 0m 26s
+  Train | loss=0.3893 | top1=84.84% | top2=97.38% | top3=99.69%
+  Valid | loss=1.1003 | top1=63.65% | top2=87.74% | top3=98.20% | acc=63.68% | bal_acc=63.51% | macro_f1=0.6556 | qwk=0.7828 | mae=0.4383 | weighted_f1=0.6433 | precision_macro=0.6903 | recall_macro=0.6351
+No improvement. Bad epochs: 7/10
+
+Epoch 16/50 | Time 0m 27s
+  Train | loss=0.3187 | top1=88.09% | top2=97.63% | top3=99.72%
+  Valid | loss=1.2280 | top1=63.56% | top2=87.02% | top3=98.20% | acc=63.44% | bal_acc=65.72% | macro_f1=0.6624 | qwk=0.7504 | mae=0.4758 | weighted_f1=0.6318 | precision_macro=0.6685 | recall_macro=0.6572
+No improvement. Bad epochs: 8/10
+
+Epoch 17/50 | Time 0m 25s
+  Train | loss=0.3035 | top1=88.52% | top2=97.95% | top3=99.97%
+  Valid | loss=1.4115 | top1=63.39% | top2=85.02% | top3=98.56% | acc=63.20% | bal_acc=64.61% | macro_f1=0.6234 | qwk=0.7709 | mae=0.4673 | weighted_f1=0.6128 | precision_macro=0.6212 | recall_macro=0.6461
+No improvement. Bad epochs: 9/10
+
+Epoch 18/50 | Time 0m 26s
+  Train | loss=0.2662 | top1=89.92% | top2=98.33% | top3=99.98%
+  Valid | loss=1.3092 | top1=63.32% | top2=86.42% | top3=98.56% | acc=63.20% | bal_acc=65.87% | macro_f1=0.6592 | qwk=0.7634 | mae=0.4649 | weighted_f1=0.6302 | precision_macro=0.6603 | recall_macro=0.6587
+No improvement. Bad epochs: 10/10
+Early stopping triggered.
+Training stopped early at epoch 18.
+
+Loading best model and evaluating on test set...
+Best validation QWK: 0.8216
+
+Test | loss=0.7694 | top1=68.69% | top2=90.99% | top3=98.92% | acc=68.60% | bal_acc=68.26% | macro_f1=0.6916 | qwk=0.8377 | mae=0.3635 | weighted_f1=0.6817 | precision_macro=0.7048 | recall_macro=0.6826
+     ovr_roc_auc_macro=0.9080 | ovr_pr_auc_macro=0.7458
+
+Confusion Matrix:
+[[541  77  21   0   0]
+ [134 106  54   2   0]
+ [ 49  95 269  34   0]
+ [  1   7  31 179   5]
+ [  0   0   1   9  41]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+    0_Normal     0.7462    0.8466    0.7933       639
+  1_Doubtful     0.3719    0.3581    0.3649       296
+      2_Mild     0.7154    0.6018    0.6537       447
+  3_Moderate     0.7991    0.8027    0.8009       223
+    4_Severe     0.8913    0.8039    0.8454        51
+
+    accuracy                         0.6860      1656
+   macro avg     0.7048    0.6826    0.6916      1656
+weighted avg     0.6826    0.6860    0.6817      1656
+
+
+Summary CSV saved: /root/autodl-tmp/MedVisionLab/Knee/logs/baseline_zoo_densenet201_koa_missing_densenet201_seed1234_20260629_165940_summary.csv
+KOA baseline zoo completed for DenseNet201.
+
+==========================================================================================
+RETURN_CODE: 0
