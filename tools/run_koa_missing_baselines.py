@@ -83,8 +83,9 @@ def python_command(args: argparse.Namespace, model_key: str) -> List[str]:
     base = ["python", "-u", str(TRAIN_SCRIPT), "--model", model_key]
     if args.no_pretrained:
         base.append("--no-pretrained")
-    if args.conda_env:
-        return ["conda", "run", "-n", args.conda_env] + base
+    conda_env = (args.conda_env or "").strip()
+    if conda_env and conda_env.lower() not in {"none", "null", "false", "0"}:
+        return ["conda", "run", "-n", conda_env] + base
     return [args.python, "-u", str(TRAIN_SCRIPT), "--model", model_key] + (["--no-pretrained"] if args.no_pretrained else [])
 
 
