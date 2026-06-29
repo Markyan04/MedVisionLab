@@ -1,0 +1,24 @@
+DATASET: KOA
+METHOD: ResNet50 + Label Smoothing
+SEED: 42
+SCRIPT: /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline_loss_compare.py
+RUN_TAG: loss_comparison_koa_resnet50_plus_label_smoothing_seed42
+KNEE_LOSS: label_smoothing_ce
+LOSS: label_smoothing_ce
+LABEL_SMOOTHING: 0.1
+SORD_TAU: 1.0
+COMMAND: /root/miniconda3/bin/python -u /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline_loss_compare.py
+==========================================================================================
+Starting Knee Osteoarthritis ResNet50 loss comparison: Label Smoothing CE
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 4090 D
+Run tag: loss_comparison_koa_resnet50_plus_label_smoothing_seed42
+Traceback (most recent call last):
+  File "/root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline_loss_compare.py", line 358, in <module>
+    main()
+  File "/root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline_loss_compare.py", line 141, in main
+    raise FileNotFoundError(f"DATA_ROOT not found: {base.DATA_ROOT}")
+FileNotFoundError: DATA_ROOT not found: /root/autodl-tmp/MedVisionLab/Knee_Osteoarthritis
+
+==========================================================================================
+RETURN_CODE: 1

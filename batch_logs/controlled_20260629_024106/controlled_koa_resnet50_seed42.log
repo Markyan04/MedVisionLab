@@ -1,0 +1,15 @@
+DATASET: KOA
+METHOD: ResNet50
+SEED: 42
+SCRIPT: /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline.py
+RUN_TAG: controlled_koa_resnet50_seed42
+LABEL_SMOOTHING: 0.1
+SORD_TAU: 1.0
+COMMAND: conda run -n Paper python -u /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline.py
+==========================================================================================
+
+EnvironmentLocationNotFound: Not a conda environment: /root/miniconda3/envs/Paper
+
+
+==========================================================================================
+RETURN_CODE: 1

@@ -2,22 +2,32 @@
 \toprule
 Dataset & Method & ACC (\%) & Macro-F1 & n \\
 \midrule
-ADNI & ResNet50 & 94.45 & 0.9248 & 1 \\
-ADNI & ResNet50 + DAST & 92.64 $\pm$ 0.44 & 0.8838 $\pm$ 0.0328 & 8 \\
-ADNI & ResNet50 + MESC & 98.59 $\pm$ 0.00 & 0.9833 $\pm$ 0.0066 & 2 \\
-ADNI & ResNet50 + MESC + DAST & 98.71 $\pm$ 0.28 & 0.9745 $\pm$ 0.0101 & 2 \\
-Brain Tumor MRI & ResNet50 & 94.91 $\pm$ 0.50 & 0.9480 $\pm$ 0.0050 & 73 \\
-Brain Tumor MRI & ResNet50 + DAST & 94.99 $\pm$ 0.38 & 0.9488 $\pm$ 0.0040 & 12 \\
-Brain Tumor MRI & ResNet50 + MESC & 94.86 $\pm$ 0.50 & 0.9475 $\pm$ 0.0050 & 31 \\
-Brain Tumor MRI & ResNet50 + MESC + DAST & 95.17 $\pm$ 0.34 & 0.9506 $\pm$ 0.0034 & 19 \\
-Chest X-ray Image & ResNet50 & 96.67 $\pm$ 0.42 & 0.9667 $\pm$ 0.0050 & 30 \\
-Chest X-ray Image & ResNet50 + DAST & 96.72 $\pm$ 0.45 & 0.9690 $\pm$ 0.0047 & 5 \\
-Chest X-ray Image & ResNet50 + MESC & 96.52 $\pm$ 0.40 & 0.9652 $\pm$ 0.0052 & 15 \\
-Chest X-ray Image & ResNet50 + MESC + DAST & 96.39 $\pm$ 0.16 & 0.9657 $\pm$ 0.0033 & 2 \\
-HAM10000 & ResNet50 & 87.33 $\pm$ 1.82 & 0.7757 $\pm$ 0.0368 & 91 \\
-HAM10000 & ResNet50 + DAST & 87.12 $\pm$ 2.06 & 0.7651 $\pm$ 0.0491 & 16 \\
-HAM10000 & ResNet50 + MESC & 86.74 $\pm$ 1.72 & 0.7673 $\pm$ 0.0466 & 41 \\
-HAM10000 & ResNet50 + MESC + DAST & 87.74 $\pm$ 0.97 & 0.7943 $\pm$ 0.0361 & 21 \\
-KOA & ResNet50 + DAST & 67.03 & 0.6691 & 1 \\
+ADNI & ResNet50 & 91.53 $\pm$ 0.84 & 0.8930 $\pm$ 0.0197 & 5 \\
+ADNI & ResNet50 + DAST & 89.80 $\pm$ 1.66 & 0.7817 $\pm$ 0.0768 & 5 \\
+ADNI & ResNet50 + Label Smoothing & 93.48 $\pm$ 1.15 & 0.9129 $\pm$ 0.0105 & 5 \\
+ADNI & ResNet50 + MESC & 98.53 $\pm$ 0.26 & 0.9829 $\pm$ 0.0049 & 5 \\
+ADNI & ResNet50 + MESC + DAST & 98.28 $\pm$ 0.45 & 0.9808 $\pm$ 0.0084 & 5 \\
+ADNI & ResNet50 + SORD-CE & 88.33 $\pm$ 1.55 & 0.8442 $\pm$ 0.0317 & 5 \\
+Brain Tumor MRI & ResNet50 & 95.04 $\pm$ 0.36 & 0.9493 $\pm$ 0.0037 & 18 \\
+Brain Tumor MRI & ResNet50 + DAST & 95.07 $\pm$ 0.36 & 0.9496 $\pm$ 0.0037 & 17 \\
+Brain Tumor MRI & ResNet50 + MESC & 94.85 $\pm$ 0.42 & 0.9472 $\pm$ 0.0044 & 5 \\
+Brain Tumor MRI & ResNet50 + MESC + DAST & 95.19 $\pm$ 0.32 & 0.9509 $\pm$ 0.0033 & 24 \\
+Brain Tumor MRI & ResNet50 + layer3 mesc & 95.00 $\pm$ 0.42 & 0.9490 $\pm$ 0.0044 & 11 \\
+Chest X-ray Image & ResNet50 & 96.45 $\pm$ 0.43 & 0.9643 $\pm$ 0.0052 & 15 \\
+Chest X-ray Image & ResNet50 + DAST & 96.56 $\pm$ 0.39 & 0.9665 $\pm$ 0.0047 & 9 \\
+Chest X-ray Image & ResNet50 + MESC & 96.78 $\pm$ 0.18 & 0.9670 $\pm$ 0.0022 & 4 \\
+Chest X-ray Image & ResNet50 + MESC + DAST & 96.48 $\pm$ 0.43 & 0.9658 $\pm$ 0.0047 & 6 \\
+Chest X-ray Image & ResNet50 + layer3 mesc & 96.68 $\pm$ 0.26 & 0.9680 $\pm$ 0.0021 & 5 \\
+HAM10000 & ResNet50 & 86.94 $\pm$ 2.33 & 0.7808 $\pm$ 0.0325 & 24 \\
+HAM10000 & ResNet50 + DAST & 87.93 $\pm$ 1.51 & 0.7803 $\pm$ 0.0369 & 19 \\
+HAM10000 & ResNet50 + MESC & 88.69 $\pm$ 1.29 & 0.7954 $\pm$ 0.0215 & 5 \\
+HAM10000 & ResNet50 + MESC + DAST & 87.82 $\pm$ 1.05 & 0.7934 $\pm$ 0.0359 & 26 \\
+HAM10000 & ResNet50 + layer3 mesc & 86.08 $\pm$ 2.32 & 0.7774 $\pm$ 0.0311 & 11 \\
+KOA & ResNet50 & 66.80 $\pm$ 2.33 & 0.6673 $\pm$ 0.0058 & 5 \\
+KOA & ResNet50 + DAST & 67.18 $\pm$ 1.15 & 0.6801 $\pm$ 0.0105 & 5 \\
+KOA & ResNet50 + Label Smoothing & 66.79 $\pm$ 1.58 & 0.6489 $\pm$ 0.0247 & 5 \\
+KOA & ResNet50 + MESC & 67.20 $\pm$ 2.03 & 0.6796 $\pm$ 0.0178 & 5 \\
+KOA & ResNet50 + MESC + DAST & 68.14 $\pm$ 0.89 & 0.6870 $\pm$ 0.0110 & 5 \\
+KOA & ResNet50 + SORD-CE & 67.32 $\pm$ 0.59 & 0.6813 $\pm$ 0.0100 & 5 \\
 \bottomrule
 \end{tabular}
