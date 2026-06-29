@@ -1,0 +1,53 @@
+DATASET: KOA
+METHOD: ResNet50 + layer3 se
+SEED: 42
+ATTENTION: se
+LOSS: ce
+COMMAND: /root/miniconda3/bin/python /root/autodl-tmp/MedVisionLab/tools/train_layer3_attention.py --dataset koa --attention se --loss ce --seed 42 --run-tag attention_koa_se_ce_seed42
+==========================================================================================
+Starting ResNet50 layer3 se + CE on KOA...
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 4090 D
+Run tag: attention_koa_se_ce_seed42
+Config | seed=42, batch_size=32, epochs=50, image_size=224
+Class mapping from folders: {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
+
+Train samples: 5778
+Train class distribution:
+  0_Normal: 2286
+  1_Doubtful: 1046
+  2_Mild: 1516
+  3_Moderate: 757
+  4_Severe: 173
+
+Valid samples: 826
+Valid class distribution:
+  0_Normal: 328
+  1_Doubtful: 153
+  2_Mild: 212
+  3_Moderate: 106
+  4_Severe: 27
+
+Test samples: 1656
+Test class distribution:
+  0_Normal: 639
+  1_Doubtful: 296
+  2_Mild: 447
+  3_Moderate: 223
+  4_Severe: 51
+
+AutoTest samples: 1526
+AutoTest class distribution:
+  0_Normal: 604
+  1_Doubtful: 275
+  2_Mild: 403
+  3_Moderate: 200
+  4_Severe: 44
+
+Split sizes | train=5778, valid=826, test=1656, auto_test=1526
+Loading ResNet50 with se module at layer3...
+Trainable parameters: 23,650,437
+
+[INFO] Class counts in training set: [2286 1046 1516  757  173]
+[INFO] Using Standard CrossEntropyLoss (No class weights).
+Starting training...

@@ -1,0 +1,15 @@
+DATASET: KOA
+METHOD: Inception V3
+MODEL_KEY: inception_v3
+SEED: 1234
+SCRIPT: /root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py
+RUN_TAG: koa_missing_inception_v3_seed1234
+KNEE_PRETRAINED: 1
+COMMAND: conda run -n none python -u /root/autodl-tmp/MedVisionLab/Knee/train_baseline_zoo.py --model inception_v3
+==========================================================================================
+
+EnvironmentLocationNotFound: Not a conda environment: /root/miniconda3/envs/none
+
+
+==========================================================================================
+RETURN_CODE: 1

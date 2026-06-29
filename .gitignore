@@ -28,4 +28,7 @@ test.py
 gradcam_class_exports_pytorch_grad_cam/
 gradcam_outputs*
 *.csv
-Alzheimer_MRI/
+Alzheimer_MRI/*.zip
+.ipynb_checkpoints/
+*.zip
+.ipynb_checkpoints/
