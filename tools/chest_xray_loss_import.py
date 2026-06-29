@@ -19,8 +19,6 @@ if str(PROJECT_ROOT) not in sys.path:
 
 
 def run_chest_attention(args, module_factory) -> None:
-    from chest_xray_loss_experiment_common import ResNet50WithInsertedModule, run_chestxray_medical_losses_experiments
-
     os.environ["CHESTXRAY_LOSSES"] = args.loss
     os.environ["CHESTXRAY_RUN_TAG"] = args.run_tag
     if args.seed is not None:
@@ -38,6 +36,8 @@ def run_chest_attention(args, module_factory) -> None:
         os.environ["CHESTXRAY_PATIENCE"] = str(args.patience)
     if args.early_delta is not None:
         os.environ["CHESTXRAY_EARLY_DELTA"] = str(args.early_delta)
+
+    from chest_xray_loss_experiment_common import ResNet50WithInsertedModule, run_chestxray_medical_losses_experiments
 
     def build_model(num_classes: int):
         return ResNet50WithInsertedModule(num_classes, module_factory(args.attention, 1024), "layer3")

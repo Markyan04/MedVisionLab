@@ -282,9 +282,8 @@ def run_koa(args: argparse.Namespace) -> None:
 
 
 def run_ham10000(args: argparse.Namespace) -> None:
-    from HAM10000_Loss.ham10000_loss_experiment_common import ResNet50WithInsertedModule, run_ham10000_medical_losses_experiments
-
     set_common_env("HAM10000", args)
+    from HAM10000_Loss.ham10000_loss_experiment_common import ResNet50WithInsertedModule, run_ham10000_medical_losses_experiments
 
     def build_model(num_classes: int):
         return ResNet50WithInsertedModule(num_classes, build_attention_module(args.attention, 1024), "layer3")
@@ -299,9 +298,8 @@ def run_ham10000(args: argparse.Namespace) -> None:
 
 
 def run_adni(args: argparse.Namespace) -> None:
-    from Alzheimer_MRI_Loss.alzheimer_mri_loss_experiment_common import ResNet50WithInsertedModule, run_alzheimer_mri_medical_losses_experiments
-
     set_common_env("ALZHEIMER", args)
+    from Alzheimer_MRI_Loss.alzheimer_mri_loss_experiment_common import ResNet50WithInsertedModule, run_alzheimer_mri_medical_losses_experiments
 
     def build_model(num_classes: int):
         return ResNet50WithInsertedModule(num_classes, build_attention_module(args.attention, 1024), "layer3")
@@ -316,9 +314,8 @@ def run_adni(args: argparse.Namespace) -> None:
 
 
 def run_brain(args: argparse.Namespace) -> None:
-    from Brain_Tumor_MRI_Loss.brain_tumor_mri_loss_experiment_common import ResNet50WithInsertedModule, run_brain_tumor_mri_medical_losses_experiments
-
     set_common_env("BRAIN_MRI", args)
+    from Brain_Tumor_MRI_Loss.brain_tumor_mri_loss_experiment_common import ResNet50WithInsertedModule, run_brain_tumor_mri_medical_losses_experiments
 
     def build_model(num_classes: int):
         return ResNet50WithInsertedModule(num_classes, build_attention_module(args.attention, 1024), "layer3")

@@ -349,10 +349,21 @@ def record_identity(rec: Dict[str, object], identity: str) -> Tuple[str, str, st
     )
 
 
-def record_preference(rec: Dict[str, object]) -> Tuple[int, int]:
+def source_mtime(rec: Dict[str, object]) -> float:
+    source = str(rec.get("source") or "")
+    if not source:
+        return 0.0
+    try:
+        return Path(source).stat().st_mtime
+    except OSError:
+        return 0.0
+
+
+def record_preference(rec: Dict[str, object]) -> Tuple[int, int, float]:
     return (
         1 if rec.get("run_tag") else 0,
         1 if str(rec.get("source", "")).lower().endswith("_summary.csv") else 0,
+        source_mtime(rec),
     )
 
 
