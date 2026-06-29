@@ -32,3 +32,4 @@ Alzheimer_MRI/*.zip
 .ipynb_checkpoints/
 *.zip
 .ipynb_checkpoints/
+/Alzheimer_MRI
