@@ -1,0 +1,247 @@
+DATASET: KOA
+METHOD: ResNet50 + DAST
+SEED: 42
+SCRIPT: /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline+Loss4.py
+RUN_TAG: dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42
+DAST_TAU: 0.5
+DAST_GAMMA: 1.5
+COMMAND: /root/miniconda3/bin/python -u /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline+Loss4.py
+==========================================================================================
+Starting Knee Osteoarthritis ResNet50 Baseline...
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 3090
+Run tag: dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42
+Data root: /root/autodl-tmp/knee-osteoarthritis
+Config | seed=42, img_size=224, batch_size=32, epochs=60, num_workers=2, lr_backbone=0.0001, lr_head=0.001, weight_decay=0.0001, patience=15, early_delta=0.0001
+DAST config | tau=0.5000, gamma=1.5000
+Class mapping from folders: {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
+
+Train samples: 5778
+Train class distribution:
+  0_Normal: 2286
+  1_Doubtful: 1046
+  2_Mild: 1516
+  3_Moderate: 757
+  4_Severe: 173
+
+Valid samples: 826
+Valid class distribution:
+  0_Normal: 328
+  1_Doubtful: 153
+  2_Mild: 212
+  3_Moderate: 106
+  4_Severe: 27
+
+Test samples: 1656
+Test class distribution:
+  0_Normal: 639
+  1_Doubtful: 296
+  2_Mild: 447
+  3_Moderate: 223
+  4_Severe: 51
+
+AutoTest samples: 1526
+AutoTest class distribution:
+  0_Normal: 604
+  1_Doubtful: 275
+  2_Mild: 403
+  3_Moderate: 200
+  4_Severe: 44
+
+Split sizes | train=5778, valid=826, test=1656, auto_test=1526
+Loading pretrained ResNet50...
+Downloading: "https://download.pytorch.org/models/resnet50-11ad3fa6.pth" to /root/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth
+  0%|                                                                                                                                                     | 0.00/97.8M [00:00<?, ?B/s]  0%|▏                                                                                                                                             | 128k/97.8M [00:00<02:19, 733kB/s]  0%|▌                                                                                                                                            | 384k/97.8M [00:00<01:09, 1.48MB/s]  1%|█▍                                                                                                                                          | 1.00M/97.8M [00:00<00:31, 3.19MB/s]  3%|███▌                                                                                                                                        | 2.50M/97.8M [00:00<00:13, 7.29MB/s]  6%|████████▌                                                                                                                                   | 6.00M/97.8M [00:00<00:05, 16.6MB/s] 10%|█████████████▊                                                                                                                              | 9.62M/97.8M [00:00<00:03, 23.1MB/s] 12%|█████████████████▏                                                                                                                          | 12.0M/97.8M [00:00<00:04, 18.4MB/s] 15%|████████████████████▊                                                                                                                       | 14.5M/97.8M [00:01<00:04, 20.3MB/s] 17%|███████████████████████▉                                                                                                                    | 16.8M/97.8M [00:01<00:05, 14.2MB/s] 20%|████████████████████████████▎                                                                                                               | 19.8M/97.8M [00:01<00:04, 17.6MB/s] 24%|█████████████████████████████████▋                                                                                                          | 23.5M/97.8M [00:01<00:03, 22.3MB/s] 27%|█████████████████████████████████████▍                                                                                                      | 26.1M/97.8M [00:01<00:04, 17.7MB/s] 29%|████████████████████████████████████████▍                                                                                                   | 28.2M/97.8M [00:01<00:04, 17.1MB/s] 31%|███████████████████████████████████████████▎                                                                                                | 30.2M/97.8M [00:02<00:04, 17.2MB/s] 33%|█████████████████████████████████████████████▉                                                                                              | 32.1M/97.8M [00:02<00:03, 17.3MB/s] 35%|████████████████████████████████████████████████▋                                                                                           | 34.0M/97.8M [00:02<00:03, 17.5MB/s] 37%|███████████████████████████████████████████████████▎                                                                                        | 35.9M/97.8M [00:02<00:03, 17.6MB/s] 39%|██████████████████████████████████████████████████████                                                                                      | 37.8M/97.8M [00:02<00:03, 17.6MB/s] 40%|████████████████████████████████████████████████████████▌                                                                                   | 39.5M/97.8M [00:02<00:03, 17.7MB/s] 42%|███████████████████████████████████████████████████████████                                                                                 | 41.2M/97.8M [00:02<00:03, 17.7MB/s] 44%|█████████████████████████████████████████████████████████████▌                                                                              | 43.0M/97.8M [00:02<00:03, 17.7MB/s] 46%|████████████████████████████████████████████████████████████████                                                                            | 44.8M/97.8M [00:02<00:03, 17.8MB/s] 48%|██████████████████████████████████████████████████████████████████▌                                                                         | 46.5M/97.8M [00:02<00:03, 17.8MB/s] 49%|█████████████████████████████████████████████████████████████████████                                                                       | 48.2M/97.8M [00:03<00:02, 17.8MB/s] 51%|███████████████████████████████████████████████████████████████████████▌                                                                    | 50.0M/97.8M [00:03<00:02, 17.8MB/s] 53%|██████████████████████████████████████████████████████████████████████████                                                                  | 51.8M/97.8M [00:03<00:02, 17.8MB/s] 55%|████████████████████████████████████████████████████████████████████████████▌                                                               | 53.5M/97.8M [00:03<00:02, 17.6MB/s] 57%|███████████████████████████████████████████████████████████████████████████████▎                                                            | 55.4M/97.8M [00:03<00:02, 17.8MB/s] 58%|█████████████████████████████████████████████████████████████████████████████████▊                                                          | 57.1M/97.8M [00:03<00:02, 17.8MB/s] 60%|████████████████████████████████████████████████████████████████████████████████████▎                                                       | 58.9M/97.8M [00:03<00:02, 17.8MB/s] 62%|██████████████████████████████████████████████████████████████████████████████████████▊                                                     | 60.6M/97.8M [00:03<00:02, 17.8MB/s] 64%|█████████████████████████████████████████████████████████████████████████████████████████▎                                                  | 62.4M/97.8M [00:03<00:02, 17.8MB/s] 66%|███████████████████████████████████████████████████████████████████████████████████████████▊                                                | 64.1M/97.8M [00:04<00:01, 17.8MB/s] 67%|██████████████████████████████████████████████████████████████████████████████████████████████▎                                             | 65.9M/97.8M [00:04<00:01, 17.8MB/s] 69%|████████████████████████████████████████████████████████████████████████████████████████████████▊                                           | 67.6M/97.8M [00:04<00:01, 17.8MB/s] 71%|███████████████████████████████████████████████████████████████████████████████████████████████████▎                                        | 69.4M/97.8M [00:04<00:01, 17.8MB/s] 73%|█████████████████████████████████████████████████████████████████████████████████████████████████████▊                                      | 71.1M/97.8M [00:04<00:01, 17.8MB/s] 75%|████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                   | 72.9M/97.8M [00:04<00:01, 17.8MB/s] 76%|██████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                 | 74.6M/97.8M [00:04<00:01, 17.8MB/s] 78%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                              | 76.4M/97.8M [00:04<00:01, 17.8MB/s] 80%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                            | 78.1M/97.8M [00:04<00:01, 17.8MB/s] 82%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                         | 79.9M/97.8M [00:04<00:01, 17.7MB/s] 83%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                       | 81.6M/97.8M [00:05<00:00, 17.8MB/s] 85%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                    | 83.4M/97.8M [00:05<00:00, 17.8MB/s] 87%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                  | 85.1M/97.8M [00:05<00:00, 17.8MB/s] 89%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎               | 86.9M/97.8M [00:05<00:00, 17.8MB/s] 91%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉             | 88.6M/97.8M [00:05<00:00, 17.8MB/s] 92%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍          | 90.4M/97.8M [00:05<00:00, 17.8MB/s] 94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏       | 92.4M/97.8M [00:05<00:00, 18.6MB/s] 97%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋    | 94.8M/97.8M [00:05<00:00, 20.4MB/s]100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊| 97.6M/97.8M [00:05<00:00, 23.1MB/s]100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 97.8M/97.8M [00:05<00:00, 17.5MB/s]
+Trainable parameters: 23,518,277
+
+[INFO] Class counts in training set: [2286 1046 1516  757  173]
+
+[INFO] Using Distance-Aware Soft Target Loss (DAST)
+       - Feature: Clinically-aware ordinal grading
+       - Behavior: Allows ambiguity for adjacent grades, strongly penalizes far-away mistakes
+Starting training...
+
+Epoch 01/60 | Time 0m 14s
+  Train | loss=1.0007 | top1=37.95% | top2=62.63% | top3=82.54%
+  Valid | loss=0.9601 | top1=39.54% | top2=66.47% | top3=83.17% | acc=39.83% | bal_acc=20.29% | macro_f1=0.1263 | qwk=0.0440 | mae=1.1755 | weighted_f1=0.2428 | precision_macro=0.1236 | recall_macro=0.2029
+         ovr_roc_auc_macro=0.6041 | ovr_pr_auc_macro=0.2755
+ Initial best model saved to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42.pt (QWK=0.0440)
+
+Epoch 02/60 | Time 0m 13s
+  Train | loss=0.8807 | top1=44.85% | top2=68.61% | top3=86.71%
+  Valid | loss=0.8070 | top1=48.20% | top2=74.04% | top3=90.86% | acc=48.55% | bal_acc=29.31% | macro_f1=0.2370 | qwk=0.5094 | mae=0.7421 | weighted_f1=0.3946 | precision_macro=0.2718 | recall_macro=0.2931
+         ovr_roc_auc_macro=0.7679 | ovr_pr_auc_macro=0.4143
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42.pt (QWK=0.5094)
+
+Epoch 03/60 | Time 0m 13s
+  Train | loss=0.7176 | top1=53.59% | top2=78.65% | top3=94.37%
+  Valid | loss=0.6830 | top1=55.83% | top2=79.40% | top3=97.12% | acc=55.93% | bal_acc=44.38% | macro_f1=0.4523 | qwk=0.6413 | mae=0.6295 | weighted_f1=0.4882 | precision_macro=0.5327 | recall_macro=0.4438
+         ovr_roc_auc_macro=0.8222 | ovr_pr_auc_macro=0.5717
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42.pt (QWK=0.6413)
+
+Epoch 04/60 | Time 0m 14s
+  Train | loss=0.5933 | top1=62.18% | top2=85.45% | top3=97.93%
+  Valid | loss=0.5971 | top1=62.39% | top2=87.23% | top3=97.96% | acc=62.23% | bal_acc=60.20% | macro_f1=0.5819 | qwk=0.7326 | mae=0.5036 | weighted_f1=0.5802 | precision_macro=0.6210 | recall_macro=0.6020
+         ovr_roc_auc_macro=0.8563 | ovr_pr_auc_macro=0.6633
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42.pt (QWK=0.7326)
+
+Epoch 05/60 | Time 0m 14s
+  Train | loss=0.5519 | top1=65.17% | top2=87.88% | top3=98.73%
+  Valid | loss=0.5828 | top1=63.50% | top2=87.11% | top3=99.04% | acc=63.32% | bal_acc=59.95% | macro_f1=0.5744 | qwk=0.7543 | mae=0.4831 | weighted_f1=0.5683 | precision_macro=0.6208 | recall_macro=0.5995
+         ovr_roc_auc_macro=0.8642 | ovr_pr_auc_macro=0.6848
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42.pt (QWK=0.7543)
+
+Epoch 06/60 | Time 0m 14s
+  Train | loss=0.5092 | top1=67.78% | top2=89.14% | top3=99.02%
+  Valid | loss=0.5685 | top1=62.76% | top2=85.85% | top3=97.72% | acc=62.71% | bal_acc=61.11% | macro_f1=0.6019 | qwk=0.7351 | mae=0.4964 | weighted_f1=0.5967 | precision_macro=0.6460 | recall_macro=0.6111
+         ovr_roc_auc_macro=0.8799 | ovr_pr_auc_macro=0.7107
+ No improvement. Bad epochs: 1/15
+
+Epoch 07/60 | Time 0m 14s
+  Train | loss=0.4768 | top1=69.44% | top2=90.94% | top3=99.09%
+  Valid | loss=0.5504 | top1=65.60% | top2=88.94% | top3=98.80% | acc=65.38% | bal_acc=65.14% | macro_f1=0.6136 | qwk=0.7805 | mae=0.4552 | weighted_f1=0.6043 | precision_macro=0.6327 | recall_macro=0.6514
+         ovr_roc_auc_macro=0.8799 | ovr_pr_auc_macro=0.7017
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42.pt (QWK=0.7805)
+
+Epoch 08/60 | Time 0m 14s
+  Train | loss=0.4525 | top1=71.46% | top2=92.00% | top3=99.34%
+  Valid | loss=0.5354 | top1=66.08% | top2=88.43% | top3=98.56% | acc=65.86% | bal_acc=66.68% | macro_f1=0.6501 | qwk=0.7825 | mae=0.4358 | weighted_f1=0.6331 | precision_macro=0.6690 | recall_macro=0.6668
+         ovr_roc_auc_macro=0.8800 | ovr_pr_auc_macro=0.7172
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42.pt (QWK=0.7825)
+
+Epoch 09/60 | Time 0m 14s
+  Train | loss=0.4298 | top1=73.57% | top2=93.06% | top3=99.45%
+  Valid | loss=0.5291 | top1=65.33% | top2=88.79% | top3=99.04% | acc=65.13% | bal_acc=66.26% | macro_f1=0.6647 | qwk=0.8109 | mae=0.4104 | weighted_f1=0.6471 | precision_macro=0.6738 | recall_macro=0.6626
+         ovr_roc_auc_macro=0.8825 | ovr_pr_auc_macro=0.7197
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42.pt (QWK=0.8109)
+
+Epoch 10/60 | Time 0m 14s
+  Train | loss=0.4028 | top1=74.87% | top2=94.32% | top3=99.62%
+  Valid | loss=0.5605 | top1=64.52% | top2=88.79% | top3=98.56% | acc=64.41% | bal_acc=64.34% | macro_f1=0.6584 | qwk=0.7970 | mae=0.4274 | weighted_f1=0.6370 | precision_macro=0.6789 | recall_macro=0.6434
+         ovr_roc_auc_macro=0.8865 | ovr_pr_auc_macro=0.7192
+ No improvement. Bad epochs: 1/15
+
+Epoch 11/60 | Time 0m 14s
+  Train | loss=0.3757 | top1=76.81% | top2=94.89% | top3=99.78%
+  Valid | loss=0.6651 | top1=59.74% | top2=85.97% | top3=97.96% | acc=59.56% | bal_acc=60.24% | macro_f1=0.6232 | qwk=0.7781 | mae=0.4649 | weighted_f1=0.6043 | precision_macro=0.6783 | recall_macro=0.6024
+         ovr_roc_auc_macro=0.8617 | ovr_pr_auc_macro=0.6829
+ No improvement. Bad epochs: 2/15
+
+Epoch 12/60 | Time 0m 14s
+  Train | loss=0.3530 | top1=79.46% | top2=95.59% | top3=99.76%
+  Valid | loss=0.5803 | top1=63.92% | top2=89.40% | top3=98.68% | acc=63.80% | bal_acc=65.23% | macro_f1=0.6605 | qwk=0.7962 | mae=0.4274 | weighted_f1=0.6427 | precision_macro=0.6723 | recall_macro=0.6523
+         ovr_roc_auc_macro=0.8830 | ovr_pr_auc_macro=0.7136
+ No improvement. Bad epochs: 3/15
+
+Epoch 13/60 | Time 0m 14s
+  Train | loss=0.3233 | top1=82.09% | top2=96.57% | top3=99.79%
+  Valid | loss=0.6188 | top1=66.72% | top2=89.15% | top3=98.68% | acc=66.59% | bal_acc=64.54% | macro_f1=0.6564 | qwk=0.7959 | mae=0.4128 | weighted_f1=0.6515 | precision_macro=0.6909 | recall_macro=0.6454
+         ovr_roc_auc_macro=0.8788 | ovr_pr_auc_macro=0.7015
+ No improvement. Bad epochs: 4/15
+
+Epoch 14/60 | Time 0m 14s
+  Train | loss=0.3029 | top1=83.30% | top2=97.07% | top3=99.91%
+  Valid | loss=0.6443 | top1=61.79% | top2=85.55% | top3=98.08% | acc=61.62% | bal_acc=64.58% | macro_f1=0.6447 | qwk=0.7676 | mae=0.4661 | weighted_f1=0.6215 | precision_macro=0.6505 | recall_macro=0.6458
+         ovr_roc_auc_macro=0.8799 | ovr_pr_auc_macro=0.7104
+ No improvement. Bad epochs: 5/15
+
+Epoch 15/60 | Time 0m 14s
+  Train | loss=0.2790 | top1=85.79% | top2=97.47% | top3=99.86%
+  Valid | loss=0.6636 | top1=62.51% | top2=87.95% | top3=98.68% | acc=62.35% | bal_acc=62.57% | macro_f1=0.6268 | qwk=0.7763 | mae=0.4637 | weighted_f1=0.6186 | precision_macro=0.6407 | recall_macro=0.6257
+         ovr_roc_auc_macro=0.8750 | ovr_pr_auc_macro=0.7014
+ No improvement. Bad epochs: 6/15
+
+Epoch 16/60 | Time 0m 14s
+  Train | loss=0.2535 | top1=88.25% | top2=98.05% | top3=99.91%
+  Valid | loss=0.7074 | top1=64.98% | top2=87.47% | top3=97.84% | acc=64.89% | bal_acc=63.42% | macro_f1=0.6382 | qwk=0.7734 | mae=0.4467 | weighted_f1=0.6299 | precision_macro=0.6634 | recall_macro=0.6342
+         ovr_roc_auc_macro=0.8831 | ovr_pr_auc_macro=0.7050
+ No improvement. Bad epochs: 7/15
+
+Epoch 17/60 | Time 0m 14s
+  Train | loss=0.2321 | top1=89.50% | top2=98.90% | top3=99.97%
+  Valid | loss=0.6993 | top1=64.34% | top2=88.55% | top3=98.68% | acc=64.16% | bal_acc=65.06% | macro_f1=0.6449 | qwk=0.8004 | mae=0.4249 | weighted_f1=0.6378 | precision_macro=0.6514 | recall_macro=0.6506
+         ovr_roc_auc_macro=0.8751 | ovr_pr_auc_macro=0.7045
+ No improvement. Bad epochs: 8/15
+
+Epoch 18/60 | Time 0m 14s
+  Train | loss=0.2228 | top1=90.27% | top2=98.93% | top3=99.93%
+  Valid | loss=0.6874 | top1=63.74% | top2=89.15% | top3=98.20% | acc=63.56% | bal_acc=64.37% | macro_f1=0.6207 | qwk=0.7987 | mae=0.4407 | weighted_f1=0.6218 | precision_macro=0.6094 | recall_macro=0.6437
+         ovr_roc_auc_macro=0.8788 | ovr_pr_auc_macro=0.6968
+ No improvement. Bad epochs: 9/15
+
+Epoch 19/60 | Time 0m 14s
+  Train | loss=0.2061 | top1=91.98% | top2=99.00% | top3=99.97%
+  Valid | loss=0.7435 | top1=62.33% | top2=88.79% | top3=98.32% | acc=62.23% | bal_acc=61.52% | macro_f1=0.6296 | qwk=0.7765 | mae=0.4564 | weighted_f1=0.6262 | precision_macro=0.6522 | recall_macro=0.6152
+         ovr_roc_auc_macro=0.8704 | ovr_pr_auc_macro=0.6795
+ No improvement. Bad epochs: 10/15
+
+Epoch 20/60 | Time 0m 14s
+  Train | loss=0.1880 | top1=93.89% | top2=99.31% | top3=99.98%
+  Valid | loss=0.7153 | top1=64.38% | top2=88.55% | top3=98.08% | acc=64.29% | bal_acc=63.95% | macro_f1=0.6418 | qwk=0.7803 | mae=0.4431 | weighted_f1=0.6397 | precision_macro=0.6452 | recall_macro=0.6395
+         ovr_roc_auc_macro=0.8709 | ovr_pr_auc_macro=0.6898
+ No improvement. Bad epochs: 11/15
+
+Epoch 21/60 | Time 0m 14s
+  Train | loss=0.1768 | top1=94.54% | top2=99.40% | top3=99.93%
+  Valid | loss=0.8080 | top1=62.66% | top2=86.87% | top3=97.84% | acc=62.47% | bal_acc=63.13% | macro_f1=0.6205 | qwk=0.7711 | mae=0.4637 | weighted_f1=0.6105 | precision_macro=0.6319 | recall_macro=0.6313
+         ovr_roc_auc_macro=0.8707 | ovr_pr_auc_macro=0.6902
+ No improvement. Bad epochs: 12/15
+
+Epoch 22/60 | Time 0m 14s
+  Train | loss=0.1675 | top1=95.14% | top2=99.52% | top3=100.00%
+  Valid | loss=0.7561 | top1=61.94% | top2=86.63% | top3=97.72% | acc=61.74% | bal_acc=64.77% | macro_f1=0.6415 | qwk=0.7750 | mae=0.4613 | weighted_f1=0.6206 | precision_macro=0.6436 | recall_macro=0.6477
+         ovr_roc_auc_macro=0.8707 | ovr_pr_auc_macro=0.6962
+ No improvement. Bad epochs: 13/15
+
+Epoch 23/60 | Time 0m 14s
+  Train | loss=0.1560 | top1=96.43% | top2=99.59% | top3=99.98%
+  Valid | loss=0.8564 | top1=63.11% | top2=87.59% | top3=98.56% | acc=62.95% | bal_acc=62.72% | macro_f1=0.6282 | qwk=0.7802 | mae=0.4504 | weighted_f1=0.6215 | precision_macro=0.6440 | recall_macro=0.6272
+         ovr_roc_auc_macro=0.8645 | ovr_pr_auc_macro=0.6701
+ No improvement. Bad epochs: 14/15
+
+Epoch 24/60 | Time 0m 14s
+  Train | loss=0.1439 | top1=96.89% | top2=99.81% | top3=100.00%
+  Valid | loss=0.8881 | top1=62.55% | top2=86.99% | top3=97.96% | acc=62.47% | bal_acc=60.73% | macro_f1=0.6264 | qwk=0.7764 | mae=0.4576 | weighted_f1=0.6210 | precision_macro=0.6526 | recall_macro=0.6073
+         ovr_roc_auc_macro=0.8606 | ovr_pr_auc_macro=0.6742
+ No improvement. Bad epochs: 15/15
+Early stopping triggered.
+ Training stopped early at epoch 24.
+
+Loading best model and evaluating on test set...
+Best validation QWK: 0.8109
+
+Test | loss=0.5149 | top1=66.65% | top2=90.08% | top3=98.98% | acc=66.55% | bal_acc=66.42% | macro_f1=0.6754 | qwk=0.8242 | mae=0.3871 | weighted_f1=0.6647 | precision_macro=0.6913 | recall_macro=0.6642
+     ovr_roc_auc_macro=0.8944 | ovr_pr_auc_macro=0.7215
+
+Confusion Matrix:
+[[536  80  23   0   0]
+ [128 102  65   1   0]
+ [ 50 115 264  18   0]
+ [  0  13  46 157   7]
+ [  0   0   0   8  43]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+    0_Normal     0.7507    0.8388    0.7923       639
+  1_Doubtful     0.3290    0.3446    0.3366       296
+      2_Mild     0.6633    0.5906    0.6249       447
+  3_Moderate     0.8533    0.7040    0.7715       223
+    4_Severe     0.8600    0.8431    0.8515        51
+
+    accuracy                         0.6655      1656
+   macro avg     0.6913    0.6642    0.6754      1656
+weighted avg     0.6689    0.6655    0.6647      1656
+
+
+Evaluating on auto_test set...
+
+AutoTest | loss=0.5023 | top1=66.74% | top2=90.17% | top3=99.15% | acc=66.58% | bal_acc=66.36% | macro_f1=0.6734 | qwk=0.8238 | mae=0.3840 | weighted_f1=0.6673 | precision_macro=0.6877 | recall_macro=0.6636
+         ovr_roc_auc_macro=0.8989 | ovr_pr_auc_macro=0.7383
+Summary CSV saved: /root/autodl-tmp/MedVisionLab/Knee/logs/ResNet_baseline+Loss4_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42_20260630_114619_summary.csv
+Checkpoint saved: /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_tau_koa_resnet50_plus_dast_seed42.pt
+
+Knee Osteoarthritis ResNet50 baseline (DAST) completed!
+
+==========================================================================================
+RETURN_CODE: 0

@@ -1,0 +1,257 @@
+DATASET: KOA
+METHOD: ResNet50 + DAST
+SEED: 777
+SCRIPT: /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline+Loss4.py
+RUN_TAG: dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777
+DAST_TAU: 1.0
+DAST_GAMMA: 1.0
+COMMAND: /root/miniconda3/bin/python -u /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline+Loss4.py
+==========================================================================================
+Starting Knee Osteoarthritis ResNet50 Baseline...
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 3090
+Run tag: dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777
+Data root: /root/autodl-tmp/knee-osteoarthritis
+Config | seed=777, img_size=224, batch_size=32, epochs=60, num_workers=2, lr_backbone=0.0001, lr_head=0.001, weight_decay=0.0001, patience=15, early_delta=0.0001
+DAST config | tau=1.0000, gamma=1.0000
+Class mapping from folders: {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
+
+Train samples: 5778
+Train class distribution:
+  0_Normal: 2286
+  1_Doubtful: 1046
+  2_Mild: 1516
+  3_Moderate: 757
+  4_Severe: 173
+
+Valid samples: 826
+Valid class distribution:
+  0_Normal: 328
+  1_Doubtful: 153
+  2_Mild: 212
+  3_Moderate: 106
+  4_Severe: 27
+
+Test samples: 1656
+Test class distribution:
+  0_Normal: 639
+  1_Doubtful: 296
+  2_Mild: 447
+  3_Moderate: 223
+  4_Severe: 51
+
+AutoTest samples: 1526
+AutoTest class distribution:
+  0_Normal: 604
+  1_Doubtful: 275
+  2_Mild: 403
+  3_Moderate: 200
+  4_Severe: 44
+
+Split sizes | train=5778, valid=826, test=1656, auto_test=1526
+Loading pretrained ResNet50...
+Trainable parameters: 23,518,277
+
+[INFO] Class counts in training set: [2286 1046 1516  757  173]
+
+[INFO] Using Distance-Aware Soft Target Loss (DAST)
+       - Feature: Clinically-aware ordinal grading
+       - Behavior: Allows ambiguity for adjacent grades, strongly penalizes far-away mistakes
+Starting training...
+
+Epoch 01/60 | Time 0m 14s
+  Train | loss=1.1810 | top1=36.81% | top2=60.40% | top3=82.59%
+  Valid | loss=1.1533 | top1=39.90% | top2=60.70% | top3=83.29% | acc=40.19% | bal_acc=20.48% | macro_f1=0.1270 | qwk=0.0423 | mae=1.1768 | weighted_f1=0.2434 | precision_macro=0.1605 | recall_macro=0.2048
+         ovr_roc_auc_macro=0.6353 | ovr_pr_auc_macro=0.2793
+ Initial best model saved to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt (QWK=0.0423)
+
+Epoch 02/60 | Time 0m 14s
+  Train | loss=1.0989 | top1=44.64% | top2=68.54% | top3=87.40%
+  Valid | loss=1.0455 | top1=49.04% | top2=72.84% | top3=91.73% | acc=49.39% | bal_acc=31.41% | macro_f1=0.2841 | qwk=0.5714 | mae=0.7240 | weighted_f1=0.4153 | precision_macro=0.2921 | recall_macro=0.3141
+         ovr_roc_auc_macro=0.7678 | ovr_pr_auc_macro=0.4132
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt (QWK=0.5714)
+
+Epoch 03/60 | Time 0m 14s
+  Train | loss=0.9921 | top1=56.06% | top2=79.93% | top3=95.73%
+  Valid | loss=0.9973 | top1=56.28% | top2=80.47% | top3=93.87% | acc=56.66% | bal_acc=45.54% | macro_f1=0.4088 | qwk=0.6787 | mae=0.5944 | weighted_f1=0.5167 | precision_macro=0.5975 | recall_macro=0.4554
+         ovr_roc_auc_macro=0.8289 | ovr_pr_auc_macro=0.5576
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt (QWK=0.6787)
+
+Epoch 04/60 | Time 0m 14s
+  Train | loss=0.9342 | top1=62.34% | top2=85.77% | top3=97.62%
+  Valid | loss=0.9399 | top1=60.37% | top2=84.71% | top3=97.24% | acc=60.17% | bal_acc=62.84% | macro_f1=0.6160 | qwk=0.7408 | mae=0.5048 | weighted_f1=0.6000 | precision_macro=0.6236 | recall_macro=0.6284
+         ovr_roc_auc_macro=0.8626 | ovr_pr_auc_macro=0.6692
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt (QWK=0.7408)
+
+Epoch 05/60 | Time 0m 14s
+  Train | loss=0.9056 | top1=65.56% | top2=87.69% | top3=98.45%
+  Valid | loss=0.9287 | top1=54.44% | top2=87.38% | top3=97.48% | acc=54.36% | bal_acc=59.35% | macro_f1=0.6056 | qwk=0.7566 | mae=0.5085 | weighted_f1=0.5644 | precision_macro=0.6662 | recall_macro=0.5935
+         ovr_roc_auc_macro=0.8685 | ovr_pr_auc_macro=0.6941
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt (QWK=0.7566)
+
+Epoch 06/60 | Time 0m 14s
+  Train | loss=0.8870 | top1=67.85% | top2=89.80% | top3=98.91%
+  Valid | loss=0.9239 | top1=64.82% | top2=88.31% | top3=97.36% | acc=64.65% | bal_acc=64.23% | macro_f1=0.5881 | qwk=0.7615 | mae=0.4722 | weighted_f1=0.5871 | precision_macro=0.6406 | recall_macro=0.6423
+         ovr_roc_auc_macro=0.8791 | ovr_pr_auc_macro=0.7040
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt (QWK=0.7615)
+
+Epoch 07/60 | Time 0m 14s
+  Train | loss=0.8707 | top1=70.01% | top2=90.99% | top3=99.05%
+  Valid | loss=0.9343 | top1=64.31% | top2=87.74% | top3=98.80% | acc=64.16% | bal_acc=62.01% | macro_f1=0.6099 | qwk=0.7792 | mae=0.4600 | weighted_f1=0.5970 | precision_macro=0.6422 | recall_macro=0.6201
+         ovr_roc_auc_macro=0.8753 | ovr_pr_auc_macro=0.6971
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt (QWK=0.7792)
+
+Epoch 08/60 | Time 0m 14s
+  Train | loss=0.8579 | top1=72.12% | top2=91.92% | top3=99.29%
+  Valid | loss=0.8966 | top1=67.17% | top2=89.03% | top3=98.32% | acc=67.07% | bal_acc=65.68% | macro_f1=0.6422 | qwk=0.7937 | mae=0.4177 | weighted_f1=0.6376 | precision_macro=0.6560 | recall_macro=0.6568
+         ovr_roc_auc_macro=0.8853 | ovr_pr_auc_macro=0.7164
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt (QWK=0.7937)
+
+Epoch 09/60 | Time 0m 14s
+  Train | loss=0.8437 | top1=73.41% | top2=93.20% | top3=99.38%
+  Valid | loss=0.9125 | top1=66.27% | top2=87.71% | top3=97.72% | acc=66.22% | bal_acc=62.61% | macro_f1=0.6415 | qwk=0.7691 | mae=0.4407 | weighted_f1=0.6340 | precision_macro=0.7064 | recall_macro=0.6261
+         ovr_roc_auc_macro=0.8810 | ovr_pr_auc_macro=0.7101
+ No improvement. Bad epochs: 1/15
+
+Epoch 10/60 | Time 0m 14s
+  Train | loss=0.8316 | top1=75.62% | top2=94.41% | top3=99.52%
+  Valid | loss=0.9215 | top1=62.06% | top2=87.95% | top3=98.32% | acc=61.86% | bal_acc=64.05% | macro_f1=0.6429 | qwk=0.7828 | mae=0.4504 | weighted_f1=0.6255 | precision_macro=0.6617 | recall_macro=0.6405
+         ovr_roc_auc_macro=0.8774 | ovr_pr_auc_macro=0.7049
+ No improvement. Bad epochs: 2/15
+
+Epoch 11/60 | Time 0m 14s
+  Train | loss=0.8217 | top1=77.04% | top2=94.98% | top3=99.59%
+  Valid | loss=0.9357 | top1=62.27% | top2=87.71% | top3=97.96% | acc=62.11% | bal_acc=64.22% | macro_f1=0.6550 | qwk=0.8035 | mae=0.4310 | weighted_f1=0.6305 | precision_macro=0.6887 | recall_macro=0.6422
+         ovr_roc_auc_macro=0.8821 | ovr_pr_auc_macro=0.7169
+ Validation improved. Saved best model to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt (QWK=0.8035)
+
+Epoch 12/60 | Time 0m 14s
+  Train | loss=0.8071 | top1=79.45% | top2=95.48% | top3=99.78%
+  Valid | loss=0.9278 | top1=65.42% | top2=87.71% | top3=97.36% | acc=65.25% | bal_acc=66.46% | macro_f1=0.6460 | qwk=0.7919 | mae=0.4310 | weighted_f1=0.6413 | precision_macro=0.6372 | recall_macro=0.6646
+         ovr_roc_auc_macro=0.8785 | ovr_pr_auc_macro=0.7063
+ No improvement. Bad epochs: 1/15
+
+Epoch 13/60 | Time 0m 14s
+  Train | loss=0.7939 | top1=81.93% | top2=96.64% | top3=99.78%
+  Valid | loss=0.9560 | top1=62.32% | top2=84.95% | top3=96.39% | acc=62.11% | bal_acc=65.71% | macro_f1=0.6353 | qwk=0.7745 | mae=0.4637 | weighted_f1=0.6148 | precision_macro=0.6273 | recall_macro=0.6571
+         ovr_roc_auc_macro=0.8691 | ovr_pr_auc_macro=0.6811
+ No improvement. Bad epochs: 2/15
+
+Epoch 14/60 | Time 0m 14s
+  Train | loss=0.7833 | top1=83.78% | top2=97.08% | top3=99.79%
+  Valid | loss=0.9521 | top1=63.17% | top2=85.70% | top3=97.00% | acc=62.95% | bal_acc=65.01% | macro_f1=0.6239 | qwk=0.7711 | mae=0.4613 | weighted_f1=0.6162 | precision_macro=0.6287 | recall_macro=0.6501
+         ovr_roc_auc_macro=0.8688 | ovr_pr_auc_macro=0.6744
+ No improvement. Bad epochs: 3/15
+
+Epoch 15/60 | Time 0m 14s
+  Train | loss=0.7752 | top1=85.13% | top2=97.69% | top3=99.79%
+  Valid | loss=0.9534 | top1=64.01% | top2=86.63% | top3=97.96% | acc=63.80% | bal_acc=64.97% | macro_f1=0.6294 | qwk=0.7775 | mae=0.4552 | weighted_f1=0.6193 | precision_macro=0.6263 | recall_macro=0.6497
+         ovr_roc_auc_macro=0.8660 | ovr_pr_auc_macro=0.6662
+ No improvement. Bad epochs: 4/15
+
+Epoch 16/60 | Time 0m 14s
+  Train | loss=0.7672 | top1=86.92% | top2=98.08% | top3=99.86%
+  Valid | loss=0.9573 | top1=63.83% | top2=88.07% | top3=97.96% | acc=63.68% | bal_acc=63.54% | macro_f1=0.6413 | qwk=0.7924 | mae=0.4407 | weighted_f1=0.6284 | precision_macro=0.6607 | recall_macro=0.6354
+         ovr_roc_auc_macro=0.8614 | ovr_pr_auc_macro=0.6884
+ No improvement. Bad epochs: 5/15
+
+Epoch 17/60 | Time 0m 14s
+  Train | loss=0.7511 | top1=89.71% | top2=98.64% | top3=99.90%
+  Valid | loss=0.9436 | top1=62.87% | top2=87.71% | top3=97.96% | acc=62.71% | bal_acc=63.51% | macro_f1=0.6374 | qwk=0.7885 | mae=0.4528 | weighted_f1=0.6142 | precision_macro=0.6471 | recall_macro=0.6351
+         ovr_roc_auc_macro=0.8636 | ovr_pr_auc_macro=0.6854
+ No improvement. Bad epochs: 6/15
+
+Epoch 18/60 | Time 0m 14s
+  Train | loss=0.7406 | top1=91.32% | top2=99.03% | top3=99.97%
+  Valid | loss=1.0191 | top1=58.30% | top2=79.03% | top3=92.79% | acc=58.11% | bal_acc=62.58% | macro_f1=0.6053 | qwk=0.6980 | mae=0.5642 | weighted_f1=0.5674 | precision_macro=0.6094 | recall_macro=0.6258
+         ovr_roc_auc_macro=0.8588 | ovr_pr_auc_macro=0.6679
+ No improvement. Bad epochs: 7/15
+
+Epoch 19/60 | Time 0m 14s
+  Train | loss=0.7358 | top1=92.34% | top2=99.22% | top3=99.98%
+  Valid | loss=0.9337 | top1=65.87% | top2=88.07% | top3=97.24% | acc=65.74% | bal_acc=66.68% | macro_f1=0.6677 | qwk=0.7931 | mae=0.4213 | weighted_f1=0.6532 | precision_macro=0.6706 | recall_macro=0.6668
+         ovr_roc_auc_macro=0.8709 | ovr_pr_auc_macro=0.6896
+ No improvement. Bad epochs: 8/15
+
+Epoch 20/60 | Time 0m 14s
+  Train | loss=0.7294 | top1=93.19% | top2=99.16% | top3=99.95%
+  Valid | loss=0.9512 | top1=66.14% | top2=88.07% | top3=97.24% | acc=65.98% | bal_acc=65.83% | macro_f1=0.6633 | qwk=0.7956 | mae=0.4201 | weighted_f1=0.6469 | precision_macro=0.6790 | recall_macro=0.6583
+         ovr_roc_auc_macro=0.8628 | ovr_pr_auc_macro=0.6859
+ No improvement. Bad epochs: 9/15
+
+Epoch 21/60 | Time 0m 14s
+  Train | loss=0.7226 | top1=94.22% | top2=99.43% | top3=99.93%
+  Valid | loss=0.9566 | top1=63.91% | top2=88.79% | top3=97.48% | acc=63.68% | bal_acc=65.90% | macro_f1=0.6452 | qwk=0.7800 | mae=0.4540 | weighted_f1=0.6237 | precision_macro=0.6453 | recall_macro=0.6590
+         ovr_roc_auc_macro=0.8638 | ovr_pr_auc_macro=0.6720
+ No improvement. Bad epochs: 10/15
+
+Epoch 22/60 | Time 0m 14s
+  Train | loss=0.7196 | top1=94.57% | top2=99.36% | top3=99.98%
+  Valid | loss=0.9502 | top1=63.95% | top2=87.95% | top3=98.08% | acc=63.80% | bal_acc=64.93% | macro_f1=0.6540 | qwk=0.7886 | mae=0.4395 | weighted_f1=0.6347 | precision_macro=0.6634 | recall_macro=0.6493
+         ovr_roc_auc_macro=0.8678 | ovr_pr_auc_macro=0.6906
+ No improvement. Bad epochs: 11/15
+
+Epoch 23/60 | Time 0m 14s
+  Train | loss=0.7145 | top1=95.61% | top2=99.55% | top3=99.98%
+  Valid | loss=0.9643 | top1=61.32% | top2=85.76% | top3=96.15% | acc=61.26% | bal_acc=60.96% | macro_f1=0.6174 | qwk=0.7634 | mae=0.4746 | weighted_f1=0.6059 | precision_macro=0.6335 | recall_macro=0.6096
+         ovr_roc_auc_macro=0.8646 | ovr_pr_auc_macro=0.6599
+ No improvement. Bad epochs: 12/15
+
+Epoch 24/60 | Time 0m 14s
+  Train | loss=0.7110 | top1=96.14% | top2=99.54% | top3=100.00%
+  Valid | loss=0.9635 | top1=61.87% | top2=85.31% | top3=96.03% | acc=61.62% | bal_acc=66.13% | macro_f1=0.6326 | qwk=0.7707 | mae=0.4770 | weighted_f1=0.6048 | precision_macro=0.6136 | recall_macro=0.6613
+         ovr_roc_auc_macro=0.8660 | ovr_pr_auc_macro=0.6676
+ No improvement. Bad epochs: 13/15
+
+Epoch 25/60 | Time 0m 14s
+  Train | loss=0.7092 | top1=96.67% | top2=99.62% | top3=99.95%
+  Valid | loss=0.9898 | top1=62.93% | top2=85.55% | top3=97.84% | acc=62.71% | bal_acc=62.53% | macro_f1=0.6133 | qwk=0.7744 | mae=0.4661 | weighted_f1=0.6050 | precision_macro=0.6245 | recall_macro=0.6253
+         ovr_roc_auc_macro=0.8500 | ovr_pr_auc_macro=0.6637
+ No improvement. Bad epochs: 14/15
+
+Epoch 26/60 | Time 0m 14s
+  Train | loss=0.7038 | top1=97.01% | top2=99.72% | top3=99.98%
+  Valid | loss=0.9522 | top1=62.90% | top2=85.88% | top3=97.48% | acc=62.71% | bal_acc=64.57% | macro_f1=0.6471 | qwk=0.7844 | mae=0.4492 | weighted_f1=0.6278 | precision_macro=0.6532 | recall_macro=0.6457
+         ovr_roc_auc_macro=0.8667 | ovr_pr_auc_macro=0.6822
+ No improvement. Bad epochs: 15/15
+Early stopping triggered.
+ Training stopped early at epoch 26.
+
+Loading best model and evaluating on test set...
+Best validation QWK: 0.8035
+
+Test | loss=0.9198 | top1=65.87% | top2=88.52% | top3=99.16% | acc=65.82% | bal_acc=66.25% | macro_f1=0.6797 | qwk=0.8196 | mae=0.3931 | weighted_f1=0.6648 | precision_macro=0.7236 | recall_macro=0.6625
+     ovr_roc_auc_macro=0.8950 | ovr_pr_auc_macro=0.7359
+
+Confusion Matrix:
+[[511 115  13   0   0]
+ [120 151  20   5   0]
+ [ 54 163 212  18   0]
+ [  0  13  28 179   3]
+ [  0   0   0  14  37]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+    0_Normal     0.7460    0.7997    0.7719       639
+  1_Doubtful     0.3416    0.5101    0.4092       296
+      2_Mild     0.7766    0.4743    0.5889       447
+  3_Moderate     0.8287    0.8027    0.8155       223
+    4_Severe     0.9250    0.7255    0.8132        51
+
+    accuracy                         0.6582      1656
+   macro avg     0.7236    0.6625    0.6797      1656
+weighted avg     0.6986    0.6582    0.6648      1656
+
+
+Evaluating on auto_test set...
+
+AutoTest | loss=0.9167 | top1=64.89% | top2=87.96% | top3=99.28% | acc=64.74% | bal_acc=65.97% | macro_f1=0.6736 | qwk=0.8170 | mae=0.4017 | weighted_f1=0.6497 | precision_macro=0.7164 | recall_macro=0.6597
+         ovr_roc_auc_macro=0.8918 | ovr_pr_auc_macro=0.7303
+Summary CSV saved: /root/autodl-tmp/MedVisionLab/Knee/logs/ResNet_baseline+Loss4_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777_20260630_130918_summary.csv
+Checkpoint saved: /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_dast_sensitivity_20260630_114615_gamma_koa_resnet50_plus_dast_seed777.pt
+
+Knee Osteoarthritis ResNet50 baseline (DAST) completed!
+
+==========================================================================================
+RETURN_CODE: 0
