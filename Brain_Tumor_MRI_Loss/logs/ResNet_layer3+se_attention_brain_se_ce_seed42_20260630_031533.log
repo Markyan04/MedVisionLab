@@ -1,0 +1,15 @@
+==========================================================================================
+Script: ResNet_layer3+se
+Run tag: attention_brain_se_ce_seed42
+Module: se | Insert after: layer3
+Device: cuda
+CUDA: NVIDIA GeForce RTX 4090 D
+Train dir: /root/autodl-tmp/brain-tumor-mri-dataset/Training
+Test dir : /root/autodl-tmp/brain-tumor-mri-dataset/Testing
+Config | seed=42, batch_size=16, epochs=50, num_workers=0, image_size=224, base_lr=0.001, val_ratio=0.1, patience=10
+Losses to run: ['ce']
+==========================================================================================
+Split sizes | train=5040, valid=560, test=1600
+Classes (4): ['glioma', 'meningioma', 'notumor', 'pituitary']
+Train class counts: [1260, 1260, 1260, 1260]
+Loading torchvision ResNet50 pretrained weights once...

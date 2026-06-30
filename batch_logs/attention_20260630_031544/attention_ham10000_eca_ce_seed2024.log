@@ -1,0 +1,210 @@
+DATASET: HAM10000
+METHOD: ResNet50 + layer3 eca
+SEED: 2024
+ATTENTION: eca
+LOSS: ce
+COMMAND: /root/miniconda3/bin/python /root/autodl-tmp/MedVisionLab/tools/train_layer3_attention.py --dataset ham10000 --attention eca --loss ce --seed 2024 --run-tag attention_ham10000_eca_ce_seed2024
+==========================================================================================
+==========================================================================================
+Script: ResNet_layer3+eca
+Run tag: attention_ham10000_eca_ce_seed2024
+Module: eca | Insert after: layer3
+Device: cuda
+CUDA: NVIDIA GeForce RTX 4090 D
+Data dir: /root/autodl-tmp/skin-cancer-mnist-ham10000
+Config | seed=2024, batch_size=32, epochs=50, num_workers=2, image_size=224, base_lr=0.0001, patience=10
+Losses to run: ['ce']
+==========================================================================================
+Split sizes | train=7210, valid=802, test=2003
+Classes (7): ['akiec', 'bcc', 'bkl', 'df', 'mel', 'nv', 'vasc']
+Train class counts: [262, 411, 879, 92, 890, 5364, 114]
+Loading torchvision ResNet50 pretrained weights once...
+Pretrained state keys: 320
+
+##########################################################################################
+Starting loss: ce
+##########################################################################################
+Model params: 23,522,378 | pretrained loaded: 320/321 | feat_dim=2048
+Criterion: CrossEntropyLoss
+Criterion trainable params: 0
+/root/miniconda3/lib/python3.12/site-packages/torch/nn/modules/conv.py:306: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv1d(input, weight, bias, self.stride,
+/root/miniconda3/lib/python3.12/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+Epoch 01/50 | Time 0m33s
+  Train | loss=1.7749 | top1=46.28% | top3=73.31%
+  Valid | loss=1.5504 | top1=65.26% | top3=82.81% | acc=65.84% | bal_acc=14.45% | macro_f1=0.1246 | weighted_f1=0.5504 | precision_macro=0.1468 | recall_macro=0.1445 | qwk=0.1295 | mae=0.8504
+        ovr_roc_auc_macro=0.5783 | ovr_pr_auc_macro=0.1990
+  -> best macro_f1 updated to 0.1246 (epoch 1, val_loss=1.5504)
+Epoch 02/50 | Time 0m32s
+  Train | loss=1.2915 | top1=67.00% | top3=86.72%
+  Valid | loss=1.0930 | top1=66.47% | top3=87.38% | acc=67.08% | bal_acc=14.72% | macro_f1=0.1249 | weighted_f1=0.5498 | precision_macro=0.1809 | recall_macro=0.1472 | qwk=0.0661 | mae=0.8254
+        ovr_roc_auc_macro=0.7265 | ovr_pr_auc_macro=0.2567
+  -> best macro_f1 updated to 0.1249 (epoch 2, val_loss=1.0930)
+Epoch 03/50 | Time 0m32s
+  Train | loss=1.0008 | top1=67.44% | top3=89.35%
+  Valid | loss=0.9202 | top1=66.71% | top3=89.78% | acc=67.33% | bal_acc=14.90% | macro_f1=0.1274 | weighted_f1=0.5516 | precision_macro=0.1721 | recall_macro=0.1490 | qwk=0.0515 | mae=0.8229
+        ovr_roc_auc_macro=0.8023 | ovr_pr_auc_macro=0.3075
+  -> best macro_f1 updated to 0.1274 (epoch 3, val_loss=0.9202)
+Epoch 04/50 | Time 0m32s
+  Train | loss=0.8722 | top1=68.22% | top3=89.75%
+  Valid | loss=0.8139 | top1=69.35% | top3=89.78% | acc=70.07% | bal_acc=18.72% | macro_f1=0.1849 | weighted_f1=0.6117 | precision_macro=0.2334 | recall_macro=0.1872 | qwk=0.2045 | mae=0.7319
+        ovr_roc_auc_macro=0.8573 | ovr_pr_auc_macro=0.3547
+  -> best macro_f1 updated to 0.1849 (epoch 4, val_loss=0.8139)
+Epoch 05/50 | Time 0m33s
+  Train | loss=0.7800 | top1=71.32% | top3=90.75%
+  Valid | loss=0.7210 | top1=73.56% | top3=92.67% | acc=74.44% | bal_acc=26.47% | macro_f1=0.2744 | weighted_f1=0.6929 | precision_macro=0.3687 | recall_macro=0.2647 | qwk=0.4734 | mae=0.5761
+        ovr_roc_auc_macro=0.9088 | ovr_pr_auc_macro=0.4477
+  -> best macro_f1 updated to 0.2744 (epoch 5, val_loss=0.7210)
+Epoch 06/50 | Time 0m33s
+  Train | loss=0.6780 | top1=75.42% | top3=93.32%
+  Valid | loss=0.6330 | top1=77.52% | top3=95.67% | acc=78.55% | bal_acc=37.72% | macro_f1=0.4014 | weighted_f1=0.7575 | precision_macro=0.4469 | recall_macro=0.3772 | qwk=0.6946 | mae=0.4389
+        ovr_roc_auc_macro=0.9349 | ovr_pr_auc_macro=0.5594
+  -> best macro_f1 updated to 0.4014 (epoch 6, val_loss=0.6330)
+Epoch 07/50 | Time 0m33s
+  Train | loss=0.5598 | top1=80.36% | top3=95.86%
+  Valid | loss=0.5417 | top1=80.17% | top3=97.12% | acc=81.30% | bal_acc=48.31% | macro_f1=0.5102 | weighted_f1=0.7992 | precision_macro=0.6085 | recall_macro=0.4831 | qwk=0.7746 | mae=0.3628
+        ovr_roc_auc_macro=0.9544 | ovr_pr_auc_macro=0.6603
+  -> best macro_f1 updated to 0.5102 (epoch 7, val_loss=0.5417)
+Epoch 08/50 | Time 0m33s
+  Train | loss=0.4609 | top1=83.74% | top3=97.17%
+  Valid | loss=0.5114 | top1=81.49% | top3=97.48% | acc=82.67% | bal_acc=57.88% | macro_f1=0.5986 | weighted_f1=0.8135 | precision_macro=0.6243 | recall_macro=0.5788 | qwk=0.7671 | mae=0.3504
+        ovr_roc_auc_macro=0.9613 | ovr_pr_auc_macro=0.7369
+  -> best macro_f1 updated to 0.5986 (epoch 8, val_loss=0.5114)
+Epoch 09/50 | Time 0m32s
+  Train | loss=0.3755 | top1=86.54% | top3=98.10%
+  Valid | loss=0.4777 | top1=83.77% | top3=97.84% | acc=85.04% | bal_acc=62.92% | macro_f1=0.6364 | weighted_f1=0.8372 | precision_macro=0.6586 | recall_macro=0.6292 | qwk=0.8268 | mae=0.2930
+        ovr_roc_auc_macro=0.9676 | ovr_pr_auc_macro=0.7652
+  -> best macro_f1 updated to 0.6364 (epoch 9, val_loss=0.4777)
+Epoch 10/50 | Time 0m32s
+  Train | loss=0.3006 | top1=89.21% | top3=98.74%
+  Valid | loss=0.4641 | top1=84.25% | top3=97.48% | acc=85.54% | bal_acc=66.02% | macro_f1=0.6966 | weighted_f1=0.8447 | precision_macro=0.8142 | recall_macro=0.6602 | qwk=0.8346 | mae=0.2830
+        ovr_roc_auc_macro=0.9704 | ovr_pr_auc_macro=0.7885
+  -> best macro_f1 updated to 0.6966 (epoch 10, val_loss=0.4641)
+Epoch 11/50 | Time 0m33s
+  Train | loss=0.2367 | top1=91.62% | top3=99.28%
+  Valid | loss=0.4701 | top1=85.10% | top3=97.96% | acc=86.41% | bal_acc=70.43% | macro_f1=0.7266 | weighted_f1=0.8548 | precision_macro=0.7699 | recall_macro=0.7043 | qwk=0.8412 | mae=0.2693
+        ovr_roc_auc_macro=0.9718 | ovr_pr_auc_macro=0.8094
+  -> best macro_f1 updated to 0.7266 (epoch 11, val_loss=0.4701)
+Epoch 12/50 | Time 0m32s
+  Train | loss=0.1941 | top1=93.15% | top3=99.58%
+  Valid | loss=0.4770 | top1=84.74% | top3=98.08% | acc=86.03% | bal_acc=72.72% | macro_f1=0.7207 | weighted_f1=0.8535 | precision_macro=0.7394 | recall_macro=0.7272 | qwk=0.8385 | mae=0.2830
+        ovr_roc_auc_macro=0.9730 | ovr_pr_auc_macro=0.8164
+Epoch 13/50 | Time 0m32s
+  Train | loss=0.1586 | top1=94.50% | top3=99.75%
+  Valid | loss=0.4974 | top1=85.22% | top3=96.51% | acc=86.53% | bal_acc=73.49% | macro_f1=0.7539 | weighted_f1=0.8567 | precision_macro=0.7853 | recall_macro=0.7349 | qwk=0.8330 | mae=0.2706
+        ovr_roc_auc_macro=0.9712 | ovr_pr_auc_macro=0.8205
+  -> best macro_f1 updated to 0.7539 (epoch 13, val_loss=0.4974)
+Epoch 14/50 | Time 0m33s
+  Train | loss=0.1243 | top1=95.69% | top3=99.83%
+  Valid | loss=0.4874 | top1=86.66% | top3=98.32% | acc=88.03% | bal_acc=75.54% | macro_f1=0.7657 | weighted_f1=0.8771 | precision_macro=0.7886 | recall_macro=0.7554 | qwk=0.8478 | mae=0.2444
+        ovr_roc_auc_macro=0.9751 | ovr_pr_auc_macro=0.8325
+  -> best macro_f1 updated to 0.7657 (epoch 14, val_loss=0.4874)
+Epoch 15/50 | Time 0m32s
+  Train | loss=0.1021 | top1=96.67% | top3=99.88%
+  Valid | loss=0.4747 | top1=85.94% | top3=96.39% | acc=87.28% | bal_acc=75.09% | macro_f1=0.7582 | weighted_f1=0.8684 | precision_macro=0.7778 | recall_macro=0.7509 | qwk=0.8566 | mae=0.2469
+        ovr_roc_auc_macro=0.9765 | ovr_pr_auc_macro=0.8454
+Epoch 16/50 | Time 0m32s
+  Train | loss=0.0716 | top1=97.58% | top3=99.92%
+  Valid | loss=0.4940 | top1=86.54% | top3=98.44% | acc=87.91% | bal_acc=78.25% | macro_f1=0.7819 | weighted_f1=0.8771 | precision_macro=0.7875 | recall_macro=0.7825 | qwk=0.8751 | mae=0.2269
+        ovr_roc_auc_macro=0.9770 | ovr_pr_auc_macro=0.8496
+  -> best macro_f1 updated to 0.7819 (epoch 16, val_loss=0.4940)
+Epoch 17/50 | Time 0m32s
+  Train | loss=0.0743 | top1=97.38% | top3=99.99%
+  Valid | loss=0.5978 | top1=85.58% | top3=98.20% | acc=86.91% | bal_acc=75.31% | macro_f1=0.7605 | weighted_f1=0.8638 | precision_macro=0.7921 | recall_macro=0.7531 | qwk=0.8272 | mae=0.2768
+        ovr_roc_auc_macro=0.9711 | ovr_pr_auc_macro=0.8411
+Epoch 18/50 | Time 0m33s
+  Train | loss=0.0583 | top1=98.08% | top3=99.97%
+  Valid | loss=0.4732 | top1=87.26% | top3=97.96% | acc=88.65% | bal_acc=78.82% | macro_f1=0.7960 | weighted_f1=0.8833 | precision_macro=0.8103 | recall_macro=0.7882 | qwk=0.8452 | mae=0.2444
+        ovr_roc_auc_macro=0.9796 | ovr_pr_auc_macro=0.8679
+  -> best macro_f1 updated to 0.7960 (epoch 18, val_loss=0.4732)
+Epoch 19/50 | Time 0m31s
+  Train | loss=0.0546 | top1=98.10% | top3=99.96%
+  Valid | loss=0.5506 | top1=87.26% | top3=98.08% | acc=88.65% | bal_acc=79.86% | macro_f1=0.7998 | weighted_f1=0.8829 | precision_macro=0.8148 | recall_macro=0.7986 | qwk=0.8610 | mae=0.2294
+        ovr_roc_auc_macro=0.9781 | ovr_pr_auc_macro=0.8577
+  -> best macro_f1 updated to 0.7998 (epoch 19, val_loss=0.5506)
+Epoch 20/50 | Time 0m32s
+  Train | loss=0.0435 | top1=98.58% | top3=99.97%
+  Valid | loss=0.5433 | top1=87.26% | top3=98.80% | acc=88.65% | bal_acc=79.49% | macro_f1=0.8096 | weighted_f1=0.8837 | precision_macro=0.8389 | recall_macro=0.7949 | qwk=0.8554 | mae=0.2332
+        ovr_roc_auc_macro=0.9792 | ovr_pr_auc_macro=0.8705
+  -> best macro_f1 updated to 0.8096 (epoch 20, val_loss=0.5433)
+Epoch 21/50 | Time 0m33s
+  Train | loss=0.0364 | top1=98.81% | top3=99.99%
+  Valid | loss=0.5149 | top1=85.94% | top3=98.44% | acc=87.28% | bal_acc=80.24% | macro_f1=0.7805 | weighted_f1=0.8728 | precision_macro=0.7762 | recall_macro=0.8024 | qwk=0.8210 | mae=0.2843
+        ovr_roc_auc_macro=0.9792 | ovr_pr_auc_macro=0.8650
+Epoch 22/50 | Time 0m32s
+  Train | loss=0.0374 | top1=98.86% | top3=99.97%
+  Valid | loss=0.5962 | top1=86.30% | top3=98.44% | acc=87.66% | bal_acc=75.90% | macro_f1=0.7656 | weighted_f1=0.8723 | precision_macro=0.7829 | recall_macro=0.7590 | qwk=0.8359 | mae=0.2556
+        ovr_roc_auc_macro=0.9791 | ovr_pr_auc_macro=0.8656
+Epoch 23/50 | Time 0m33s
+  Train | loss=0.0325 | top1=98.86% | top3=100.00%
+  Valid | loss=0.5778 | top1=86.42% | top3=99.04% | acc=87.78% | bal_acc=77.20% | macro_f1=0.7805 | weighted_f1=0.8738 | precision_macro=0.8076 | recall_macro=0.7720 | qwk=0.8392 | mae=0.2544
+        ovr_roc_auc_macro=0.9768 | ovr_pr_auc_macro=0.8648
+Epoch 24/50 | Time 0m33s
+  Train | loss=0.0330 | top1=99.00% | top3=100.00%
+  Valid | loss=0.5229 | top1=86.18% | top3=99.04% | acc=87.53% | bal_acc=77.22% | macro_f1=0.7685 | weighted_f1=0.8730 | precision_macro=0.7702 | recall_macro=0.7722 | qwk=0.8533 | mae=0.2469
+        ovr_roc_auc_macro=0.9780 | ovr_pr_auc_macro=0.8742
+Epoch 25/50 | Time 0m32s
+  Train | loss=0.0224 | top1=99.43% | top3=100.00%
+  Valid | loss=0.5580 | top1=88.10% | top3=98.56% | acc=89.53% | bal_acc=77.22% | macro_f1=0.7891 | weighted_f1=0.8921 | precision_macro=0.8168 | recall_macro=0.7722 | qwk=0.8603 | mae=0.2207
+        ovr_roc_auc_macro=0.9786 | ovr_pr_auc_macro=0.8757
+Epoch 26/50 | Time 0m33s
+  Train | loss=0.0167 | top1=99.56% | top3=100.00%
+  Valid | loss=0.5631 | top1=87.38% | top3=98.56% | acc=88.78% | bal_acc=78.35% | macro_f1=0.7739 | weighted_f1=0.8848 | precision_macro=0.7754 | recall_macro=0.7835 | qwk=0.8508 | mae=0.2382
+        ovr_roc_auc_macro=0.9788 | ovr_pr_auc_macro=0.8712
+Epoch 27/50 | Time 0m33s
+  Train | loss=0.0187 | top1=99.51% | top3=100.00%
+  Valid | loss=0.6027 | top1=87.74% | top3=98.32% | acc=89.15% | bal_acc=80.32% | macro_f1=0.8031 | weighted_f1=0.8880 | precision_macro=0.8115 | recall_macro=0.8032 | qwk=0.8481 | mae=0.2332
+        ovr_roc_auc_macro=0.9802 | ovr_pr_auc_macro=0.8739
+Epoch 28/50 | Time 0m32s
+  Train | loss=0.0216 | top1=99.35% | top3=100.00%
+  Valid | loss=0.5841 | top1=87.02% | top3=98.20% | acc=88.40% | bal_acc=79.50% | macro_f1=0.8005 | weighted_f1=0.8805 | precision_macro=0.8131 | recall_macro=0.7950 | qwk=0.8547 | mae=0.2294
+        ovr_roc_auc_macro=0.9788 | ovr_pr_auc_macro=0.8821
+Epoch 29/50 | Time 0m33s
+  Train | loss=0.0173 | top1=99.51% | top3=100.00%
+  Valid | loss=0.5226 | top1=87.50% | top3=98.20% | acc=88.90% | bal_acc=78.97% | macro_f1=0.7950 | weighted_f1=0.8857 | precision_macro=0.8089 | recall_macro=0.7897 | qwk=0.8669 | mae=0.2232
+        ovr_roc_auc_macro=0.9803 | ovr_pr_auc_macro=0.8801
+Epoch 30/50 | Time 0m33s
+  Train | loss=0.0170 | top1=99.49% | top3=100.00%
+  Valid | loss=0.5786 | top1=87.50% | top3=98.44% | acc=88.90% | bal_acc=80.65% | macro_f1=0.8005 | weighted_f1=0.8862 | precision_macro=0.8112 | recall_macro=0.8065 | qwk=0.8580 | mae=0.2319
+        ovr_roc_auc_macro=0.9774 | ovr_pr_auc_macro=0.8600
+  -> early stopping triggered at epoch 30
+/root/miniconda3/lib/python3.12/site-packages/torch/nn/modules/conv.py:306: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv1d(input, weight, bias, self.stride,
+
+[TEST] loss=ce
+  Test | loss=0.5083 | top1=87.53% | top3=98.56% | acc=87.52% | bal_acc=75.53% | macro_f1=0.7621 | weighted_f1=0.8727 | precision_macro=0.7748 | recall_macro=0.7553 | qwk=0.8253 | mae=0.2641
+        ovr_roc_auc_macro=0.9763 | ovr_pr_auc_macro=0.8392
+  Confusion Matrix:
+[[  42    9    2    0    8    4    0]
+ [   2   85    3    2    1    9    1]
+ [   7    4  156    1   17   34    1]
+ [   1    1    2   12    2    5    0]
+ [  12    4    7    1  148   49    2]
+ [   0    5   13    2   37 1283    1]
+ [   0    0    1    0    0    0   27]]
+  Classification Report:
+              precision    recall  f1-score   support
+
+       akiec     0.6562    0.6462    0.6512        65
+         bcc     0.7870    0.8252    0.8057       103
+         bkl     0.8478    0.7091    0.7723       220
+          df     0.6667    0.5217    0.5854        23
+         mel     0.6948    0.6637    0.6789       223
+          nv     0.9270    0.9567    0.9417      1341
+        vasc     0.8438    0.9643    0.9000        28
+
+    accuracy                         0.8752      2003
+   macro avg     0.7748    0.7553    0.7621      2003
+weighted avg     0.8723    0.8752    0.8727      2003
+
+
+==========================================================================================
+Summary CSV saved: /root/autodl-tmp/MedVisionLab/HAM10000_Loss/logs/ResNet_layer3+eca_attention_ham10000_eca_ce_seed2024_20260630_141939_summary.csv
+Top results by test_macro_f1:
+  ce: macro_f1=0.7621, acc=87.52%, bal_acc=75.53%
+Log file saved: /root/autodl-tmp/MedVisionLab/HAM10000_Loss/logs/ResNet_layer3+eca_attention_ham10000_eca_ce_seed2024_20260630_141939.log
+==========================================================================================
+
+==========================================================================================
+RETURN_CODE: 0
