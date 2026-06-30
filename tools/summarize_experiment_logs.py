@@ -54,6 +54,9 @@ LOSS_METRICS = (
     ("qwk", "QWK", False),
 )
 LOSS_DATASETS = {"KOA", "ADNI"}
+DAST_SENSITIVITY_DATASETS = {"KOA"}
+DAST_SENSITIVITY_DEFAULT_TAU = 1.0
+DAST_SENSITIVITY_DEFAULT_GAMMA = 1.5
 
 
 def dataset_from_path(path: Path) -> str:
@@ -949,11 +952,301 @@ def write_attention_comparison_outputs(records: List[Dict[str, object]], out_dir
     print(f"Wrote {tests_md_path}")
 
 
+def setting_float(value: object) -> Optional[float]:
+    parsed = parse_float(value)
+    if parsed is None:
+        return None
+    return float(parsed)
+
+
+def format_setting(value: object) -> str:
+    parsed = setting_float(value)
+    if parsed is None:
+        return ""
+    return f"{parsed:g}"
+
+
+def sensitivity_model_label(method: object) -> str:
+    text = str(method or "")
+    return "ResNet50 + MESC" if "mesc" in text.lower() else "ResNet50"
+
+
+def sensitivity_sweep(rec: Dict[str, object]) -> str:
+    tag_source = f"{rec.get('run_tag', '')} {rec.get('source', '')}".lower()
+    if "dast_sensitivity_tau" in tag_source:
+        return "tau"
+    if "dast_sensitivity_gamma" in tag_source:
+        return "gamma"
+    if "dast_sensitivity_default" in tag_source:
+        return "default"
+
+    tau = setting_float(rec.get("tau"))
+    gamma = setting_float(rec.get("gamma"))
+    if tau is None or gamma is None:
+        return ""
+    if abs(tau - DAST_SENSITIVITY_DEFAULT_TAU) < 1e-12 and abs(gamma - DAST_SENSITIVITY_DEFAULT_GAMMA) < 1e-12:
+        return "default"
+    if abs(gamma - DAST_SENSITIVITY_DEFAULT_GAMMA) < 1e-12:
+        return "tau"
+    if abs(tau - DAST_SENSITIVITY_DEFAULT_TAU) < 1e-12:
+        return "gamma"
+    return "grid"
+
+
+def is_dast_sensitivity_record(rec: Dict[str, object]) -> bool:
+    dataset = str(rec.get("dataset") or "")
+    loss = str(rec.get("loss") or "")
+    method = str(rec.get("method") or "")
+    seed = str(rec.get("seed") or "")
+    tag_source = f"{rec.get('run_tag', '')} {rec.get('source', '')}".lower()
+    if dataset not in DAST_SENSITIVITY_DATASETS or loss != "DAST" or not seed:
+        return False
+    if "resnet50" not in method.lower():
+        return False
+    if setting_float(rec.get("tau")) is None or setting_float(rec.get("gamma")) is None:
+        return False
+    return (
+        "dast_sensitivity_" in tag_source
+        or "koa_dast_grid" in tag_source
+        or "dast_tuning" in tag_source
+    )
+
+
+def dast_sensitivity_preference(rec: Dict[str, object]) -> Tuple[int, int, float]:
+    tag_source = f"{rec.get('run_tag', '')} {rec.get('source', '')}".lower()
+    return (
+        1 if "dast_sensitivity_" in tag_source else 0,
+        1 if str(rec.get("source", "")).lower().endswith("_summary.csv") else 0,
+        source_mtime(rec),
+    )
+
+
+def collect_dast_sensitivity_records(records: List[Dict[str, object]]) -> List[Dict[str, object]]:
+    selected = [r for r in records if is_dast_sensitivity_record(r)]
+    by_key: Dict[Tuple[str, str, str, str, str], Dict[str, object]] = {}
+    for rec in selected:
+        key = (
+            str(rec["dataset"]),
+            sensitivity_model_label(rec.get("method")),
+            format_setting(rec.get("tau")),
+            format_setting(rec.get("gamma")),
+            str(rec["seed"]),
+        )
+        if key not in by_key or dast_sensitivity_preference(rec) > dast_sensitivity_preference(by_key[key]):
+            by_key[key] = rec
+    return sorted(
+        by_key.values(),
+        key=lambda r: (
+            str(r["dataset"]),
+            sensitivity_model_label(r.get("method")),
+            {"default": 0, "tau": 1, "gamma": 2, "grid": 3}.get(sensitivity_sweep(r), 9),
+            setting_float(r.get("tau")) if setting_float(r.get("tau")) is not None else 999.0,
+            setting_float(r.get("gamma")) if setting_float(r.get("gamma")) is not None else 999.0,
+            int(str(r["seed"])) if str(r["seed"]).isdigit() else 999999,
+        ),
+    )
+
+
+def write_dast_sensitivity_plot(summary_rows: List[Dict[str, object]], out_dir: Path) -> None:
+    try:
+        import matplotlib.pyplot as plt
+    except Exception as exc:  # pragma: no cover - optional plotting dependency.
+        print(f"Skipping DAST sensitivity plot because matplotlib is unavailable: {exc}")
+        return
+
+    by_model: Dict[str, List[Dict[str, object]]] = defaultdict(list)
+    for row in summary_rows:
+        by_model[str(row["model"])].append(row)
+
+    for model, rows in sorted(by_model.items()):
+        tau_rows = [
+            row for row in rows
+            if abs(float(row["gamma"]) - DAST_SENSITIVITY_DEFAULT_GAMMA) < 1e-12
+        ]
+        gamma_rows = [
+            row for row in rows
+            if abs(float(row["tau"]) - DAST_SENSITIVITY_DEFAULT_TAU) < 1e-12
+        ]
+        if not tau_rows and not gamma_rows:
+            continue
+
+        fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.0), constrained_layout=True)
+        for ax, axis_rows, x_key, title, default_x in [
+            (axes[0], tau_rows, "tau", "Tau sensitivity", DAST_SENSITIVITY_DEFAULT_TAU),
+            (axes[1], gamma_rows, "gamma", "Gamma sensitivity", DAST_SENSITIVITY_DEFAULT_GAMMA),
+        ]:
+            axis_rows = sorted(axis_rows, key=lambda row: float(row[x_key]))
+            x_values = [float(row[x_key]) for row in axis_rows]
+            y_values = [float(row["qwk_mean"]) for row in axis_rows]
+            y_err = [float(row["qwk_std"]) for row in axis_rows]
+            if x_values:
+                ax.errorbar(x_values, y_values, yerr=y_err, marker="o", linewidth=1.8, capsize=3)
+                ax.axvline(default_x, color="#d62728", linestyle="--", linewidth=1.0)
+            ax.set_title(title)
+            ax.set_xlabel(x_key)
+            ax.set_ylabel("QWK")
+            ax.grid(True, linestyle=":", linewidth=0.7, alpha=0.7)
+
+        safe_model = "".join(ch.lower() if ch.isalnum() else "_" for ch in model).strip("_")
+        while "__" in safe_model:
+            safe_model = safe_model.replace("__", "_")
+        fig.suptitle(f"DAST sensitivity on KOA ({model})", fontsize=10)
+        png_path = out_dir / f"dast_sensitivity_{safe_model}.png"
+        pdf_path = out_dir / f"dast_sensitivity_{safe_model}.pdf"
+        fig.savefig(png_path, dpi=300)
+        fig.savefig(pdf_path)
+        plt.close(fig)
+        print(f"Wrote {png_path}")
+        print(f"Wrote {pdf_path}")
+
+
+def write_dast_sensitivity_outputs(records: List[Dict[str, object]], out_dir: Path) -> None:
+    sensitivity_records = collect_dast_sensitivity_records(records)
+    if not sensitivity_records:
+        return
+
+    raw_path = out_dir / "dast_sensitivity_records.csv"
+    summary_path = out_dir / "dast_sensitivity_summary.csv"
+    md_path = out_dir / "dast_sensitivity_summary.md"
+    tex_path = out_dir / "dast_sensitivity_summary.tex"
+
+    raw_fields = [
+        "dataset",
+        "model",
+        "sweep",
+        "tau",
+        "gamma",
+        "method",
+        "seed",
+        "acc",
+        "macro_f1",
+        "mae",
+        "qwk",
+        "run_tag",
+        "source",
+    ]
+    raw_rows: List[Dict[str, object]] = []
+    for rec in sensitivity_records:
+        row = dict(rec)
+        row["model"] = sensitivity_model_label(rec.get("method"))
+        row["sweep"] = sensitivity_sweep(rec)
+        row["tau"] = format_setting(rec.get("tau"))
+        row["gamma"] = format_setting(rec.get("gamma"))
+        raw_rows.append(row)
+
+    with raw_path.open("w", encoding="utf-8-sig", newline="") as fp:
+        writer = csv.DictWriter(fp, fieldnames=raw_fields, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(raw_rows)
+
+    grouped: Dict[Tuple[str, str, str, str, str], List[Dict[str, object]]] = defaultdict(list)
+    for row in raw_rows:
+        grouped[(str(row["dataset"]), str(row["model"]), str(row["sweep"]), str(row["tau"]), str(row["gamma"]))].append(row)
+
+    def sensitivity_group_sort_key(item):
+        return (
+            item[0][0],
+            item[0][1],
+            {"default": 0, "tau": 1, "gamma": 2, "grid": 3}.get(item[0][2], 9),
+            float(item[0][3]) if item[0][3] else 999.0,
+            float(item[0][4]) if item[0][4] else 999.0,
+        )
+
+    sorted_groups = sorted(grouped.items(), key=sensitivity_group_sort_key)
+
+    summary_rows: List[Dict[str, object]] = []
+    for key, rows in sorted_groups:
+        dataset, model, sweep, tau, gamma = key
+        acc = table_values(rows, "acc")
+        f1 = table_values(rows, "macro_f1")
+        mae = table_values(rows, "mae")
+        qwk = table_values(rows, "qwk")
+        acc_mean, acc_std = fmt_mean_std(acc)
+        f1_mean, f1_std = fmt_mean_std(f1)
+        mae_mean, mae_std = fmt_mean_std(mae)
+        qwk_mean, qwk_std = fmt_mean_std(qwk)
+        summary_rows.append({
+            "dataset": dataset,
+            "model": model,
+            "sweep": sweep,
+            "tau": tau,
+            "gamma": gamma,
+            "n": len(rows),
+            "acc_mean": acc_mean,
+            "acc_std": acc_std,
+            "macro_f1_mean": f1_mean,
+            "macro_f1_std": f1_std,
+            "mae_mean": mae_mean,
+            "mae_std": mae_std,
+            "qwk_mean": qwk_mean,
+            "qwk_std": qwk_std,
+        })
+
+    with summary_path.open("w", encoding="utf-8-sig", newline="") as fp:
+        fieldnames = [
+            "dataset",
+            "model",
+            "sweep",
+            "tau",
+            "gamma",
+            "n",
+            "acc_mean",
+            "acc_std",
+            "macro_f1_mean",
+            "macro_f1_std",
+            "mae_mean",
+            "mae_std",
+            "qwk_mean",
+            "qwk_std",
+        ]
+        writer = csv.DictWriter(fp, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(summary_rows)
+
+    md_lines = [
+        "| Dataset | Model | Sweep | tau | gamma | ACC | Macro-F1 | MAE | QWK | n |",
+        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    tex_lines = [
+        "\\begin{tabular}{lllcccccc}",
+        "\\toprule",
+        "Dataset & Model & Sweep & $\\tau$ & $\\gamma$ & ACC (\\%) & Macro-F1 & MAE & QWK \\\\",
+        "\\midrule",
+    ]
+    for key, rows in sorted_groups:
+        dataset, model, sweep, tau, gamma = key
+        acc = table_values(rows, "acc")
+        f1 = table_values(rows, "macro_f1")
+        mae = table_values(rows, "mae")
+        qwk = table_values(rows, "qwk")
+        md_lines.append(
+            f"| {dataset} | {model} | {sweep} | {tau} | {gamma} | "
+            f"{metric_cell(acc, percent=True, latex=False)} | {metric_cell(f1, latex=False)} | "
+            f"{metric_cell(mae, latex=False)} | {metric_cell(qwk, latex=False)} | {len(rows)} |"
+        )
+        tex_lines.append(
+            f"{dataset} & {model} & {sweep} & {tau} & {gamma} & "
+            f"{metric_cell(acc, percent=True)} & {metric_cell(f1)} & "
+            f"{metric_cell(mae)} & {metric_cell(qwk)} \\\\"
+        )
+    tex_lines.extend(["\\bottomrule", "\\end{tabular}", ""])
+    md_path.write_text("\n".join(md_lines) + "\n", encoding="utf-8")
+    tex_path.write_text("\n".join(tex_lines), encoding="utf-8")
+
+    write_dast_sensitivity_plot(summary_rows, out_dir)
+
+    print(f"Wrote {raw_path}")
+    print(f"Wrote {summary_path}")
+    print(f"Wrote {md_path}")
+    print(f"Wrote {tex_path}")
+
+
 def write_outputs(records: List[Dict[str, object]], out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     write_controlled_outputs(records, out_dir)
     write_loss_comparison_outputs(records, out_dir)
     write_attention_comparison_outputs(records, out_dir)
+    write_dast_sensitivity_outputs(records, out_dir)
 
 
 def main() -> int:
