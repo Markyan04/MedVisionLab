@@ -1,0 +1,12 @@
+Device: cuda
+Resolved test dir: E:\Paper\Computer-Vision-for-Medicine\Brain_Tumor_MRI\Testing
+CUDA: NVIDIA GeForce RTX 4080 SUPER
+Test split size: 1600
+Candidate class: pituitary | candidates in test split: 400
+CAM method: gradcam++ | cam_on=pred | alpha=0.35
+Baseline : ResNet_baseline.py | checkpoint=best_ResNet_baseline_ce_controlled_brain_tumor_mri_resnet50_seed777_special.pt | target_layer=layer4
+Proposed : ResNet_layer3+MECS.py | checkpoint=best_ResNet_layer3+MECS_ce_controlled_brain_tumor_mri_resnet50_plus_mesc_seed2024_special.pt | target_layer=layer4
+Output dir: E:\Paper\Computer-Vision-for-Medicine\visual_outputs\gradcampp_visual_analysis_local_20260630\brain\pituitary_improved
+[1] exported image_id=Te-pi_8 | true=pituitary | baseline=meningioma | proposed=pituitary
+Exported 1 sample(s) to: E:\Paper\Computer-Vision-for-Medicine\visual_outputs\gradcampp_visual_analysis_local_20260630\brain\pituitary_improved
+Summary CSV: E:\Paper\Computer-Vision-for-Medicine\visual_outputs\gradcampp_visual_analysis_local_20260630\brain\pituitary_improved\summary.csv

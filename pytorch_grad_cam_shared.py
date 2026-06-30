@@ -122,6 +122,7 @@ def build_cam_images(
     image_size: int,
     alpha: float,
     original_from_tensor: Callable[[torch.Tensor], Image.Image],
+    cam_threshold: float = 0.0,
     aug_smooth: bool = False,
     eigen_smooth: bool = False,
 ):
@@ -157,6 +158,11 @@ def build_cam_images(
         use_rgb=True,
         image_weight=overlay_weight,
     )
+    threshold = max(0.0, min(1.0, float(cam_threshold)))
+    if threshold > 0.0:
+        original_uint8 = np.clip(original_np * 255.0, 0, 255).astype(np.uint8)
+        transparent_mask = mask < threshold
+        overlay_np[transparent_mask] = original_uint8[transparent_mask]
     heatmap = Image.fromarray(heatmap_np)
     overlay = Image.fromarray(overlay_np)
     return original, heatmap, overlay, mask

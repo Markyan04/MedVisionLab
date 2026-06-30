@@ -1,0 +1,13 @@
+Device: cuda
+Resolved test dir: E:\Paper\Computer-Vision-for-Medicine\Knee_Osteoarthritis\test
+CUDA: NVIDIA GeForce RTX 4080 SUPER
+Test split size: 1656
+Candidate class: 3 | candidates in test split: 223
+CAM method: gradcam++ | cam_on=pred | alpha=0.35
+Baseline : ResNet_baseline.py | checkpoint=best_resnet50_knee_oa_standard_ce_controlled_koa_resnet50_seed2024.pt | target_layer=layer4
+Proposed : ResNet_layer3+MECS+Loss4.py | checkpoint=best_resnet50_mecs_layer3_dast_knee_oa_new_controlled_koa_resnet50_plus_mesc_plus_dast_seed2024.pt | target_layer=layer4
+Output dir: E:\Paper\Computer-Vision-for-Medicine\visual_outputs\gradcampp_visual_analysis_local_20260630\koa\3_improved
+[1] exported image_id=9037494R | true=3_Moderate | baseline=2_Mild | proposed=3_Moderate
+[2] exported image_id=9055836L | true=3_Moderate | baseline=2_Mild | proposed=3_Moderate
+Exported 2 sample(s) to: E:\Paper\Computer-Vision-for-Medicine\visual_outputs\gradcampp_visual_analysis_local_20260630\koa\3_improved
+Summary CSV: E:\Paper\Computer-Vision-for-Medicine\visual_outputs\gradcampp_visual_analysis_local_20260630\koa\3_improved\summary.csv

@@ -70,8 +70,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--device', default='auto', choices=['auto', 'cpu', 'cuda'])
     parser.add_argument('--image-size', type=int, default=int(os.getenv('KNEE_IMAGE_SIZE', '224')))
     parser.add_argument('--alpha', type=float, default=0.35, help='Heatmap opacity. Default: 0.35.')
+    parser.add_argument('--cam-threshold', type=float, default=0.0, help='Set CAM values below this threshold transparent in overlays. Default: 0.0.')
+    parser.add_argument('--baseline-cam-threshold', type=float, default=None, help='Optional baseline-specific CAM transparency threshold.')
+    parser.add_argument('--proposed-cam-threshold', type=float, default=None, help='Optional proposed-specific CAM transparency threshold.')
     parser.add_argument('--cam-method', default='gradcam++', choices=CAM_METHOD_CHOICES, help='pytorch-grad-cam method. Default: gradcam++.')
     parser.add_argument('--cam-on', default='pred', choices=['pred', 'true'], help='Draw CAM for each model\'s prediction or for the shared true label.')
+    parser.add_argument(
+        '--selection-mode',
+        default='improved',
+        choices=['improved', 'proposed-correct', 'any'],
+        help='Sample filter: improved means baseline wrong and proposed correct; proposed-correct only requires proposed correct; any exports class samples.',
+    )
     parser.add_argument('--aug-smooth', action='store_true', help='Enable test-time augmentation smoothing if supported.')
     parser.add_argument('--eigen-smooth', action='store_true', help='Enable eigen smoothing if supported.')
     parser.add_argument('--data-root', default='', help='Optional Knee data root override.')
@@ -103,6 +112,7 @@ def compose_comparison_panel(
     baseline_overlay: Image.Image,
     proposed_overlay: Image.Image,
     info_lines: Sequence[str],
+    original_title: str,
     baseline_title: str,
     proposed_title: str,
 ) -> Image.Image:
@@ -120,7 +130,7 @@ def compose_comparison_panel(
         y += 18
 
     positions = [margin, margin * 2 + original.width, margin * 3 + original.width * 2]
-    titles = ['Original', baseline_title, proposed_title]
+    titles = [original_title, baseline_title, proposed_title]
     images = [original.convert('RGB'), baseline_overlay.convert('RGB'), proposed_overlay.convert('RGB')]
 
     for x, title, image in zip(positions, titles, images):
@@ -235,6 +245,8 @@ def main() -> None:
     baseline_target_module = resolve_target_module(baseline_model, args.baseline_target_layer)
     proposed_target_module = resolve_target_module(proposed_model, args.proposed_target_layer)
     transform = build_eval_transform(args.image_size)
+    baseline_cam_threshold = args.cam_threshold if args.baseline_cam_threshold is None else args.baseline_cam_threshold
+    proposed_cam_threshold = args.cam_threshold if args.proposed_cam_threshold is None else args.proposed_cam_threshold
 
     print(f'Device: {device}')
     print(f'Resolved test dir: {test_dir}')
@@ -242,7 +254,10 @@ def main() -> None:
         print(f'CUDA: {torch.cuda.get_device_name(0)}')
     print(f'Test split size: {len(records["rows"])}')
     print(f'Candidate class: {args.class_name} | candidates in test split: {len(candidate_rows)}')
-    print(f'CAM method: {args.cam_method} | cam_on={args.cam_on} | alpha={args.alpha:.2f}')
+    print(
+        f'CAM method: {args.cam_method} | cam_on={args.cam_on} | alpha={args.alpha:.2f} | '
+        f'baseline_threshold={baseline_cam_threshold:.2f} | proposed_threshold={proposed_cam_threshold:.2f}'
+    )
     if args.aug_smooth or args.eigen_smooth:
         print(f'CAM smoothing: aug_smooth={args.aug_smooth}, eigen_smooth={args.eigen_smooth}')
     print(f'Baseline : {args.baseline_model} | checkpoint={baseline_checkpoint.name} | target_layer={args.baseline_target_layer}')
@@ -264,7 +279,9 @@ def main() -> None:
         true_idx = int(row['label_index'])
         baseline_correct = baseline_pred_idx == true_idx
         proposed_correct = proposed_pred_idx == true_idx
-        if baseline_correct or not proposed_correct:
+        if args.selection_mode == 'improved' and (baseline_correct or not proposed_correct):
+            continue
+        if args.selection_mode == 'proposed-correct' and not proposed_correct:
             continue
 
         if args.cam_on == 'true':
@@ -284,6 +301,7 @@ def main() -> None:
             alpha=args.alpha,
             mean=MEAN,
             std=STD,
+            cam_threshold=baseline_cam_threshold,
             aug_smooth=args.aug_smooth,
             eigen_smooth=args.eigen_smooth,
         )
@@ -297,6 +315,7 @@ def main() -> None:
             alpha=args.alpha,
             mean=MEAN,
             std=STD,
+            cam_threshold=proposed_cam_threshold,
             aug_smooth=args.aug_smooth,
             eigen_smooth=args.eigen_smooth,
         )
@@ -312,7 +331,7 @@ def main() -> None:
         info_lines = [
             f'image_id={image_id} | true={true_label_name} ({true_folder_name})',
             f'baseline={baseline_pred_name} ({baseline_conf:.4f}) | proposed={proposed_pred_name} ({proposed_conf:.4f})',
-            f'cam_method={args.cam_method} | cam_on={args.cam_on}',
+            f'cam_method={args.cam_method} | cam_on={args.cam_on} | selection={args.selection_mode} | thresholds={baseline_cam_threshold:.2f}/{proposed_cam_threshold:.2f}',
             f'baseline_layer={args.baseline_target_layer} -> {baseline_cam_name} | proposed_layer={args.proposed_target_layer} -> {proposed_cam_name}',
         ]
         if args.aug_smooth or args.eigen_smooth:
@@ -322,6 +341,7 @@ def main() -> None:
             baseline_overlay,
             proposed_overlay,
             info_lines=info_lines,
+            original_title=f'Original (true: {true_label_name})',
             baseline_title=f'Baseline ({baseline_pred_name})',
             proposed_title=f'Proposed ({proposed_pred_name})',
         )
@@ -346,6 +366,9 @@ def main() -> None:
             'image_path': str(image_path),
             'cam_method': args.cam_method,
             'cam_on': args.cam_on,
+            'baseline_cam_threshold': f'{baseline_cam_threshold:.6f}',
+            'proposed_cam_threshold': f'{proposed_cam_threshold:.6f}',
+            'selection_mode': args.selection_mode,
             'baseline_prediction': baseline_pred_name,
             'baseline_confidence': f'{baseline_conf:.6f}',
             'baseline_cam_target': baseline_cam_name,
@@ -369,7 +392,7 @@ def main() -> None:
     if not summary_rows:
         print(
             f'No matching test samples found for class={args.class_name}. '
-            'Condition: baseline predicts wrong while proposed predicts correct.'
+            f'Selection mode: {args.selection_mode}.'
         )
         print('Nothing was exported.')
         return
