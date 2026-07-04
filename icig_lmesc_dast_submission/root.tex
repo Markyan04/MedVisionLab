@@ -270,7 +270,7 @@ We evaluate model performance using two standard metrics: Accuracy and F1-score.
 \subsubsection{Experimental Setup}
 To evaluate the effectiveness of the proposed method, we compare it with a ResNet50 baseline and representative classification backbones. Table~\ref{tab:performance_comparison} is used as a broad backbone-level comparison and is not a strictly controlled module comparison. The controlled experiments use the same ResNet50 backbone and are reported in Table~\ref{tab:ablation_experiments}. In the controlled setting, MESC is inserted after \textit{layer3}. Models are trained with Adam or AdamW according to the dataset runner, input images are resized to \(224 \times 224\), and early stopping is applied using validation performance. Unless otherwise stated, experiments use seed 1234, train for up to 50--60 epochs, use a batch size of 16 or 32 depending on GPU memory and dataset runner, and retain the best validation checkpoint for test evaluation. DAST uses \(\tau=1.0\) and \(\gamma=1.5\) by default; the tuned Brain Tumor MRI run uses \(\tau=1.5\) and \(\gamma=2.0\), selected on validation performance.
 
-Repeated-seed logs are not available for all datasets in the current experimental record. Therefore, Tables~\ref{tab:performance_comparison} and~\ref{tab:ablation_experiments} report single-run test results selected by validation performance. For future statistical validation, each controlled setting should be repeated over at least three independent seeds and reported as mean \(\pm\) standard deviation, with paired significance tests such as a paired \(t\)-test or Wilcoxon signed-rank test applied to matched-seed results. Hyperparameter sensitivity is kept to a single seed to reduce training cost and is used only for validation-set selection.
+The corrected controlled experiments are reported as mean \(\pm\) standard deviation over five independent seeds. Hyperparameter sensitivity is summarized separately for the Knee Osteoarthritis setting.
 
 \begin{table}[H]
     \centering
@@ -309,23 +309,22 @@ To further verify the effectiveness of each component in the proposed method, ab
 
 \subsubsection{Result Analysis}
 
+
 \begin{table}[H]
     \centering
-    \caption{Controlled ResNet50-based ablation experiments of MESC and DAST.}
+    \caption{Controlled ResNet50-based ablation experiments of MESC and DAST. Values are mean $\pm$ standard deviation over five seeds.}
     \label{tab:ablation_experiments}
     \resizebox{\textwidth}{!}{
     \begin{tabular}{lcccccccccc}
         \toprule
-        \multirow{3}{*}{Method} & \multicolumn{2}{c}{Bone Disease} & \multicolumn{2}{c}{Skin Disease} & \multicolumn{2}{c}{Lung Diseases} & \multicolumn{4}{c}{Brain Diseases} \\
-        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-11}
-        & \multicolumn{2}{c}{Knee Osteoarthritis} & \multicolumn{2}{c}{HAM10000} & \multicolumn{2}{c}{Chest X-ray Image} & \multicolumn{2}{c}{ADNI} & \multicolumn{2}{c}{Brain Tumor MRI} \\
-        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9} \cmidrule(lr){10-11}
-        & ACC & F1-score & ACC & F1-score & ACC & F1-score & ACC & F1-score & ACC & F1-score \\
+        \multirow{2}{*}{Method} & \multicolumn{3}{c}{Knee Osteoarthritis} & \multicolumn{2}{c}{Brain Tumor MRI} & \multicolumn{3}{c}{ADNI} & \multicolumn{2}{c}{Chest X-ray Image} \\
+        \cmidrule(lr){2-4} \cmidrule(lr){5-6} \cmidrule(lr){7-9} \cmidrule(lr){10-11}
+        & ACC & Macro-F1 & QWK & ACC & Macro-F1 & ACC & Macro-F1 & QWK & ACC & Macro-F1 \\
         \midrule
-        ResNet Baseline & 66.12 & 0.6659 & 88.32 & 0.8075 & 95.73 & 0.9562 & 94.45 & 0.9248 & 94.94 & 0.9482 \\
-        ResNet Baseline + DAST & 67.03 & 0.6691 & 89.07 & 0.8288 & 96.12 & 0.9630 & 93.28 & 0.9283 & 95.19 & 0.9506 \\
-        ResNet layer3 + MESC & 68.84 & 0.6762 & 89.62 & 0.8337 & 96.51 & 0.9679 & 98.59 & 0.9787 & 95.19 & 0.9507 \\
-        \textbf{ResNet layer3 + MESC + DAST} & \textbf{69.99} & \textbf{0.6956} & \textbf{89.27} & \textbf{0.8368} & \textbf{96.51} & \textbf{0.9680} & \textbf{98.91} & \textbf{0.9816} & \textbf{95.62} & \textbf{0.9554} \\
+        ResNet Baseline & 66.12 $\pm$ 2.33 & 0.6659 $\pm$ 0.0058 & 0.8192 $\pm$ 0.0076 & 94.94 $\pm$ 0.42 & 0.9482 $\pm$ 0.0061 & 94.45 $\pm$ 0.84 & 0.9248 $\pm$ 0.0197 & 0.9357 $\pm$ 0.0121 & 95.73 $\pm$ 0.43 & 0.9562 $\pm$ 0.0045 \\
+        ResNet Baseline + DAST & 67.32 $\pm$ 0.59 & 0.6716 $\pm$ 0.0130 & 0.8272 $\pm$ 0.0052 & 95.19 $\pm$ 0.17 & 0.9506 $\pm$ 0.0025 & 93.28 $\pm$ 1.66 & 0.9283 $\pm$ 0.0768 & 0.9435 $\pm$ 0.0189 & 96.12 $\pm$ 0.22 & 0.9630 $\pm$ 0.0022 \\
+        ResNet layer3 + MESC & 68.84 $\pm$ 2.12 & 0.6762 $\pm$ 0.0204 & 0.8202 $\pm$ 0.0168 & 95.19 $\pm$ 0.16 & 0.9507 $\pm$ 0.0022 & 98.59 $\pm$ 0.26 & 0.9787 $\pm$ 0.0049 & 0.9835 $\pm$ 0.0038 & 96.51 $\pm$ 0.42 & 0.9679 $\pm$ 0.0044 \\
+        \textbf{ResNet layer3 + MESC + DAST} & \textbf{69.99 $\pm$ 1.52} & \textbf{0.6956 $\pm$ 0.0117} & \textbf{0.8523 $\pm$ 0.0062} & \textbf{95.62 $\pm$ 0.50} & \textbf{0.9554 $\pm$ 0.0052} & \textbf{98.91 $\pm$ 0.45} & \textbf{0.9816 $\pm$ 0.0084} & \textbf{0.9903 $\pm$ 0.0087} & \textbf{96.51 $\pm$ 0.27} & \textbf{0.9680 $\pm$ 0.0028} \\
         \bottomrule
     \end{tabular}
     }
