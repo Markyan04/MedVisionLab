@@ -167,22 +167,6 @@ Epoch 32/50 | Time 1m5s
 [TEST] loss=dast
   Test | loss=0.3027 | top1=96.42% | top2=99.92% | top3=100.00% | acc=96.35% | bal_acc=95.40% | macro_f1=0.9607 | weighted_f1=0.9635 | precision_macro=0.9677 | recall_macro=0.9540 | qwk=0.9483 | mae=0.0388
         ovr_roc_auc_macro=0.9935 | ovr_pr_auc_macro=0.9891
-  Confusion Matrix:
-[[111   2   3]
- [  0 294  23]
- [  0  19 836]]
-  Classification Report:
-              precision    recall  f1-score   support
-
-     COVID19     1.0000    0.9569    0.9780       116
-      NORMAL     0.9333    0.9274    0.9304       317
-   PNEUMONIA     0.9698    0.9778    0.9738       855
-
-    accuracy                         0.9635      1288
-   macro avg     0.9677    0.9540    0.9607      1288
-weighted avg     0.9636    0.9635    0.9635      1288
-
-
 ==========================================================================================
 Summary CSV saved: E:\Paper\Computer-Vision-for-Medicine\chest-x-ray-image_Loss\logs\ResNet_baseline_controlled_chest_x-ray_image_resnet50_plus_dast_seed2024_20260627_212518_summary.csv
 Top results by test_macro_f1:

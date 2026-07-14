@@ -252,30 +252,6 @@ Epoch 50/50 | Time 0m37s
 [TEST] loss=dast
   Test | loss=0.8141 | top1=88.80% | top3=96.49% | acc=88.87% | bal_acc=74.28% | macro_f1=0.7638 | weighted_f1=0.8849 | precision_macro=0.8273 | recall_macro=0.7428 | qwk=0.8749 | mae=0.2102
         ovr_roc_auc_macro=0.9447 | ovr_pr_auc_macro=0.7908
-  Confusion Matrix:
-[[  54    4    3    0    1    3    0]
- [   7   77    4    0    4   10    1]
- [   7    5  175    1   12   20    0]
- [   4    4    2    7    2    4    0]
- [   2    2    9    0  148   61    1]
- [   2    4   11    0   28 1294    2]
- [   0    0    0    0    1    2   25]]
-  Classification Report:
-              precision    recall  f1-score   support
-
-       akiec     0.7105    0.8308    0.7660        65
-         bcc     0.8021    0.7476    0.7739       103
-         bkl     0.8578    0.7955    0.8255       220
-          df     0.8750    0.3043    0.4516        23
-         mel     0.7551    0.6637    0.7064       223
-          nv     0.9283    0.9650    0.9463      1341
-        vasc     0.8621    0.8929    0.8772        28
-
-    accuracy                         0.8887      2003
-   macro avg     0.8273    0.7428    0.7638      2003
-weighted avg     0.8862    0.8887    0.8849      2003
-
-
 ==========================================================================================
 Summary CSV saved: E:\Paper\Computer-Vision-for-Medicine\HAM10000_Loss\logs\ResNet_layer3+MECS_controlled_ham10000_resnet50_plus_mesc_plus_dast_seed3407_20260627_140502_summary.csv
 Top results by test_macro_f1:

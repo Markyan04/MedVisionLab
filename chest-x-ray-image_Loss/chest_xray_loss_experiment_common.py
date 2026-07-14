@@ -871,11 +871,6 @@ def run_chestxray_medical_losses_experiments(
                         f"        ovr_roc_auc_macro={test_metrics['ovr_roc_auc_macro']:.4f} "
                         f"| ovr_pr_auc_macro={test_metrics['ovr_pr_auc_macro']:.4f}"
                     )
-                log("  Confusion Matrix:")
-                log(str(test_metrics["confusion_matrix"]))
-                log("  Classification Report:")
-                log(str(test_metrics["classification_report"]))
-
                 summary_rows.append({
                     "run_tag": run_tag,
                     "seed": SEED,

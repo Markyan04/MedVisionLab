@@ -269,27 +269,6 @@ Best validation QWK: 0.8082
 Test | loss=0.7809 | top1=66.61% | top2=88.44% | top3=98.62% | acc=66.49% | bal_acc=68.04% | macro_f1=0.6767 | qwk=0.8115 | mae=0.4058 | weighted_f1=0.6561 | precision_macro=0.6807 | recall_macro=0.6804
      ovr_roc_auc_macro=0.8824 | ovr_pr_auc_macro=0.7014
 
-Confusion Matrix:
-[[542  72  25   0   0]
- [149  88  57   2   0]
- [ 80  90 252  25   0]
- [  1   8  32 172  10]
- [  0   0   0   4  47]]
-
-Classification Report:
-              precision    recall  f1-score   support
-
-    0_Normal     0.7021    0.8482    0.7682       639
-  1_Doubtful     0.3411    0.2973    0.3177       296
-      2_Mild     0.6885    0.5638    0.6199       447
-  3_Moderate     0.8473    0.7713    0.8075       223
-    4_Severe     0.8246    0.9216    0.8704        51
-
-    accuracy                         0.6649      1656
-   macro avg     0.6807    0.6804    0.6767      1656
-weighted avg     0.6572    0.6649    0.6561      1656
-
-
 Evaluating on auto_test set...
 
 AutoTest | loss=0.7697 | top1=66.31% | top2=89.23% | top3=99.22% | acc=66.12% | bal_acc=67.35% | macro_f1=0.6672 | qwk=0.8100 | mae=0.4076 | weighted_f1=0.6508 | precision_macro=0.6706 | recall_macro=0.6735

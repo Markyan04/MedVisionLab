@@ -153,24 +153,6 @@ Epoch 27/50 | Time 0m29s
 [TEST] loss=dast
   Test | loss=0.4713 | top1=95.06% | top2=96.62% | acc=95.06% | bal_acc=95.06% | macro_f1=0.9495 | weighted_f1=0.9495 | precision_macro=0.9546 | recall_macro=0.9506 | mae=0.0694 | qwk=0.9547
         ovr_roc_auc_macro=0.9847 | ovr_pr_auc_macro=0.9581
-  Confusion Matrix:
-[[328  45  27   0]
- [  0 396   0   4]
- [  0   2 398   0]
- [  0   1   0 399]]
-  Classification Report:
-              precision    recall  f1-score   support
-
-      glioma     1.0000    0.8200    0.9011       400
-  meningioma     0.8919    0.9900    0.9384       400
-     notumor     0.9365    0.9950    0.9648       400
-   pituitary     0.9901    0.9975    0.9938       400
-
-    accuracy                         0.9506      1600
-   macro avg     0.9546    0.9506    0.9495      1600
-weighted avg     0.9546    0.9506    0.9495      1600
-
-
 ==========================================================================================
 Summary CSV saved: E:\Paper\Computer-Vision-for-Medicine\Brain_Tumor_MRI_Loss\logs\ResNet_layer3+MECS_controlled_brain_tumor_mri_resnet50_plus_mesc_plus_dast_seed777_20260629_024426_summary.csv
 Top results by test_macro_f1:

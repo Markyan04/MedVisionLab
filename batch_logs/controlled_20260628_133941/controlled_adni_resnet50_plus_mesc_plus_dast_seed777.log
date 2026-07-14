@@ -258,24 +258,6 @@ Epoch 50/50 | Time 0m25s
 [TEST] loss=dast
   Test | loss=0.4204 | top1=98.67% | top2=100.00% | top3=100.00% | acc=98.67% | bal_acc=97.00% | macro_f1=0.9802 | weighted_f1=0.9867 | precision_macro=0.9912 | recall_macro=0.9700 | qwk=0.9882 | mae=0.0133
         ovr_roc_auc_macro=0.9992 | ovr_pr_auc_macro=0.9989
-  Confusion Matrix:
-[[636   4   0   0]
- [  9 439   0   0]
- [  0   3 176   0]
- [  0   0   1  12]]
-  Classification Report:
-                  precision    recall  f1-score   support
-
-     NonDemented     0.9860    0.9938    0.9899       640
-VeryMildDemented     0.9843    0.9799    0.9821       448
-    MildDemented     0.9944    0.9832    0.9888       179
-ModerateDemented     1.0000    0.9231    0.9600        13
-
-        accuracy                         0.9867      1280
-       macro avg     0.9912    0.9700    0.9802      1280
-    weighted avg     0.9867    0.9867    0.9867      1280
-
-
 ==========================================================================================
 Summary CSV saved: E:\Paper\Computer-Vision-for-Medicine\Alzheimer_MRI_Loss\logs\ResNet_layer3+MECS_controlled_adni_resnet50_plus_mesc_plus_dast_seed777_20260629_014529_summary.csv
 Top results by test_macro_f1:

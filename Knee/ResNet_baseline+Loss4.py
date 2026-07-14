@@ -611,12 +611,6 @@ def main():
             f" | ovr_pr_auc_macro={test_metrics['ovr_pr_auc_macro']:.4f}"
         )
 
-    print("\nConfusion Matrix:")
-    print(test_metrics["confusion_matrix"])
-
-    print("\nClassification Report:")
-    print(test_metrics["classification_report"])
-
     summary_row = {
         "script_name": "ResNet_baseline+Loss4.py",
         "loss_name": "dast",

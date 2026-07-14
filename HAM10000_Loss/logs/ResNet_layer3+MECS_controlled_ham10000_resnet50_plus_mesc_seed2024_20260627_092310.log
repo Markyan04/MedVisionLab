@@ -248,30 +248,6 @@ Epoch 50/50 | Time 0m33s
 [TEST] loss=ce
   Test | loss=0.5171 | top1=89.96% | top3=98.86% | acc=89.97% | bal_acc=80.82% | macro_f1=0.8163 | weighted_f1=0.8978 | precision_macro=0.8317 | recall_macro=0.8082 | qwk=0.8655 | mae=0.2107
         ovr_roc_auc_macro=0.9806 | ovr_pr_auc_macro=0.8740
-  Confusion Matrix:
-[[  49    8    3    0    1    4    0]
- [   5   86    4    1    1    6    0]
- [   6    3  177    1   10   23    0]
- [   0    3    2   14    1    3    0]
- [  10    2    9    1  154   45    2]
- [   2    7   18    0   20 1294    0]
- [   0    0    0    0    0    0   28]]
-  Classification Report:
-              precision    recall  f1-score   support
-
-       akiec     0.6806    0.7538    0.7153        65
-         bcc     0.7890    0.8350    0.8113       103
-         bkl     0.8310    0.8045    0.8176       220
-          df     0.8235    0.6087    0.7000        23
-         mel     0.8235    0.6906    0.7512       223
-          nv     0.9411    0.9650    0.9529      1341
-        vasc     0.9333    1.0000    0.9655        28
-
-    accuracy                         0.8997      2003
-   macro avg     0.8317    0.8082    0.8163      2003
-weighted avg     0.8982    0.8997    0.8978      2003
-
-
 ==========================================================================================
 Summary CSV saved: E:\Paper\Computer-Vision-for-Medicine\HAM10000_Loss\logs\ResNet_layer3+MECS_controlled_ham10000_resnet50_plus_mesc_seed2024_20260627_092310_summary.csv
 Top results by test_macro_f1:

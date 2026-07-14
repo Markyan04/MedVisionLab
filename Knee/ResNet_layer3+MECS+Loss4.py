@@ -599,12 +599,6 @@ def main():
             f" | ovr_pr_auc_macro={test_metrics['ovr_pr_auc_macro']:.4f}"
         )
 
-    print("\nConfusion Matrix:")
-    print(test_metrics["confusion_matrix"])
-
-    print("\nClassification Report:")
-    print(test_metrics["classification_report"])
-
     if auto_test_loader is not None:
         print("\nEvaluating on auto_test set...")
         auto_test_loss, auto_test_top, auto_test_metrics = evaluate(
