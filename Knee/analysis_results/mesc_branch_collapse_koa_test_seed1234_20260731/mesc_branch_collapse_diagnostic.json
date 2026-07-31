@@ -1,0 +1,537 @@
+{
+  "checkpoint": "E:\\Paper\\Computer-Vision-for-Medicine\\Knee\\checkpoints\\best_resnet50_mecs_layer3_knee_oa_controlled_koa_resnet50_plus_mesc_seed1234.pt",
+  "checkpoint_best_val_qwk": 0.8161450716583796,
+  "test_dir": "E:\\Paper\\Computer-Vision-for-Medicine\\Knee_Osteoarthritis\\test",
+  "device": "cuda",
+  "selected_samples": [
+    {
+      "dataset_index": 0,
+      "sample_id": "0/9003175L.png",
+      "label": 0
+    },
+    {
+      "dataset_index": 1,
+      "sample_id": "0/9003175R.png",
+      "label": 0
+    },
+    {
+      "dataset_index": 639,
+      "sample_id": "1/9001400L.png",
+      "label": 1
+    },
+    {
+      "dataset_index": 640,
+      "sample_id": "1/9001400R.png",
+      "label": 1
+    },
+    {
+      "dataset_index": 935,
+      "sample_id": "2/9003316R.png",
+      "label": 2
+    },
+    {
+      "dataset_index": 936,
+      "sample_id": "2/9006407R.png",
+      "label": 2
+    },
+    {
+      "dataset_index": 1382,
+      "sample_id": "3/9011053L.png",
+      "label": 3
+    },
+    {
+      "dataset_index": 1383,
+      "sample_id": "3/9012867L.png",
+      "label": 3
+    },
+    {
+      "dataset_index": 1605,
+      "sample_id": "4/9012867R.png",
+      "label": 4
+    },
+    {
+      "dataset_index": 1613,
+      "sample_id": "4/9215922R.png",
+      "label": 4
+    }
+  ],
+  "code_and_runtime_audit": {
+    "source_descriptor_mapping": {
+      "avg_att": "adaptive_avg_pool2d(inputs)",
+      "max_att": "adaptive_max_pool2d(inputs)",
+      "med_att": "global_median_pooling(inputs)"
+    },
+    "source_return_mapping": {
+      "avg_att": "avg_out",
+      "max_att": "max_out",
+      "med_att": "median_out"
+    },
+    "returned_matches_manual_stage_values": {
+      "avg": true,
+      "max": true,
+      "median": true
+    },
+    "all_returned_values_match_manual": true,
+    "returned_data_ptrs": {
+      "avg": 47645698048,
+      "max": 47646818304,
+      "median": 47646859264
+    },
+    "all_returned_data_ptrs_distinct": true,
+    "returned_python_objects_distinct": true,
+    "returned_sum_matches_manual_sum": true,
+    "default_vs_reconstructed_logits_max_abs_diff": 0.0,
+    "analysis_code_error_detected": false
+  },
+  "tensor_statistics": [
+    {
+      "stage": "raw_descriptor",
+      "branch": "avg",
+      "shape": "[10, 1024, 1, 1]",
+      "numel": 10240,
+      "mean": 0.3579051196575165,
+      "std": 0.7192786931991577,
+      "min": -0.14649316668510437,
+      "max": 4.69394588470459,
+      "data_ptr": 47527648768
+    },
+    {
+      "stage": "raw_descriptor",
+      "branch": "max",
+      "shape": "[10, 1024, 1, 1]",
+      "numel": 10240,
+      "mean": 2.36796498298645,
+      "std": 2.3528831005096436,
+      "min": -0.04054136201739311,
+      "max": 26.17584228515625,
+      "data_ptr": 47527689728
+    },
+    {
+      "stage": "raw_descriptor",
+      "branch": "median",
+      "shape": "[10, 1024, 1, 1]",
+      "numel": 10240,
+      "mean": 0.2540464699268341,
+      "std": 0.7116518020629883,
+      "min": -0.15909795463085175,
+      "max": 4.585485458374023,
+      "data_ptr": 47645196288
+    },
+    {
+      "stage": "fc1_output",
+      "branch": "avg",
+      "shape": "[10, 256, 1, 1]",
+      "numel": 2560,
+      "mean": -1.820149302482605,
+      "std": 1.8473477363586426,
+      "min": -11.363429069519043,
+      "max": -0.337584912776947,
+      "data_ptr": 47527730688
+    },
+    {
+      "stage": "fc1_output",
+      "branch": "max",
+      "shape": "[10, 256, 1, 1]",
+      "numel": 2560,
+      "mean": -8.553204536437988,
+      "std": 9.555190086364746,
+      "min": -78.00048065185547,
+      "max": 0.03977498412132263,
+      "data_ptr": 47527740928
+    },
+    {
+      "stage": "fc1_output",
+      "branch": "median",
+      "shape": "[10, 256, 1, 1]",
+      "numel": 2560,
+      "mean": -1.4986358880996704,
+      "std": 1.5204336643218994,
+      "min": -9.0723295211792,
+      "max": -0.1668308675289154,
+      "data_ptr": 47645237248
+    },
+    {
+      "stage": "relu_hidden",
+      "branch": "avg",
+      "shape": "[10, 256, 1, 1]",
+      "numel": 2560,
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "data_ptr": 47645247488
+    },
+    {
+      "stage": "relu_hidden",
+      "branch": "max",
+      "shape": "[10, 256, 1, 1]",
+      "numel": 2560,
+      "mean": 1.5537103536189534e-05,
+      "std": 0.0007859686156734824,
+      "min": 0.0,
+      "max": 0.03977498412132263,
+      "data_ptr": 47645257728
+    },
+    {
+      "stage": "relu_hidden",
+      "branch": "median",
+      "shape": "[10, 256, 1, 1]",
+      "numel": 2560,
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "data_ptr": 47645267968
+    },
+    {
+      "stage": "pre_sigmoid_logits",
+      "branch": "avg",
+      "shape": "[10, 1024, 1, 1]",
+      "numel": 10240,
+      "mean": -0.004059010650962591,
+      "std": 0.04339906945824623,
+      "min": -0.15060818195343018,
+      "max": 0.18055129051208496,
+      "data_ptr": 47645278208
+    },
+    {
+      "stage": "pre_sigmoid_logits",
+      "branch": "max",
+      "shape": "[10, 1024, 1, 1]",
+      "numel": 10240,
+      "mean": -0.004053313750773668,
+      "std": 0.04340621829032898,
+      "min": -0.15060818195343018,
+      "max": 0.18055129051208496,
+      "data_ptr": 47645319168
+    },
+    {
+      "stage": "pre_sigmoid_logits",
+      "branch": "median",
+      "shape": "[10, 1024, 1, 1]",
+      "numel": 10240,
+      "mean": -0.004059010650962591,
+      "std": 0.04339906945824623,
+      "min": -0.15060818195343018,
+      "max": 0.18055129051208496,
+      "data_ptr": 47645360128
+    },
+    {
+      "stage": "post_sigmoid_attention",
+      "branch": "avg",
+      "shape": "[10, 1024, 1, 1]",
+      "numel": 10240,
+      "mean": 0.4989853799343109,
+      "std": 0.010844510048627853,
+      "min": 0.4624190032482147,
+      "max": 0.5450156331062317,
+      "data_ptr": 47645401088
+    },
+    {
+      "stage": "post_sigmoid_attention",
+      "branch": "max",
+      "shape": "[10, 1024, 1, 1]",
+      "numel": 10240,
+      "mean": 0.4989868104457855,
+      "std": 0.010846302844583988,
+      "min": 0.4624190032482147,
+      "max": 0.5450156331062317,
+      "data_ptr": 47645442048
+    },
+    {
+      "stage": "post_sigmoid_attention",
+      "branch": "median",
+      "shape": "[10, 1024, 1, 1]",
+      "numel": 10240,
+      "mean": 0.4989853799343109,
+      "std": 0.010844510048627853,
+      "min": 0.4624190032482147,
+      "max": 0.5450156331062317,
+      "data_ptr": 47645483008
+    }
+  ],
+  "pairwise_statistics": [
+    {
+      "stage": "raw_descriptor",
+      "pair": "avg-max",
+      "max_abs_diff": 25.064781188964844,
+      "mean_abs_diff": 2.0100598335266113,
+      "exact_equal_fraction": 0.0,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "raw_descriptor",
+      "pair": "avg-median",
+      "max_abs_diff": 1.1273226737976074,
+      "mean_abs_diff": 0.10961717367172241,
+      "exact_equal_fraction": 0.0,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "raw_descriptor",
+      "pair": "max-median",
+      "max_abs_diff": 26.19210433959961,
+      "mean_abs_diff": 2.1139183044433594,
+      "exact_equal_fraction": 0.0,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "fc1_output",
+      "pair": "avg-max",
+      "max_abs_diff": 69.29630279541016,
+      "mean_abs_diff": 6.733456611633301,
+      "exact_equal_fraction": 0.0,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "fc1_output",
+      "pair": "avg-median",
+      "max_abs_diff": 3.245655059814453,
+      "mean_abs_diff": 0.3226538300514221,
+      "exact_equal_fraction": 0.0,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "fc1_output",
+      "pair": "max-median",
+      "max_abs_diff": 72.3936767578125,
+      "mean_abs_diff": 7.055020332336426,
+      "exact_equal_fraction": 0.0,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "relu_hidden",
+      "pair": "avg-max",
+      "max_abs_diff": 0.03977498412132263,
+      "mean_abs_diff": 1.5537103536189534e-05,
+      "exact_equal_fraction": 0.9996094107627869,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "relu_hidden",
+      "pair": "avg-median",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "exact_equal_fraction": 1.0,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "relu_hidden",
+      "pair": "max-median",
+      "max_abs_diff": 0.03977498412132263,
+      "mean_abs_diff": 1.5537103536189534e-05,
+      "exact_equal_fraction": 0.9996094107627869,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "pre_sigmoid_logits",
+      "pair": "avg-max",
+      "max_abs_diff": 0.0025216806679964066,
+      "mean_abs_diff": 0.00012121776671847329,
+      "exact_equal_fraction": 0.9000000357627869,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "pre_sigmoid_logits",
+      "pair": "avg-median",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "exact_equal_fraction": 1.0,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "pre_sigmoid_logits",
+      "pair": "max-median",
+      "max_abs_diff": 0.0025216806679964066,
+      "mean_abs_diff": 0.00012121776671847329,
+      "exact_equal_fraction": 0.9000000357627869,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "post_sigmoid_attention",
+      "pair": "avg-max",
+      "max_abs_diff": 0.0006302893161773682,
+      "mean_abs_diff": 3.0290577342384495e-05,
+      "exact_equal_fraction": 0.9000000357627869,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "post_sigmoid_attention",
+      "pair": "avg-median",
+      "max_abs_diff": 0.0,
+      "mean_abs_diff": 0.0,
+      "exact_equal_fraction": 1.0,
+      "same_data_ptr": false
+    },
+    {
+      "stage": "post_sigmoid_attention",
+      "pair": "max-median",
+      "max_abs_diff": 0.0006302893161773682,
+      "mean_abs_diff": 3.0290577342384495e-05,
+      "exact_equal_fraction": 0.9000000357627869,
+      "same_data_ptr": false
+    }
+  ],
+  "data_ptr_statistics": [
+    {
+      "stage": "raw_descriptor",
+      "avg_data_ptr": 47527648768,
+      "max_data_ptr": 47527689728,
+      "median_data_ptr": 47645196288,
+      "all_data_ptr_distinct": true
+    },
+    {
+      "stage": "fc1_output",
+      "avg_data_ptr": 47527730688,
+      "max_data_ptr": 47527740928,
+      "median_data_ptr": 47645237248,
+      "all_data_ptr_distinct": true
+    },
+    {
+      "stage": "relu_hidden",
+      "avg_data_ptr": 47645247488,
+      "max_data_ptr": 47645257728,
+      "median_data_ptr": 47645267968,
+      "all_data_ptr_distinct": true
+    },
+    {
+      "stage": "pre_sigmoid_logits",
+      "avg_data_ptr": 47645278208,
+      "max_data_ptr": 47645319168,
+      "median_data_ptr": 47645360128,
+      "all_data_ptr_distinct": true
+    },
+    {
+      "stage": "post_sigmoid_attention",
+      "avg_data_ptr": 47645401088,
+      "max_data_ptr": 47645442048,
+      "median_data_ptr": 47645483008,
+      "all_data_ptr_distinct": true
+    }
+  ],
+  "activation_diagnostics": [
+    {
+      "branch": "avg",
+      "relu_zero_fraction": 1.0,
+      "pre_sigmoid_abs_gt_5_fraction": 0.0,
+      "pre_sigmoid_abs_gt_10_fraction": 0.0,
+      "pre_sigmoid_abs_gt_15_fraction": 0.0,
+      "sigmoid_lt_1e-4_fraction": 0.0,
+      "sigmoid_gt_1_minus_1e-4_fraction": 0.0,
+      "sigmoid_extreme_fraction": 0.0
+    },
+    {
+      "branch": "max",
+      "relu_zero_fraction": 0.9996094107627869,
+      "pre_sigmoid_abs_gt_5_fraction": 0.0,
+      "pre_sigmoid_abs_gt_10_fraction": 0.0,
+      "pre_sigmoid_abs_gt_15_fraction": 0.0,
+      "sigmoid_lt_1e-4_fraction": 0.0,
+      "sigmoid_gt_1_minus_1e-4_fraction": 0.0,
+      "sigmoid_extreme_fraction": 0.0
+    },
+    {
+      "branch": "median",
+      "relu_zero_fraction": 1.0,
+      "pre_sigmoid_abs_gt_5_fraction": 0.0,
+      "pre_sigmoid_abs_gt_10_fraction": 0.0,
+      "pre_sigmoid_abs_gt_15_fraction": 0.0,
+      "sigmoid_lt_1e-4_fraction": 0.0,
+      "sigmoid_gt_1_minus_1e-4_fraction": 0.0,
+      "sigmoid_extreme_fraction": 0.0
+    }
+  ],
+  "shared_mlp_parameter_norms": [
+    {
+      "layer": "fc1",
+      "parameter": "weight",
+      "shape": "[256, 1024, 1, 1]",
+      "l2_norm": 10.146282196044922,
+      "mean": -0.0020104090217500925,
+      "std": 0.01971471682190895,
+      "min": -0.16470786929130554,
+      "max": 0.2561039924621582
+    },
+    {
+      "layer": "fc1",
+      "parameter": "bias",
+      "shape": "[256]",
+      "l2_norm": 0.312979131937027,
+      "mean": -0.003539786208420992,
+      "std": 0.019238250330090523,
+      "min": -0.06804652512073517,
+      "max": 0.02966112457215786
+    },
+    {
+      "layer": "fc2",
+      "parameter": "weight",
+      "shape": "[1024, 256, 1, 1]",
+      "l2_norm": 18.959346771240234,
+      "mean": 2.2221283870749176e-06,
+      "std": 0.03702997788786888,
+      "min": -0.1303023248910904,
+      "max": 0.17872639000415802
+    },
+    {
+      "layer": "fc2",
+      "parameter": "bias",
+      "shape": "[1024]",
+      "l2_norm": 1.3948310613632202,
+      "mean": -0.004059010185301304,
+      "std": 0.04339906573295593,
+      "min": -0.15060818195343018,
+      "max": 0.18055129051208496
+    }
+  ],
+  "replacement_tests": [
+    {
+      "setting": "original",
+      "channel_attention_max_abs_diff": 0.0,
+      "mecs_output_max_abs_diff": 0.0,
+      "logits_max_abs_diff": 0.0,
+      "logits_mean_abs_diff": 0.0,
+      "logits_exact_equal_fraction": 1.0,
+      "changed_prediction_count": 0
+    },
+    {
+      "setting": "median_replaced_by_avg",
+      "channel_attention_max_abs_diff": 0.0,
+      "mecs_output_max_abs_diff": 0.0,
+      "logits_max_abs_diff": 0.0,
+      "logits_mean_abs_diff": 0.0,
+      "logits_exact_equal_fraction": 1.0,
+      "changed_prediction_count": 0
+    },
+    {
+      "setting": "max_replaced_by_avg",
+      "channel_attention_max_abs_diff": 0.0006302595138549805,
+      "mecs_output_max_abs_diff": 0.0041533708572387695,
+      "logits_max_abs_diff": 0.00042724609375,
+      "logits_mean_abs_diff": 2.7499198040459305e-05,
+      "logits_exact_equal_fraction": 0.8999999761581421,
+      "changed_prediction_count": 0
+    },
+    {
+      "setting": "all_avg",
+      "channel_attention_max_abs_diff": 0.0006302595138549805,
+      "mecs_output_max_abs_diff": 0.0041533708572387695,
+      "logits_max_abs_diff": 0.00042724609375,
+      "logits_mean_abs_diff": 2.7499198040459305e-05,
+      "logits_exact_equal_fraction": 0.8999999761581421,
+      "changed_prediction_count": 0
+    }
+  ],
+  "collapse_location": {
+    "category": "B",
+    "location": "shared MLP/ReLU",
+    "reason": "Raw descriptors differ, but avg and median become exactly equal at the ReLU hidden stage and remain equal afterward.",
+    "descriptors_clearly_different": true,
+    "raw_descriptor_pair_mean_abs_diffs": [
+      2.0100598335266113,
+      0.10961717367172241,
+      2.1139183044433594
+    ],
+    "minimum_relu_zero_fraction_across_branches": 0.9996094107627869,
+    "maximum_sigmoid_extreme_fraction_across_branches": 0.0
+  }
+}

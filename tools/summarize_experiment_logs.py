@@ -379,6 +379,11 @@ def dedupe_records(records: Iterable[Dict[str, object]]) -> List[Dict[str, objec
         run_tag = str(rec.get("run_tag") or "")
         source_key = record_identity(rec, source)
         tag_key = record_identity(rec, run_tag) if run_tag else None
+        if "corrected_table_seed_records" in source and tag_key is not None:
+            dedup[tag_key] = rec
+            source_index[source_key] = tag_key
+            tag_index[tag_key] = tag_key
+            continue
         key = source_index.get(source_key)
         if key is None and tag_key is not None:
             key = tag_index.get(tag_key)
@@ -399,6 +404,15 @@ def dedupe_records(records: Iterable[Dict[str, object]]) -> List[Dict[str, objec
 
 def collect_records(root: Path) -> List[Dict[str, object]]:
     records: List[Dict[str, object]] = []
+    corrected_records_path = root / "analysis_tables"
+    if corrected_records_path.exists():
+        records.extend(read_experiment_records_csv(corrected_records_path))
+        records = [
+            r for r in records
+            if r.get("dataset") and r.get("acc") is not None and r.get("macro_f1") is not None
+        ]
+        return dedupe_records(records)
+
     records_path = root / "analysis_tables" / "experiment_records.csv"
     if records_path.exists():
         records.extend(read_experiment_records_csv(records_path))
@@ -464,8 +478,15 @@ def write_controlled_outputs(records: List[Dict[str, object]], out_dir: Path) ->
         writer.writeheader()
         writer.writerows(records)
 
+    controlled_records = [
+        rec for rec in records
+        if str(rec.get("run_tag", "")).startswith("controlled_corrected_")
+    ]
+    if not controlled_records:
+        controlled_records = records
+
     grouped: Dict[Tuple[str, str], List[Dict[str, object]]] = defaultdict(list)
-    for rec in records:
+    for rec in controlled_records:
         grouped[(str(rec["dataset"]), str(rec["method"]))].append(rec)
 
     summary_path = out_dir / "controlled_ablation_summary.csv"
@@ -895,20 +916,25 @@ def write_attention_comparison_outputs(records: List[Dict[str, object]], out_dir
                 key=lambda s: (0, int(s)) if str(s).isdigit() else (1, str(s)),
             )
             for metric, metric_label, _ in LOSS_METRICS:
-                other_values = [float(by_dataset_module_seed[(dataset, other_module, seed)][metric]) for seed in common_seeds]
-                mesc_values = [float(by_dataset_module_seed[(dataset, mesc_module, seed)][metric]) for seed in common_seeds]
+                metric_seeds = [
+                    seed for seed in common_seeds
+                    if by_dataset_module_seed[(dataset, other_module, seed)].get(metric) is not None
+                    and by_dataset_module_seed[(dataset, mesc_module, seed)].get(metric) is not None
+                ]
+                other_values = [float(by_dataset_module_seed[(dataset, other_module, seed)][metric]) for seed in metric_seeds]
+                mesc_values = [float(by_dataset_module_seed[(dataset, mesc_module, seed)][metric]) for seed in metric_seeds]
                 test_name, statistic, p_value = paired_t_test(other_values, mesc_values)
-                mean_delta = statistics.mean([m - o for o, m in zip(other_values, mesc_values)]) if common_seeds else math.nan
+                mean_delta = statistics.mean([m - o for o, m in zip(other_values, mesc_values)]) if metric_seeds else math.nan
                 test_rows.append({
                     "dataset": dataset,
                     "comparison": f"{mesc_module} vs {other_module}",
                     "metric": metric_label,
-                    "n": len(common_seeds),
+                    "n": len(metric_seeds),
                     "mean_delta_mesc_minus_other": mean_delta,
                     "test": test_name,
                     "statistic": statistic,
                     "p_value": p_value,
-                    "seeds": ",".join(common_seeds),
+                    "seeds": ",".join(metric_seeds),
                 })
 
     with tests_path.open("w", encoding="utf-8-sig", newline="") as fp:

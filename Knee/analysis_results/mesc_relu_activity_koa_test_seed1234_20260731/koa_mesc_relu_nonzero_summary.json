@@ -1,0 +1,48 @@
+{
+  "checkpoint": "E:\\Paper\\Computer-Vision-for-Medicine\\Knee\\checkpoints\\best_resnet50_mecs_layer3_knee_oa_controlled_koa_resnet50_plus_mesc_seed1234.pt",
+  "checkpoint_best_val_qwk": 0.8161450716583796,
+  "test_dir": "E:\\Paper\\Computer-Vision-for-Medicine\\Knee_Osteoarthritis\\test",
+  "n_images": 1656,
+  "relu_hidden_elements_per_branch_per_image": 256,
+  "summary": [
+    {
+      "branch": "avg",
+      "n_images": 1656,
+      "mean_nonzero_fraction": 0.0,
+      "std_nonzero_fraction": 0.0,
+      "min_nonzero_fraction": 0.0,
+      "max_nonzero_fraction": 0.0,
+      "mean_nonzero_count": 0.0,
+      "max_nonzero_count": 0,
+      "images_with_zero_nonzero_elements": 1656,
+      "images_with_any_nonzero_element": 0,
+      "fraction_images_with_any_nonzero_element": 0.0
+    },
+    {
+      "branch": "max",
+      "n_images": 1656,
+      "mean_nonzero_fraction": 2.358846618357488e-06,
+      "std_nonzero_fraction": 9.596186974830159e-05,
+      "min_nonzero_fraction": 0.0,
+      "max_nonzero_fraction": 0.00390625,
+      "mean_nonzero_count": 0.0006038647342995169,
+      "max_nonzero_count": 1,
+      "images_with_zero_nonzero_elements": 1655,
+      "images_with_any_nonzero_element": 1,
+      "fraction_images_with_any_nonzero_element": 0.0006038647342995169
+    },
+    {
+      "branch": "median",
+      "n_images": 1656,
+      "mean_nonzero_fraction": 0.0,
+      "std_nonzero_fraction": 0.0,
+      "min_nonzero_fraction": 0.0,
+      "max_nonzero_fraction": 0.0,
+      "mean_nonzero_count": 0.0,
+      "max_nonzero_count": 0,
+      "images_with_zero_nonzero_elements": 1656,
+      "images_with_any_nonzero_element": 0,
+      "fraction_images_with_any_nonzero_element": 0.0
+    }
+  ]
+}
