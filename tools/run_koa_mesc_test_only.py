@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Run KOA ResNet50 + MESC for multiple seeds and retain only Test metrics.
+"""Run KOA ResNet50 + MESC with CE or DAST and retain only Test metrics.
 
 The underlying trainer still performs normal training and validation so that
 early stopping can select the best checkpoint. Its epoch-by-epoch output is
@@ -25,7 +25,10 @@ from typing import Dict, Iterable, List, Optional, Sequence
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-TRAIN_SCRIPT = PROJECT_ROOT / "Knee" / "ResNet_layer3+MECS+CE.py"
+TRAIN_SCRIPTS = {
+    "ce": PROJECT_ROOT / "Knee" / "ResNet_layer3+MECS+CE.py",
+    "dast": PROJECT_ROOT / "Knee" / "ResNet_layer3+MECS+Loss4.py",
+}
 DEFAULT_SEEDS = (42, 777, 1234, 2024, 3407)
 METRIC_RE = re.compile(r"([A-Za-z0-9_]+)=(-?[0-9]+(?:\.[0-9]+)?)%?")
 PERCENT_METRICS = {"top1", "top2", "top3", "acc", "bal_acc"}
@@ -63,10 +66,11 @@ def parse_metrics(line: str) -> Dict[str, float]:
 
 
 def python_command(args: argparse.Namespace) -> List[str]:
+    train_script = TRAIN_SCRIPTS[args.criterion]
     conda_env = args.conda_env.strip()
     if conda_env.lower() not in {"", "none", "null", "false", "0"}:
-        return ["conda", "run", "--no-capture-output", "-n", conda_env, "python", "-u", str(TRAIN_SCRIPT)]
-    return [args.python, "-u", str(TRAIN_SCRIPT)]
+        return ["conda", "run", "--no-capture-output", "-n", conda_env, "python", "-u", str(train_script)]
+    return [args.python, "-u", str(train_script)]
 
 
 def build_env(seed: int, args: argparse.Namespace, run_id: str) -> Dict[str, str]:
@@ -78,7 +82,7 @@ def build_env(seed: int, args: argparse.Namespace, run_id: str) -> Dict[str, str
             "KNEE_SEED": str(seed),
             "KNEE_EPOCHS": str(args.epochs),
             "KNEE_PATIENCE": str(args.patience),
-            "KNEE_RUN_TAG": f"test_only_{run_id}_koa_resnet50_plus_mesc_seed{seed}",
+            "KNEE_RUN_TAG": f"test_only_{run_id}_koa_resnet50_plus_mesc_{args.criterion}_seed{seed}",
         }
     )
     env["KNEE_DATA_ROOT"] = str(args.data_root)
@@ -93,6 +97,9 @@ def build_env(seed: int, args: argparse.Namespace, run_id: str) -> Dict[str, str
         env["KNEE_NUM_WORKERS"] = str(args.num_workers)
     if args.early_delta is not None:
         env["KNEE_EARLY_DELTA"] = str(args.early_delta)
+    if args.criterion == "dast":
+        env["KNEE_DAST_TAU"] = str(args.dast_tau)
+        env["KNEE_DAST_GAMMA"] = str(args.dast_gamma)
     return env
 
 
@@ -103,7 +110,12 @@ def run_seed(seed: int, args: argparse.Namespace, run_id: str) -> Optional[Dict[
     test_metrics: Optional[Dict[str, float]] = None
     waiting_for_test_auc = False
 
-    print(f"[RUN] seed={seed} (epochs={args.epochs}, patience={args.patience})", flush=True)
+    method = "MESC+DAST" if args.criterion == "dast" else "MESC+CE"
+    dast_config = f", tau={args.dast_tau}, gamma={args.dast_gamma}" if args.criterion == "dast" else ""
+    print(
+        f"[RUN] {method} | seed={seed} (epochs={args.epochs}, patience={args.patience}{dast_config})",
+        flush=True,
+    )
     try:
         process = subprocess.Popen(
             cmd,
@@ -202,6 +214,9 @@ def print_summary(rows: Sequence[Dict[str, object]]) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seeds", default=",".join(map(str, DEFAULT_SEEDS)))
+    parser.add_argument("--criterion", choices=("ce", "dast"), default="ce")
+    parser.add_argument("--dast-tau", type=float, default=1.0)
+    parser.add_argument("--dast-gamma", type=float, default=1.5)
     parser.add_argument("--epochs", type=int, default=60)
     parser.add_argument("--patience", type=int, default=15)
     parser.add_argument("--batch-size", type=int, default=None)
@@ -216,13 +231,22 @@ def main() -> int:
     )
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument("--conda-env", default="none", help="Use 'none' inside an already activated environment.")
-    parser.add_argument("--output", type=Path, default=None, help="CSV path; defaults to analysis_tables/test_only_<timestamp>.csv")
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help="CSV path; defaults to analysis_tables/koa_mesc_<criterion>_test_only_<timestamp>.csv",
+    )
     args = parser.parse_args()
 
     if args.epochs <= 0:
         parser.error("--epochs must be positive")
     if args.patience <= 0:
         parser.error("--patience must be positive")
+    if args.dast_tau <= 0:
+        parser.error("--dast-tau must be positive")
+    if args.dast_gamma < 0:
+        parser.error("--dast-gamma must be non-negative")
     try:
         seeds = parse_seeds(args.seeds)
     except (ValueError, argparse.ArgumentTypeError) as exc:
@@ -238,7 +262,10 @@ def main() -> int:
         )
 
     run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_path = args.output or PROJECT_ROOT / "analysis_tables" / f"koa_mesc_test_only_{run_id}.csv"
+    output_path = (
+        args.output
+        or PROJECT_ROOT / "analysis_tables" / f"koa_mesc_{args.criterion}_test_only_{run_id}.csv"
+    )
     if not output_path.is_absolute():
         output_path = PROJECT_ROOT / output_path
 
