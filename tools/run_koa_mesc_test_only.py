@@ -81,6 +81,10 @@ def build_env(seed: int, args: argparse.Namespace, run_id: str) -> Dict[str, str
             "KNEE_RUN_TAG": f"test_only_{run_id}_koa_resnet50_plus_mesc_seed{seed}",
         }
     )
+    env["KNEE_DATA_ROOT"] = str(args.data_root)
+    omp_threads = env.get("OMP_NUM_THREADS", "").strip()
+    if not omp_threads.isdigit() or int(omp_threads) <= 0:
+        env["OMP_NUM_THREADS"] = str(max(1, args.num_workers or 4))
     if args.batch_size is not None:
         env["KNEE_BATCH_SIZE"] = str(args.batch_size)
     if args.image_size is not None:
@@ -204,6 +208,12 @@ def main() -> int:
     parser.add_argument("--image-size", type=int, default=None)
     parser.add_argument("--num-workers", type=int, default=None)
     parser.add_argument("--early-delta", type=float, default=None)
+    parser.add_argument(
+        "--data-root",
+        type=Path,
+        default=None,
+        help="KOA directory containing train/, val/, and test/ (or set KNEE_DATA_ROOT).",
+    )
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument("--conda-env", default="none", help="Use 'none' inside an already activated environment.")
     parser.add_argument("--output", type=Path, default=None, help="CSV path; defaults to analysis_tables/test_only_<timestamp>.csv")
@@ -217,6 +227,15 @@ def main() -> int:
         seeds = parse_seeds(args.seeds)
     except (ValueError, argparse.ArgumentTypeError) as exc:
         parser.error(str(exc))
+
+    configured_data_root = args.data_root or os.getenv("KNEE_DATA_ROOT") or PROJECT_ROOT / "Knee_Osteoarthritis"
+    args.data_root = Path(configured_data_root).expanduser().resolve()
+    missing_splits = [name for name in ("train", "val", "test") if not (args.data_root / name).is_dir()]
+    if missing_splits:
+        parser.error(
+            f"invalid KOA data root: {args.data_root}; missing directories: {', '.join(missing_splits)}. "
+            "Pass --data-root /path/to/dataset."
+        )
 
     run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_path = args.output or PROJECT_ROOT / "analysis_tables" / f"koa_mesc_test_only_{run_id}.csv"
