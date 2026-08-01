@@ -1,0 +1,84 @@
+DATASET: KOA
+METHOD: ResNet50 + DAST
+SEED: 42
+SCRIPT: /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline+Loss4.py
+RUN_TAG: controlled_koa_resnet50_plus_dast_seed42
+LABEL_SMOOTHING: 0.1
+SORD_TAU: 1.0
+COMMAND: /root/miniconda3/envs/medvision/bin/python -u /root/autodl-tmp/MedVisionLab/Knee/ResNet_baseline+Loss4.py
+==========================================================================================
+Starting Knee Osteoarthritis ResNet50 Baseline...
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 3090
+Run tag: controlled_koa_resnet50_plus_dast_seed42
+Data root: /root/autodl-tmp/Knee_Osteoarthritis
+Config | seed=42, img_size=224, batch_size=32, epochs=1, num_workers=2, lr_backbone=0.0001, lr_head=0.001, weight_decay=0.0001, patience=15, early_delta=0.0001
+DAST config | tau=1.0000, gamma=1.5000
+Class mapping from folders: {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4}
+
+Train samples: 5778
+Train class distribution:
+  0_Normal: 2286
+  1_Doubtful: 1046
+  2_Mild: 1516
+  3_Moderate: 757
+  4_Severe: 173
+
+Valid samples: 826
+Valid class distribution:
+  0_Normal: 328
+  1_Doubtful: 153
+  2_Mild: 212
+  3_Moderate: 106
+  4_Severe: 27
+
+Test samples: 1656
+Test class distribution:
+  0_Normal: 639
+  1_Doubtful: 296
+  2_Mild: 447
+  3_Moderate: 223
+  4_Severe: 51
+
+AutoTest samples: 1526
+AutoTest class distribution:
+  0_Normal: 604
+  1_Doubtful: 275
+  2_Mild: 403
+  3_Moderate: 200
+  4_Severe: 44
+
+Split sizes | train=5778, valid=826, test=1656, auto_test=1526
+Loading pretrained ResNet50...
+Trainable parameters: 23,518,277
+
+[INFO] Class counts in training set: [2286 1046 1516  757  173]
+
+[INFO] Using Distance-Aware Soft Target Loss (DAST)
+       - Feature: Clinically-aware ordinal grading
+       - Behavior: Allows ambiguity for adjacent grades, strongly penalizes far-away mistakes
+Starting training...
+
+Epoch 01/1 | Time 0m 14s
+  Train | loss=0.9262 | top1=46.13% | top2=71.79% | top3=90.20%
+  Valid | loss=0.8487 | top1=55.05% | top2=79.57% | top3=95.14% | acc=55.45% | bal_acc=40.37% | macro_f1=0.3716 | qwk=0.6638 | mae=0.6138 | weighted_f1=0.4960 | precision_macro=0.3828 | recall_macro=0.4037
+         ovr_roc_auc_macro=0.8077 | ovr_pr_auc_macro=0.4691
+ Initial best model saved to /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_controlled_koa_resnet50_plus_dast_seed42.pt (QWK=0.6638)
+
+Loading best model and evaluating on test set...
+Best validation QWK: 0.6638
+
+Test | loss=0.8601 | top1=53.25% | top2=76.98% | top3=95.57% | acc=53.50% | bal_acc=37.90% | macro_f1=0.3521 | qwk=0.6618 | mae=0.6286 | weighted_f1=0.4792 | precision_macro=0.3584 | recall_macro=0.3790
+     ovr_roc_auc_macro=0.7968 | ovr_pr_auc_macro=0.4391
+
+Evaluating on auto_test set...
+
+AutoTest | loss=0.8490 | top1=53.39% | top2=76.30% | top3=96.13% | acc=53.74% | bal_acc=37.48% | macro_f1=0.3474 | qwk=0.6487 | mae=0.6356 | weighted_f1=0.4767 | precision_macro=0.3604 | recall_macro=0.3748
+         ovr_roc_auc_macro=0.8003 | ovr_pr_auc_macro=0.4593
+Summary CSV saved: /root/autodl-tmp/MedVisionLab/Knee/logs/ResNet_baseline+Loss4_controlled_koa_resnet50_plus_dast_seed42_20260801_001254_summary.csv
+Checkpoint saved: /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_resnet50_knee_oa_DAST_controlled_koa_resnet50_plus_dast_seed42.pt
+
+Knee Osteoarthritis ResNet50 baseline (DAST) completed!
+
+==========================================================================================
+RETURN_CODE: 0
