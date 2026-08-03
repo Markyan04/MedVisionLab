@@ -34,3 +34,8 @@ Alzheimer_MRI/*.zip
 .ipynb_checkpoints/
 /Alzheimer_MRI
 *.png
+
+# Keep APTOS ablation tables/summaries in Git, but not large logs/checkpoints.
+# Checkpoints remain covered by the global *.pt rule above.
+APTOS/ablation_outputs*/**/*.log
+!APTOS/ablation_outputs*/**/*.csv
