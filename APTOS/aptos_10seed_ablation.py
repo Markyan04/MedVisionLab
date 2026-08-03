@@ -29,6 +29,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Sequence, Tuple
 
+# Required by PyTorch deterministic algorithms for CUDA >= 10.2.  It must be
+# configured before torch initializes cuBLAS.  An explicit user value wins.
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+
 import numpy as np
 import pandas as pd
 from PIL import Image
@@ -756,7 +760,11 @@ def run_training(args: argparse.Namespace) -> None:
     logger.info("Data root=%s", data_root)
     logger.info("Output=%s", run_dir)
     logger.info(
-        "Device=%s | AMP=%s | deterministic=%s", device, amp_enabled, args.deterministic
+        "Device=%s | AMP=%s | deterministic=%s | CUBLAS_WORKSPACE_CONFIG=%s",
+        device,
+        amp_enabled,
+        args.deterministic,
+        os.environ.get("CUBLAS_WORKSPACE_CONFIG"),
     )
     if device.type == "cuda":
         logger.info("GPU=%s", torch.cuda.get_device_name(device))

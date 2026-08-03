@@ -15,6 +15,8 @@
 
 为保证 10-seed 结果可比，建议所有实验固定同一台机器、同一 CUDA/PyTorch 版本。脚本启用了 cuDNN 确定性设置；但 VersionB 使用的 CUDA median/max-pool backward 在极少数数值并列情形下可能仍不是逐 bit 确定，因此统计结论应以 10-seed 的均值和样本标准差为准。
 
+启动器会在 Python 进程启动前设置 `CUBLAS_WORKSPACE_CONFIG=:4096:8`，满足 CUDA 10.2 及以上环境中 PyTorch 确定性矩阵运算的要求。该设置约增加 24 MiB GPU workspace；如果直接运行 Python 训练入口，脚本也会自动设置相同默认值。
+
 默认配置沿用当前 APTOS runner：256×256、batch size 32、最多 40 epochs、patience 10、AdamW、OneCycleLR、预训练 ResNet50。预训练骨干的最大学习率为 `1e-4`，新建的分类头和 MECS VersionB 参数为 `1e-3`。DAST 的两组统一使用论文默认值 `tau=1.0, gamma=1.5`。
 
 ## AutoDL 上运行

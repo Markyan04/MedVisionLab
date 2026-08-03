@@ -1,6 +1,224 @@
+from typing import Optional
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+
+def _one_hot(target: torch.Tensor, num_classes: int) -> torch.Tensor:
+    return F.one_hot(target.long(), num_classes=num_classes).float()
+
+
+def _label_smoothing_one_hot(
+    target: torch.Tensor,
+    num_classes: int,
+    smoothing: float,
+) -> torch.Tensor:
+    if not 0.0 <= smoothing < 1.0:
+        raise ValueError("smoothing must satisfy 0 <= smoothing < 1.")
+    with torch.no_grad():
+        true_dist = torch.zeros(target.size(0), num_classes, device=target.device)
+        true_dist.fill_(smoothing / max(num_classes - 1, 1))
+        true_dist.scatter_(1, target.unsqueeze(1), 1.0 - smoothing)
+    return true_dist
+
+
+def _soft_cross_entropy(
+    logits: torch.Tensor,
+    soft_targets: torch.Tensor,
+) -> torch.Tensor:
+    log_probs = F.log_softmax(logits, dim=1)
+    return -(soft_targets * log_probs).sum(dim=1).mean()
+
+
+class LabelSmoothingCrossEntropyLoss(nn.Module):
+    """Cross entropy with uniform one-hot label smoothing."""
+
+    def __init__(self, smoothing: float = 0.1):
+        super().__init__()
+        if not 0.0 <= smoothing < 1.0:
+            raise ValueError("smoothing must satisfy 0 <= smoothing < 1.")
+        self.smoothing = smoothing
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+    ) -> torch.Tensor:
+        soft_targets = _label_smoothing_one_hot(
+            target,
+            logits.size(1),
+            self.smoothing,
+        )
+        return _soft_cross_entropy(logits, soft_targets)
+
+
+class OrdinalSoftCrossEntropyLoss(nn.Module):
+    """Ordinal distance-decayed soft targets followed by soft CE."""
+
+    def __init__(self, num_classes: int, tau: float = 1.0):
+        super().__init__()
+        if tau <= 0:
+            raise ValueError("tau must be > 0.")
+        self.num_classes = num_classes
+        self.tau = tau
+        self.register_buffer(
+            "class_ids",
+            torch.arange(num_classes, dtype=torch.float),
+        )
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+    ) -> torch.Tensor:
+        target_f = target.float().unsqueeze(1)
+        dist = torch.abs(self.class_ids.unsqueeze(0) - target_f)
+        soft_targets = torch.exp(-dist / self.tau)
+        soft_targets = soft_targets / soft_targets.sum(dim=1, keepdim=True)
+        return _soft_cross_entropy(logits, soft_targets)
+
+
+class ClassBalancedFocalCELoss(nn.Module):
+    """Class-balanced focal CE with optional label smoothing."""
+
+    def __init__(
+        self,
+        class_counts,
+        beta: float = 0.9999,
+        gamma: float = 2.0,
+        smoothing: float = 0.0,
+    ):
+        super().__init__()
+        counts = torch.tensor(class_counts, dtype=torch.float)
+        effective_num = 1.0 - torch.pow(torch.tensor(beta), counts)
+        weights = (1.0 - beta) / torch.clamp(effective_num, min=1e-12)
+        weights = weights / weights.sum() * len(class_counts)
+        self.register_buffer("class_weights", weights)
+        self.gamma = gamma
+        self.smoothing = smoothing
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+    ) -> torch.Tensor:
+        probs = F.softmax(logits, dim=1)
+        pt = probs.gather(1, target.unsqueeze(1)).squeeze(1)
+        pt = pt.clamp(min=1e-8, max=1.0)
+        focal_factor = (1.0 - pt).pow(self.gamma)
+
+        if self.smoothing > 0:
+            soft_targets = _label_smoothing_one_hot(
+                target,
+                logits.size(1),
+                self.smoothing,
+            )
+            log_probs = F.log_softmax(logits, dim=1)
+            ce_per_sample = -(soft_targets * log_probs).sum(dim=1)
+        else:
+            ce_per_sample = F.cross_entropy(logits, target, reduction="none")
+
+        sample_weights = self.class_weights[target]
+        return (sample_weights * focal_factor * ce_per_sample).mean()
+
+
+class OrdinalFocalMSELoss(nn.Module):
+    """Focal CE plus an expected-grade regression penalty."""
+
+    def __init__(
+        self,
+        num_classes: int,
+        alpha_ce: float = 1.0,
+        alpha_mse: float = 0.3,
+        gamma: float = 2.0,
+        class_weights: Optional[list] = None,
+    ):
+        super().__init__()
+        self.num_classes = num_classes
+        self.alpha_ce = alpha_ce
+        self.alpha_mse = alpha_mse
+        self.gamma = gamma
+        if class_weights is not None:
+            self.register_buffer(
+                "class_weights",
+                torch.tensor(class_weights, dtype=torch.float),
+            )
+        else:
+            self.class_weights = None
+        self.register_buffer(
+            "grade_values",
+            torch.arange(num_classes, dtype=torch.float),
+        )
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+    ) -> torch.Tensor:
+        probs = F.softmax(logits, dim=1)
+        pt = probs.gather(1, target.unsqueeze(1)).squeeze(1)
+        pt = pt.clamp(min=1e-8, max=1.0)
+        focal_factor = (1.0 - pt).pow(self.gamma)
+        ce = F.cross_entropy(
+            logits,
+            target,
+            reduction="none",
+            weight=self.class_weights,
+        )
+        focal_ce = (focal_factor * ce).mean()
+
+        pred_grade = (probs * self.grade_values.unsqueeze(0)).sum(dim=1)
+        mse = F.mse_loss(pred_grade, target.float())
+        return self.alpha_ce * focal_ce + self.alpha_mse * mse
+
+
+class SymmetricCrossEntropyLoss(nn.Module):
+    """Cross entropy plus reverse cross entropy."""
+
+    def __init__(
+        self,
+        alpha: float = 1.0,
+        beta: float = 0.5,
+        num_classes: int = 5,
+    ):
+        super().__init__()
+        self.alpha = alpha
+        self.beta = beta
+        self.num_classes = num_classes
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+    ) -> torch.Tensor:
+        ce = F.cross_entropy(logits, target)
+        probs = F.softmax(logits, dim=1).clamp(min=1e-7, max=1.0)
+        one_hot = _one_hot(target, self.num_classes).clamp(min=1e-4, max=1.0)
+        reverse_ce = -(probs * torch.log(one_hot)).sum(dim=1).mean()
+        return self.alpha * ce + self.beta * reverse_ce
+
+
+class GeneralizedCrossEntropyLoss(nn.Module):
+    """Generalized cross entropy for noisy-label robustness."""
+
+    def __init__(self, q: float = 0.7):
+        super().__init__()
+        if not 0 < q <= 1.0:
+            raise ValueError("q must satisfy 0 < q <= 1.")
+        self.q = q
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+    ) -> torch.Tensor:
+        probs = F.softmax(logits, dim=1)
+        pt = probs.gather(1, target.unsqueeze(1)).squeeze(1)
+        pt = pt.clamp(min=1e-8, max=1.0)
+        if abs(self.q - 1.0) < 1e-8:
+            return (-torch.log(pt)).mean()
+        return ((1.0 - pt.pow(self.q)) / self.q).mean()
 
 
 class DistanceAwareSoftTargetLoss(nn.Module):
@@ -87,6 +305,101 @@ class DistanceAwareSoftTargetLoss(nn.Module):
 
         # 返回 batch 平均损失
         return per_sample.mean()
+
+
+class PrototypeConsistencyOrdinalLoss(nn.Module):
+    """CE plus prototype consistency and ordinal prototype spacing."""
+
+    def __init__(
+        self,
+        num_classes: int,
+        feat_dim: int,
+        lambda_proto: float = 0.2,
+        lambda_order: float = 0.05,
+    ):
+        super().__init__()
+        self.num_classes = num_classes
+        self.lambda_proto = lambda_proto
+        self.lambda_order = lambda_order
+        self.prototypes = nn.Parameter(torch.randn(num_classes, feat_dim) * 0.02)
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+        features: torch.Tensor,
+    ) -> torch.Tensor:
+        ce = F.cross_entropy(logits, target)
+        proto_target = self.prototypes[target]
+        proto_loss = F.mse_loss(features, proto_target)
+
+        if self.num_classes > 1:
+            gaps = self.prototypes[1:] - self.prototypes[:-1]
+            order_loss = gaps.norm(dim=1).var()
+        else:
+            order_loss = torch.tensor(0.0, device=logits.device)
+
+        return ce + self.lambda_proto * proto_loss + self.lambda_order * order_loss
+
+
+class AdaptiveOrdinalMarginLoss(nn.Module):
+    """Cross entropy with a class-distance-dependent logit margin."""
+
+    def __init__(
+        self,
+        num_classes: int,
+        margin_base: float = 0.15,
+        power: float = 1.0,
+    ):
+        super().__init__()
+        self.num_classes = num_classes
+        self.margin_base = margin_base
+        self.power = power
+        self.register_buffer(
+            "class_ids",
+            torch.arange(num_classes, dtype=torch.float),
+        )
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+    ) -> torch.Tensor:
+        batch_size, _ = logits.shape
+        target_ids = target.float().unsqueeze(1)
+        dist = torch.abs(self.class_ids.unsqueeze(0) - target_ids)
+        denominator = max((self.num_classes - 1) ** self.power, 1e-8)
+        margins = self.margin_base * (dist.pow(self.power) / denominator)
+
+        adjusted_logits = logits - margins
+        row_ids = torch.arange(batch_size, device=logits.device)
+        adjusted_logits[row_ids, target] = logits[row_ids, target]
+        return F.cross_entropy(adjusted_logits, target)
+
+
+def build_loss(name: str, **kwargs) -> nn.Module:
+    """Construct one of the medical losses by its experiment name."""
+
+    normalized = name.lower()
+    if normalized in {"label_smoothing_ce", "ls_ce"}:
+        return LabelSmoothingCrossEntropyLoss(**kwargs)
+    if normalized in {"sord_ce", "sord"}:
+        return OrdinalSoftCrossEntropyLoss(**kwargs)
+    if normalized == "cb_focal_ce":
+        return ClassBalancedFocalCELoss(**kwargs)
+    if normalized == "ordinal_focal_mse":
+        return OrdinalFocalMSELoss(**kwargs)
+    if normalized == "sce":
+        return SymmetricCrossEntropyLoss(**kwargs)
+    if normalized == "gce":
+        return GeneralizedCrossEntropyLoss(**kwargs)
+    if normalized == "dast":
+        return DistanceAwareSoftTargetLoss(**kwargs)
+    if normalized == "pcol":
+        return PrototypeConsistencyOrdinalLoss(**kwargs)
+    if normalized == "aom":
+        return AdaptiveOrdinalMarginLoss(**kwargs)
+    raise ValueError(f"Unknown loss name: {name}")
 
 
 if __name__ == "__main__":

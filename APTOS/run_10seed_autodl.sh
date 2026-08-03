@@ -41,6 +41,7 @@ export PYTHONUNBUFFERED=1
 # AutoDL images can inherit an empty or malformed OMP_NUM_THREADS value.
 export OMP_NUM_THREADS="${APTOS_OMP_NUM_THREADS:-4}"
 export MKL_NUM_THREADS="${APTOS_MKL_NUM_THREADS:-4}"
+export CUBLAS_WORKSPACE_CONFIG="${CUBLAS_WORKSPACE_CONFIG:-:4096:8}"
 
 exec > >(tee -a "${OUTPUT_ROOT}/launcher.log") 2>&1
 
