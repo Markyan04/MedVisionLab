@@ -22,10 +22,10 @@
 假设项目位于：
 
 ```text
-/root/autodl-tmp/Computer-Vision-for-Medicine
+/root/autodl-tmp/MedVisionLab
 ```
 
-你的数据目录为 `/root/autodl-tmp/APTOS2019`，启动器会自动识别。它也兼容项目内的 `APTOS-2019`/`APTOS2019` 和 `/root/autodl-tmp/APTOS-2019`；若位置不同，通过 `APTOS_DATA_ROOT` 指定。
+你的数据目录为 `/root/autodl-tmp/APTOS2019`，启动器会自动识别。训练标签既可以叫 `train_1.csv`（Kaggle 原文件名），也可以叫 `train.csv`。启动器还兼容项目内的 `APTOS-2019`/`APTOS2019` 和 `/root/autodl-tmp/APTOS-2019`；若位置不同，通过 `APTOS_DATA_ROOT` 指定。
 
 AutoDL 的 PyTorch 镜像通常已有 `torch` 和 `torchvision`。其余依赖缺失时，在项目根目录执行：
 
@@ -36,7 +36,7 @@ pip install numpy pandas pillow scikit-learn
 先做四组单 batch 检查（不训练、不保存 checkpoint）：
 
 ```bash
-cd /root/autodl-tmp/Computer-Vision-for-Medicine
+cd /root/autodl-tmp/MedVisionLab
 
 for exp in resnet_baseline resnet_layer3_mesc resnet_dast resnet_layer3_mesc_dast; do
   python -u APTOS/aptos_10seed_ablation.py train \
@@ -51,7 +51,7 @@ done
 随后运行完整实验：
 
 ```bash
-cd /root/autodl-tmp/Computer-Vision-for-Medicine
+cd /root/autodl-tmp/MedVisionLab
 chmod +x APTOS/run_10seed_autodl.sh
 export APTOS_DATA_ROOT=/root/autodl-tmp/APTOS2019
 export APTOS_OUTPUT_ROOT=/root/autodl-tmp/aptos_10seed_ablation

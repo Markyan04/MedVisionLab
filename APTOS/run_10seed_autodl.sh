@@ -38,6 +38,9 @@ read -r -a EXPERIMENTS <<< "${APTOS_EXPERIMENTS:-resnet_baseline resnet_layer3_m
 mkdir -p "${OUTPUT_ROOT}"
 export PYTHONPATH="${REPO_ROOT}${PYTHONPATH:+:${PYTHONPATH}}"
 export PYTHONUNBUFFERED=1
+# AutoDL images can inherit an empty or malformed OMP_NUM_THREADS value.
+export OMP_NUM_THREADS="${APTOS_OMP_NUM_THREADS:-4}"
+export MKL_NUM_THREADS="${APTOS_MKL_NUM_THREADS:-4}"
 
 exec > >(tee -a "${OUTPUT_ROOT}/launcher.log") 2>&1
 

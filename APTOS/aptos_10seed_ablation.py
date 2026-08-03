@@ -314,6 +314,17 @@ def prepare_split_dataframe(csv_path: Path, image_dir: Path) -> pd.DataFrame:
     return frame[["id_code", "diagnosis", "path"]].reset_index(drop=True)
 
 
+def resolve_split_csv(data_root: Path, split: str, csv_names: Sequence[str]) -> Path:
+    csv_path = next(
+        (data_root / name for name in csv_names if (data_root / name).is_file()),
+        None,
+    )
+    if csv_path is None:
+        expected = ", ".join(str(data_root / name) for name in csv_names)
+        raise FileNotFoundError(f"No CSV found for {split} split; tried: {expected}")
+    return csv_path
+
+
 def build_dataloaders(
     data_root: Path,
     image_size: int,
@@ -329,14 +340,16 @@ def build_dataloaders(
     torch.Generator,
 ]:
     split_specs = {
-        "train": ("train.csv", "train_images"),
-        "valid": ("valid.csv", "val_images"),
-        "test": ("test.csv", "test_images"),
+        # The Kaggle upload uses train_1.csv, while some extracted/repacked
+        # copies use train.csv.  Accept both without requiring a rename.
+        "train": (("train.csv", "train_1.csv"), "train_images"),
+        "valid": (("valid.csv",), "val_images"),
+        "test": (("test.csv",), "test_images"),
     }
-    frames = {
-        split: prepare_split_dataframe(data_root / csv_name, data_root / image_dir)
-        for split, (csv_name, image_dir) in split_specs.items()
-    }
+    frames = {}
+    for split, (csv_names, image_dir) in split_specs.items():
+        csv_path = resolve_split_csv(data_root, split, csv_names)
+        frames[split] = prepare_split_dataframe(csv_path, data_root / image_dir)
 
     train_transform = transforms.Compose(
         [
