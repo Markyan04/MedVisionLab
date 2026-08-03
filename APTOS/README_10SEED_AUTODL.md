@@ -25,7 +25,7 @@
 /root/autodl-tmp/Computer-Vision-for-Medicine
 ```
 
-数据可以放在项目内的 `APTOS-2019`，也可以放到 `/root/autodl-tmp/APTOS-2019`。若位置不同，通过 `APTOS_DATA_ROOT` 指定。
+你的数据目录为 `/root/autodl-tmp/APTOS2019`，启动器会自动识别。它也兼容项目内的 `APTOS-2019`/`APTOS2019` 和 `/root/autodl-tmp/APTOS-2019`；若位置不同，通过 `APTOS_DATA_ROOT` 指定。
 
 AutoDL 的 PyTorch 镜像通常已有 `torch` 和 `torchvision`。其余依赖缺失时，在项目根目录执行：
 
@@ -42,7 +42,7 @@ for exp in resnet_baseline resnet_layer3_mesc resnet_dast resnet_layer3_mesc_das
   python -u APTOS/aptos_10seed_ablation.py train \
     --experiment "$exp" \
     --seed 0 \
-    --data-root /root/autodl-tmp/APTOS-2019 \
+    --data-root /root/autodl-tmp/APTOS2019 \
     --output-root /root/autodl-tmp/aptos_10seed_ablation \
     --dry-run
 done
@@ -53,7 +53,7 @@ done
 ```bash
 cd /root/autodl-tmp/Computer-Vision-for-Medicine
 chmod +x APTOS/run_10seed_autodl.sh
-export APTOS_DATA_ROOT=/root/autodl-tmp/APTOS-2019
+export APTOS_DATA_ROOT=/root/autodl-tmp/APTOS2019
 export APTOS_OUTPUT_ROOT=/root/autodl-tmp/aptos_10seed_ablation
 bash APTOS/run_10seed_autodl.sh
 ```

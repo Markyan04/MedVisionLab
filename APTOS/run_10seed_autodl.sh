@@ -13,6 +13,10 @@ if [[ -n "${APTOS_DATA_ROOT:-}" ]]; then
     DATA_ROOT="${APTOS_DATA_ROOT}"
 elif [[ -d "${REPO_ROOT}/APTOS-2019" ]]; then
     DATA_ROOT="${REPO_ROOT}/APTOS-2019"
+elif [[ -d "${REPO_ROOT}/APTOS2019" ]]; then
+    DATA_ROOT="${REPO_ROOT}/APTOS2019"
+elif [[ -d "/root/autodl-tmp/APTOS2019" ]]; then
+    DATA_ROOT="/root/autodl-tmp/APTOS2019"
 elif [[ -d "/root/autodl-tmp/APTOS-2019" ]]; then
     DATA_ROOT="/root/autodl-tmp/APTOS-2019"
 else
