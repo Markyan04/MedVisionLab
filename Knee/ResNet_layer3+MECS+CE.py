@@ -60,6 +60,7 @@ from sklearn.metrics import (
 # 导入 MECS 模块
 # =======================================================
 from MECS_old import MECS_VersionA
+from medical_losses import OrdinalSoftCrossEntropyLoss
 
 warnings.filterwarnings("ignore")
 
@@ -144,6 +145,15 @@ RUN_TAG = "".join(ch if ch.isalnum() or ch in "._-" else "-" for ch in os.getenv
 RUN_SUFFIX = f"_{RUN_TAG}" if RUN_TAG else ""
 CHECKPOINT_DIR = THIS_DIR / "checkpoints"
 
+MESC_LOSS_ALIASES = {
+    "cross_entropy": "ce",
+    "sord": "sord_ce",
+    "sord-ce": "sord_ce",
+}
+MESC_LOSS_RAW = os.getenv("KNEE_MESC_LOSS", "ce").strip().lower()
+MESC_LOSS = MESC_LOSS_ALIASES.get(MESC_LOSS_RAW, MESC_LOSS_RAW)
+SORD_TAU = float(os.getenv("KNEE_SORD_TAU", os.getenv("KNEE_DAST_TAU", "1.0")))
+
 
 def resolve_checkpoint_path(filename: str) -> str:
     CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
@@ -157,6 +167,19 @@ CLASS_NAMES = ["0_Normal", "1_Doubtful", "2_Mild", "3_Moderate", "4_Severe"]
 NUM_CLASSES = len(CLASS_NAMES)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def build_criterion():
+    """Build the requested loss while keeping CE as this script's default."""
+    if MESC_LOSS == "ce":
+        return nn.CrossEntropyLoss()
+    if MESC_LOSS == "sord_ce":
+        if SORD_TAU <= 0:
+            raise ValueError("KNEE_SORD_TAU must be > 0.")
+        return OrdinalSoftCrossEntropyLoss(num_classes=NUM_CLASSES, tau=SORD_TAU)
+    raise ValueError(
+        f"Unsupported KNEE_MESC_LOSS={MESC_LOSS!r}. Choose from: ce, sord_ce."
+    )
 
 
 # =======================
@@ -453,7 +476,8 @@ def evaluate(model, loader, criterion, device, topk=(1, 2, 3)):
 # Main
 # =======================
 def main():
-    print("Starting ResNet(layer3)+MECS+CE Knee Osteoarthritis Baseline...")
+    display_loss = "CE" if MESC_LOSS == "ce" else "SORD"
+    print(f"Starting ResNet(layer3)+MECS+{display_loss} Knee Osteoarthritis Baseline...")
     print(f"Using device: {device}")
     if torch.cuda.is_available():
         print(f"CUDA device: {torch.cuda.get_device_name(0)}")
@@ -482,9 +506,12 @@ def main():
 
     class_counts = np.bincount(train_dataset.targets, minlength=NUM_CLASSES)
     print(f"\n[INFO] Class counts in training set: {class_counts}")
-    print("[INFO] Using Standard CrossEntropyLoss (No class weights).")
+    if MESC_LOSS == "ce":
+        print("[INFO] Using Standard CrossEntropyLoss (No class weights).")
+    else:
+        print(f"[INFO] Using SORD soft-target cross-entropy (tau={SORD_TAU:.4f}, gamma=0).")
 
-    criterion = nn.CrossEntropyLoss()
+    criterion = build_criterion().to(device)
 
     backbone_params = []
     head_params = []
@@ -512,7 +539,12 @@ def main():
         anneal_strategy="cos",
     )
 
-    best_path = resolve_checkpoint_path("best_resnet50_mecs_layer3_knee_oa.pt")
+    checkpoint_name = (
+        "best_resnet50_mecs_layer3_knee_oa.pt"
+        if MESC_LOSS == "ce"
+        else f"best_resnet50_mecs_layer3_knee_oa_{MESC_LOSS}.pt"
+    )
+    best_path = resolve_checkpoint_path(checkpoint_name)
     early_stopping = EarlyStopping(
         patience=PATIENCE,
         delta=EARLY_STOP_DELTA,
@@ -617,7 +649,7 @@ def main():
                 f" | ovr_pr_auc_macro={auto_test_metrics['ovr_pr_auc_macro']:.4f}"
             )
 
-    print("\nResNet(layer3)+MECS+CE Knee Osteoarthritis baseline completed!")
+    print(f"\nResNet(layer3)+MECS+{display_loss} Knee Osteoarthritis baseline completed!")
 
 
 if __name__ == "__main__":

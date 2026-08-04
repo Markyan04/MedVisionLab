@@ -79,6 +79,70 @@ class OrdinalSoftCrossEntropyLoss(nn.Module):
         return _soft_cross_entropy(logits, soft_targets)
 
 
+class CoralOrdinalLoss(nn.Module):
+    """CORAL loss over the ``K - 1`` cumulative ordinal thresholds.
+
+    For class ``y``, threshold ``k`` is positive when ``y > k``.  The model
+    must therefore emit ``num_classes - 1`` logits per sample.
+    """
+
+    def __init__(self, num_classes: int):
+        super().__init__()
+        if num_classes < 2:
+            raise ValueError("num_classes must be >= 2.")
+        self.num_classes = num_classes
+        self.register_buffer(
+            "threshold_ids",
+            torch.arange(num_classes - 1, dtype=torch.long),
+        )
+
+    def forward(self, logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+        expected = self.num_classes - 1
+        if logits.ndim != 2 or logits.size(1) != expected:
+            raise ValueError(f"CORAL logits must have shape [B, {expected}].")
+        levels = (target.long().unsqueeze(1) > self.threshold_ids.unsqueeze(0)).float()
+        return F.binary_cross_entropy_with_logits(logits, levels)
+
+
+class CornOrdinalLoss(nn.Module):
+    """CORN conditional ordinal loss over ``K - 1`` binary tasks.
+
+    Threshold ``k`` is trained only on samples known to have reached that
+    threshold (``y >= k``), matching the conditional training sets in CORN.
+    """
+
+    def __init__(self, num_classes: int):
+        super().__init__()
+        if num_classes < 2:
+            raise ValueError("num_classes must be >= 2.")
+        self.num_classes = num_classes
+
+    def forward(self, logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+        expected = self.num_classes - 1
+        if logits.ndim != 2 or logits.size(1) != expected:
+            raise ValueError(f"CORN logits must have shape [B, {expected}].")
+
+        target = target.long()
+        task_losses = []
+        eligible_count = 0
+        for threshold in range(expected):
+            eligible = target >= threshold
+            if not torch.any(eligible):
+                continue
+            eligible_count += int(eligible.sum().item())
+            binary_target = (target[eligible] > threshold).float()
+            task_losses.append(
+                F.binary_cross_entropy_with_logits(
+                    logits[eligible, threshold],
+                    binary_target,
+                    reduction="sum",
+                )
+            )
+        if not task_losses:
+            return logits.sum() * 0.0
+        return torch.stack(task_losses).sum() / eligible_count
+
+
 class ClassBalancedFocalCELoss(nn.Module):
     """Class-balanced focal CE with optional label smoothing."""
 
@@ -385,6 +449,10 @@ def build_loss(name: str, **kwargs) -> nn.Module:
         return LabelSmoothingCrossEntropyLoss(**kwargs)
     if normalized in {"sord_ce", "sord"}:
         return OrdinalSoftCrossEntropyLoss(**kwargs)
+    if normalized == "coral":
+        return CoralOrdinalLoss(**kwargs)
+    if normalized == "corn":
+        return CornOrdinalLoss(**kwargs)
     if normalized == "cb_focal_ce":
         return ClassBalancedFocalCELoss(**kwargs)
     if normalized == "ordinal_focal_mse":

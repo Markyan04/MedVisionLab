@@ -31,6 +31,7 @@ TEST_LINE_RE = re.compile(
     re.IGNORECASE,
 )
 METRIC_VALUE_RE = re.compile(r"([A-Za-z0-9_]+)=(-?[0-9]+(?:\.[0-9]+)?)%?")
+STANDARD_TEST_PREFIX_RE = re.compile(r"^\s*Test\s*\|", re.IGNORECASE)
 STOP_ERROR_RE = re.compile(
     r"(Traceback|FileNotFoundError|No such file|not found|CUDA out of memory|CUDA error|RuntimeError: CUDA)",
     re.IGNORECASE,
@@ -176,7 +177,9 @@ def parse_loss_list(raw: str) -> List[str]:
 
 
 def parse_test_metrics_line(line: str) -> Optional[Dict[str, str]]:
-    if "Test |" not in line:
+    # KOA can also print an AutoTest row. Only the standard held-out Test row
+    # belongs in controlled experiment records.
+    if not STANDARD_TEST_PREFIX_RE.search(line):
         return None
     legacy = TEST_LINE_RE.search(line)
     if legacy:
