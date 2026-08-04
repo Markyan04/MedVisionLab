@@ -1,0 +1,33 @@
+﻿dataset,comparison,metric,n,mean_delta_second_minus_first,test,statistic,p_value,seeds
+ADNI,CE vs Label Smoothing,ACC,0,nan,paired t-test,nan,nan,
+ADNI,CE vs Label Smoothing,Macro-F1,0,nan,paired t-test,nan,nan,
+ADNI,CE vs Label Smoothing,MAE,0,nan,paired t-test,nan,nan,
+ADNI,CE vs Label Smoothing,QWK,0,nan,paired t-test,nan,nan,
+ADNI,CE vs SORD-CE,ACC,0,nan,paired t-test,nan,nan,
+ADNI,CE vs SORD-CE,Macro-F1,0,nan,paired t-test,nan,nan,
+ADNI,CE vs SORD-CE,MAE,0,nan,paired t-test,nan,nan,
+ADNI,CE vs SORD-CE,QWK,0,nan,paired t-test,nan,nan,
+ADNI,SORD-CE vs DAST,ACC,0,nan,paired t-test,nan,nan,
+ADNI,SORD-CE vs DAST,Macro-F1,0,nan,paired t-test,nan,nan,
+ADNI,SORD-CE vs DAST,MAE,0,nan,paired t-test,nan,nan,
+ADNI,SORD-CE vs DAST,QWK,0,nan,paired t-test,nan,nan,
+ADNI,CE vs DAST,ACC,10,-0.01008,paired t-test,-4.702119064172326,0.0011168326657681894,"0,1,2,3,4,5,6,7,8,9"
+ADNI,CE vs DAST,Macro-F1,10,-0.022749999999999992,paired t-test,-2.8963610701382376,0.017699944212726807,"0,1,2,3,4,5,6,7,8,9"
+ADNI,CE vs DAST,MAE,10,0.0061600000000000005,paired t-test,2.5971968385048023,0.028870656601680214,"0,1,2,3,4,5,6,7,8,9"
+ADNI,CE vs DAST,QWK,10,5.9999999999993395e-05,paired t-test,0.020814270345239548,0.983847968851473,"0,1,2,3,4,5,6,7,8,9"
+KOA,CE vs Label Smoothing,ACC,0,nan,paired t-test,nan,nan,
+KOA,CE vs Label Smoothing,Macro-F1,0,nan,paired t-test,nan,nan,
+KOA,CE vs Label Smoothing,MAE,0,nan,paired t-test,nan,nan,
+KOA,CE vs Label Smoothing,QWK,0,nan,paired t-test,nan,nan,
+KOA,CE vs SORD-CE,ACC,0,nan,paired t-test,nan,nan,
+KOA,CE vs SORD-CE,Macro-F1,0,nan,paired t-test,nan,nan,
+KOA,CE vs SORD-CE,MAE,0,nan,paired t-test,nan,nan,
+KOA,CE vs SORD-CE,QWK,0,nan,paired t-test,nan,nan,
+KOA,SORD-CE vs DAST,ACC,0,nan,paired t-test,nan,nan,
+KOA,SORD-CE vs DAST,Macro-F1,0,nan,paired t-test,nan,nan,
+KOA,SORD-CE vs DAST,MAE,0,nan,paired t-test,nan,nan,
+KOA,SORD-CE vs DAST,QWK,0,nan,paired t-test,nan,nan,
+KOA,CE vs DAST,ACC,10,-0.000990000000000002,paired t-test,-0.1974257122312743,0.8478812102381139,"0,1,2,3,4,5,6,7,8,9"
+KOA,CE vs DAST,Macro-F1,10,0.007410000000000005,paired t-test,1.8891365109080307,0.09146230217089982,"0,1,2,3,4,5,6,7,8,9"
+KOA,CE vs DAST,MAE,10,-0.0005899999999999905,paired t-test,-0.11199506070098048,0.913285393192897,"0,1,2,3,4,5,6,7,8,9"
+KOA,CE vs DAST,QWK,10,0.0006500000000000062,paired t-test,0.13405735119690257,0.8963071368845239,"0,1,2,3,4,5,6,7,8,9"
