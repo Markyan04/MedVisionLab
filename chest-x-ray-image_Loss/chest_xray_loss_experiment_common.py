@@ -587,8 +587,11 @@ class Bottleneck(nn.Module):
 class ResNet50WithInsertedModule(nn.Module):
     def __init__(self, num_classes: int, inserted_module: nn.Module, insert_after: str):
         super().__init__()
-        if insert_after not in {"layer2", "layer3"}:
-            raise ValueError("insert_after must be 'layer2' or 'layer3'")
+        valid_insertions = {"layer1", "layer2", "layer3", "layer4"}
+        if insert_after not in valid_insertions:
+            raise ValueError(
+                "insert_after must be one of: layer1, layer2, layer3, layer4"
+            )
 
         self.insert_after = insert_after
         self.in_channels = 64
@@ -618,6 +621,8 @@ class ResNet50WithInsertedModule(nn.Module):
     def forward(self, x):
         x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
         x = self.layer1(x)
+        if self.insert_after == "layer1":
+            x = self.inserted_module(x)
         x = self.layer2(x)
         if self.insert_after == "layer2":
             x = self.inserted_module(x)
@@ -625,6 +630,8 @@ class ResNet50WithInsertedModule(nn.Module):
         if self.insert_after == "layer3":
             x = self.inserted_module(x)
         x = self.layer4(x)
+        if self.insert_after == "layer4":
+            x = self.inserted_module(x)
 
         x = self.avgpool(x)
         h = x.view(x.size(0), -1)

@@ -3,6 +3,8 @@
 
 This adapter keeps the original KOA and ADNI training sources unchanged.  It
 supports the median-anchored VersionB router and its strict raw-logit control.
+For insertion-position ablations it can also move the injected module to any
+of the four ResNet stages while retaining the original training protocol.
 """
 
 from __future__ import annotations
@@ -12,7 +14,11 @@ import importlib.util
 import sys
 from pathlib import Path
 from types import ModuleType
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Type
+
+import torch
+import torch.nn as nn
+import torchvision.models as models
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -32,6 +38,12 @@ VARIANTS = {
     "median": (MECS_VersionB, "MECS_VersionB", "median-anchored dynamic router"),
     "raw": (MECS_RawRouting, "MECS_RawRouting", "raw-logit dynamic router"),
 }
+LAYER_CHANNELS = {
+    "layer1": 256,
+    "layer2": 512,
+    "layer3": 1024,
+    "layer4": 2048,
+}
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
@@ -42,6 +54,12 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         choices=tuple(VARIANTS),
         default="median",
         help="Routing representation to inject. Default keeps existing VersionB behavior.",
+    )
+    parser.add_argument(
+        "--insert-after",
+        choices=tuple(LAYER_CHANNELS),
+        default="layer3",
+        help="ResNet stage after which to insert MECS. Default: layer3.",
     )
     args = parser.parse_args(argv)
     args.script = args.script.expanduser().resolve()
@@ -86,10 +104,80 @@ def inject_raw_routing(module: ModuleType) -> None:
     inject_attention(module, MECS_RawRouting)
 
 
-def run_adni(module: ModuleType, module_name: str) -> None:
+def make_koa_position_model(
+    attention_class: Type[nn.Module],
+    insert_after: str,
+) -> Type[nn.Module]:
+    """Build the KOA script-compatible model for a non-default insertion."""
+    channels = LAYER_CHANNELS[insert_after]
+
+    class CustomResNet50MECSPosition(nn.Module):
+        def __init__(self, num_classes: int = 5) -> None:
+            super().__init__()
+            base_model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
+            self.conv1 = base_model.conv1
+            self.bn1 = base_model.bn1
+            self.relu = base_model.relu
+            self.maxpool = base_model.maxpool
+            self.layer1 = base_model.layer1
+            self.layer2 = base_model.layer2
+            self.layer3 = base_model.layer3
+            self.layer4 = base_model.layer4
+            # Keep the attribute name expected by the KOA optimizer grouping.
+            self.mecs = attention_class(in_channels=channels, out_channels=channels)
+            self.avgpool = base_model.avgpool
+            self.fc = nn.Linear(base_model.fc.in_features, num_classes)
+            self.insert_after = insert_after
+
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
+            for layer_name in LAYER_CHANNELS:
+                x = getattr(self, layer_name)(x)
+                if layer_name == self.insert_after:
+                    x = self.mecs(x)
+            x = self.avgpool(x)
+            return self.fc(torch.flatten(x, 1))
+
+    CustomResNet50MECSPosition.__name__ = "CustomResNet50MECS"
+    return CustomResNet50MECSPosition
+
+
+def configure_koa_position(
+    module: ModuleType,
+    attention_class: Type[nn.Module],
+    insert_after: str,
+) -> None:
+    """Replace only the model and checkpoint stage label in a KOA trainer."""
+    if insert_after == "layer3":
+        return
+    module.CustomResNet50MECS = make_koa_position_model(attention_class, insert_after)
+    original_resolver = module.resolve_checkpoint_path
+
+    def resolve_position_checkpoint(filename: str) -> str:
+        return original_resolver(filename.replace("layer3", insert_after))
+
+    module.resolve_checkpoint_path = resolve_position_checkpoint
+
+
+def run_adni(
+    module: ModuleType,
+    attention_class: Type[nn.Module],
+    module_name: str,
+    insert_after: str,
+) -> None:
+    channels = LAYER_CHANNELS[insert_after]
+
+    def build_position_model(num_classes: int) -> nn.Module:
+        attention = attention_class(in_channels=channels, out_channels=channels)
+        return module.ResNet50WithInsertedModule(
+            num_classes=num_classes,
+            inserted_module=attention,
+            insert_after=insert_after,
+        )
+
     module.run_alzheimer_mri_medical_losses_experiments(
-        script_stem="ResNet_layer3+MECS",
-        model_builder=module.build_model,
+        script_stem=f"ResNet_{insert_after}+MECS",
+        model_builder=build_position_model,
         optimizer_group_divisors=[
             ("conv1", 10),
             ("bn1", 10),
@@ -101,7 +189,7 @@ def run_adni(module: ModuleType, module_name: str) -> None:
             ("fc", 1),
         ],
         module_name=module_name,
-        insert_after="layer3",
+        insert_after=insert_after,
     )
 
 
@@ -111,19 +199,28 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     module = load_module(args.script)
     attention_class, module_name, description = VARIANTS[args.variant]
     inject_attention(module, attention_class)
+    if dataset == "koa":
+        configure_koa_position(module, attention_class, args.insert_after)
 
     print("=" * 90)
     print(f"Injected attention module: {module_name}")
     print(f"Routing representation    : {description}")
     print(f"Original training script : {args.script}")
     print(f"Dataset                  : {dataset.upper()}")
+    print(f"Insert after             : {args.insert_after}")
+    print(f"MESC channels            : {LAYER_CHANNELS[args.insert_after]}")
     print("Original source modified : no")
     print("=" * 90)
 
     if dataset == "koa":
         module.main()
     else:
-        run_adni(module, module_name=module_name)
+        run_adni(
+            module,
+            attention_class=attention_class,
+            module_name=module_name,
+            insert_after=args.insert_after,
+        )
     return 0
 
 
