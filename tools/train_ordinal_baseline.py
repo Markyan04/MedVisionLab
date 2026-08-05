@@ -77,6 +77,21 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--early-delta", type=float, default=1e-4)
     parser.add_argument("--lr-backbone", type=float, default=None)
     parser.add_argument("--lr-head", type=float, default=None)
+    parser.add_argument(
+        "--optimizer-profile",
+        choices=("legacy", "matched_mesc"),
+        default="legacy",
+        help=(
+            "legacy uses one backbone LR with AdamW; matched_mesc uses Adam "
+            "and the same layer-wise LR divisors as the ADNI MESC pipeline"
+        ),
+    )
+    parser.add_argument(
+        "--base-lr",
+        type=float,
+        default=1e-4,
+        help="Base LR used only by --optimizer-profile matched_mesc.",
+    )
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--test-ratio", type=float, default=0.2)
     parser.add_argument("--val-ratio", type=float, default=0.1)
@@ -85,8 +100,13 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
     if args.epochs <= 0 or args.patience <= 0 or args.batch_size <= 0:
         parser.error("--epochs, --patience, and --batch-size must be positive.")
-    if args.image_size <= 0 or args.early_delta < 0 or args.weight_decay < 0:
-        parser.error("invalid image-size, early-delta, or weight-decay.")
+    if (
+        args.image_size <= 0
+        or args.early_delta < 0
+        or args.weight_decay < 0
+        or args.base_lr <= 0
+    ):
+        parser.error("invalid image-size, early-delta, weight-decay, or base-lr.")
     if not 0 < args.test_ratio < 1 or not 0 < args.val_ratio < 1:
         parser.error("--test-ratio and --val-ratio must be between 0 and 1.")
 
@@ -317,6 +337,63 @@ def metric_line(prefix: str, loss: float, top: dict[str, float], metrics: dict[s
     )
 
 
+MATCHED_MESC_LR_DIVISORS = (
+    ("conv1", 10.0),
+    ("bn1", 10.0),
+    ("layer1", 8.0),
+    ("layer2", 6.0),
+    ("layer3", 4.0),
+    ("layer4", 2.0),
+)
+
+
+def build_optimizer_and_scheduler(model, args, steps_per_epoch: int):
+    total_steps = args.epochs * steps_per_epoch
+    if args.optimizer_profile == "legacy":
+        optimizer = optim.AdamW(
+            [
+                {"params": model.backbone.parameters(), "lr": args.lr_backbone},
+                {"params": model.head.parameters(), "lr": args.lr_head},
+            ],
+            weight_decay=args.weight_decay,
+        )
+        max_lrs = [args.lr_backbone, args.lr_head]
+        scheduler = lr_scheduler.OneCycleLR(
+            optimizer,
+            max_lr=max_lrs,
+            total_steps=total_steps,
+            pct_start=0.1,
+            anneal_strategy="cos",
+        )
+        description = (
+            f"legacy AdamW | backbone={args.lr_backbone:.8g}, "
+            f"head={args.lr_head:.8g}, weight_decay={args.weight_decay:.8g}"
+        )
+        return optimizer, scheduler, description
+
+    param_groups = []
+    max_lrs = []
+    descriptions = []
+    for layer_name, divisor in MATCHED_MESC_LR_DIVISORS:
+        layer = getattr(model.backbone, layer_name)
+        lr = args.base_lr / divisor
+        param_groups.append({"params": layer.parameters(), "lr": lr})
+        max_lrs.append(lr)
+        descriptions.append(f"{layer_name}={lr:.8g}")
+    param_groups.append({"params": model.head.parameters(), "lr": args.base_lr})
+    max_lrs.append(args.base_lr)
+    descriptions.append(f"head={args.base_lr:.8g}")
+
+    optimizer = optim.Adam(param_groups, lr=args.base_lr)
+    scheduler = lr_scheduler.OneCycleLR(
+        optimizer,
+        max_lr=max_lrs,
+        total_steps=total_steps,
+    )
+    description = "matched_mesc Adam | " + ", ".join(descriptions)
+    return optimizer, scheduler, description
+
+
 def sanitize_tag(value: str) -> str:
     return "".join(ch if ch.isalnum() or ch in "._-" else "-" for ch in value).strip("._-")
 
@@ -348,20 +425,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.method == "coral"
         else CornOrdinalLoss(bundle.num_classes)
     ).to(device)
-    optimizer = optim.AdamW(
-        [
-            {"params": model.backbone.parameters(), "lr": args.lr_backbone},
-            {"params": model.head.parameters(), "lr": args.lr_head},
-        ],
-        weight_decay=args.weight_decay,
+    optimizer, scheduler, optimizer_description = build_optimizer_and_scheduler(
+        model,
+        args,
+        len(bundle.train_loader),
     )
-    scheduler = lr_scheduler.OneCycleLR(
-        optimizer,
-        max_lr=[args.lr_backbone, args.lr_head],
-        total_steps=args.epochs * len(bundle.train_loader),
-        pct_start=0.1,
-        anneal_strategy="cos",
-    )
+    print(f"Optimizer profile: {optimizer_description}")
 
     run_tag = sanitize_tag(args.run_tag) or f"{args.dataset}_{args.method}_seed{args.seed}"
     checkpoint_dir = PROJECT_ROOT / ("Knee" if args.dataset == "koa" else "Alzheimer_MRI_Loss") / "checkpoints"
@@ -399,6 +468,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "epoch": epoch + 1,
                     "method": args.method,
                     "num_classes": bundle.num_classes,
+                    "optimizer_profile": args.optimizer_profile,
+                    "base_lr": args.base_lr,
                 },
                 checkpoint_path,
             )

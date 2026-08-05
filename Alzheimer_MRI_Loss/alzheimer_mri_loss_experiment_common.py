@@ -373,6 +373,13 @@ def run_alzheimer_mri_medical_losses_experiments(
             f"image_size={image_size}, base_lr={base_lr}, test_ratio={test_ratio}, "
             f"val_ratio_within_train={val_ratio}, patience={patience}"
         )
+        log(
+            "Optimizer LR divisors | "
+            + ", ".join(
+                f"{name}=/{float(divisor):g}"
+                for name, divisor in optimizer_group_divisors
+            )
+        )
         log(f"Losses to run: {losses_to_run}")
         if "dast" in losses_to_run:
             log(f"DAST config | tau={dast_tau:.4f}, gamma={dast_gamma:.4f}")
@@ -454,6 +461,13 @@ def run_alzheimer_mri_medical_losses_experiments(
                     base_lr=base_lr,
                     group_divisors=optimizer_group_divisors,
                     extra_modules=extra_modules,
+                )
+                log(
+                    "Optimizer max LRs | "
+                    + ", ".join(
+                        f"{name}={lr:.8g}"
+                        for (name, _), lr in zip(optimizer_group_divisors, max_lrs)
+                    )
                 )
                 scheduler = lr_scheduler.OneCycleLR(
                     optimizer,
