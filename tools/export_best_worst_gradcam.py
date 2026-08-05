@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Export Grad-CAM++ panels where the best MESC-B+DAST is right and worst baseline is wrong.
+"""Export Grad-CAM++ panels where the best MESC+DAST is right and worst baseline is wrong.
 
 The best proposed and worst baseline runs are selected from an experiment-records
 CSV using QWK by default.  KOA uses its fixed test directory.  ADNI uses the
@@ -448,6 +448,7 @@ def compose_panel(
     baseline_overlay: Image.Image,
     proposed_overlay: Image.Image,
     info_lines: Sequence[str],
+    original_title: str,
     baseline_title: str,
     proposed_title: str,
 ) -> Image.Image:
@@ -460,7 +461,7 @@ def compose_panel(
     for row_index, line in enumerate(info_lines):
         draw.text((margin, 10 + row_index * 18), line, fill="black")
     positions = (margin, margin * 2 + original.width, margin * 3 + original.width * 2)
-    titles = ("Original", baseline_title, proposed_title)
+    titles = (original_title, baseline_title, proposed_title)
     images = (original.convert("RGB"), baseline_overlay.convert("RGB"), proposed_overlay.convert("RGB"))
     for x, title, image in zip(positions, titles, images):
         draw.text((x, header_height - 24), title, fill="black")
@@ -606,8 +607,9 @@ def export_dataset(
             baseline_overlay,
             proposed_overlay,
             info_lines,
+            original_title=f"Original: {true_name}",
             baseline_title=f"Baseline: {baseline_name}",
-            proposed_title=f"MESC-B+DAST: {proposed_name}",
+            proposed_title=f"MESC+DAST: {proposed_name}",
         )
         stem = sanitize_filename(
             f"{rank:04d}_{dataset_name}_true-{true_name}_base-{baseline_name}_prop-{proposed_name}_{Path(record.relative_path).stem}"
