@@ -65,6 +65,22 @@ class ChannelAttention_VersionB(nn.Module):
         hidden = self.branch_act(hidden)
         return self.fc2(hidden)
 
+    def _build_router_features(
+        self,
+        avg_vec: torch.Tensor,
+        max_vec: torch.Tensor,
+        med_vec: torch.Tensor,
+    ) -> torch.Tensor:
+        """Build the median-anchored input to the shared 3-to-3 router."""
+        return torch.stack(
+            (
+                avg_vec - med_vec,
+                max_vec - med_vec,
+                med_vec,
+            ),
+            dim=-1,
+        )
+
     def forward(
         self,
         inputs: torch.Tensor,
@@ -83,14 +99,7 @@ class ChannelAttention_VersionB(nn.Module):
         med_vec = median_logit.flatten(1)
         branch_logits = torch.stack((avg_vec, max_vec, med_vec), dim=-1)
 
-        router_features = torch.stack(
-            (
-                avg_vec - med_vec,
-                max_vec - med_vec,
-                med_vec,
-            ),
-            dim=-1,
-        )
+        router_features = self._build_router_features(avg_vec, max_vec, med_vec)
         routing_logits = self.router(router_features)
         routing_weights = torch.softmax(routing_logits, dim=-1)
 
