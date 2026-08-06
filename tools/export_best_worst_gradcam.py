@@ -607,9 +607,9 @@ def export_dataset(
             baseline_overlay,
             proposed_overlay,
             info_lines,
-            original_title=f"Original: {true_name}",
-            baseline_title=f"Baseline: {baseline_name}",
-            proposed_title=f"MESC+DAST: {proposed_name}",
+            original_title=f"Original (true: {true_name})",
+            baseline_title=f"Baseline ({baseline_name})",
+            proposed_title=f"Proposed ({proposed_name})",
         )
         stem = sanitize_filename(
             f"{rank:04d}_{dataset_name}_true-{true_name}_base-{baseline_name}_prop-{proposed_name}_{Path(record.relative_path).stem}"
