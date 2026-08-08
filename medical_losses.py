@@ -79,6 +79,68 @@ class OrdinalSoftCrossEntropyLoss(nn.Module):
         return _soft_cross_entropy(logits, soft_targets)
 
 
+class DistanceAwareSeverityLoss(nn.Module):
+    """DASL: cross-entropy plus ordinal-distribution alignment.
+
+    For each sample, the normalized expected ordinal deviation is
+
+    ``D_ord = sum_k p_k * |k - y| / (K - 1)``.
+
+    DASL minimizes ``-log(p_y) - log(1 - D_ord)``.  The implementation has
+    no tunable hyperparameters; the clamp is only a numerical-stability guard.
+    """
+
+    def __init__(self, num_classes: int):
+        super().__init__()
+        if num_classes < 2:
+            raise ValueError("num_classes must be >= 2.")
+        self.num_classes = num_classes
+        self.register_buffer(
+            "class_ids",
+            torch.arange(num_classes, dtype=torch.float),
+        )
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+    ) -> torch.Tensor:
+        if logits.ndim != 2 or logits.size(1) != self.num_classes:
+            raise ValueError(
+                f"DASL logits must have shape [B, {self.num_classes}], "
+                f"got {tuple(logits.shape)}."
+            )
+        if target.ndim != 1 or target.size(0) != logits.size(0):
+            raise ValueError("DASL target must have shape [B].")
+
+        # Evaluate the probability terms in float32 under mixed precision so
+        # the alignment score cannot underflow before the logarithm.
+        working_logits = (
+            logits.float()
+            if logits.dtype in (torch.float16, torch.bfloat16)
+            else logits
+        )
+        log_probs = F.log_softmax(working_logits, dim=1)
+        probabilities = log_probs.exp()
+        target_long = target.long()
+
+        true_log_probability = log_probs.gather(
+            1,
+            target_long.unsqueeze(1),
+        ).squeeze(1)
+        normalized_distance = torch.abs(
+            self.class_ids.to(probabilities.dtype).unsqueeze(0)
+            - target_long.to(probabilities.dtype).unsqueeze(1)
+        ) / float(self.num_classes - 1)
+        expected_ordinal_deviation = (
+            probabilities * normalized_distance
+        ).sum(dim=1)
+        ordinal_alignment = (1.0 - expected_ordinal_deviation).clamp_min(0.0)
+
+        per_sample = -true_log_probability - torch.log(ordinal_alignment + 1e-8)
+        return per_sample.mean()
+
+
 class CoralOrdinalLoss(nn.Module):
     """CORAL loss over the ``K - 1`` cumulative ordinal thresholds.
 
@@ -449,6 +511,8 @@ def build_loss(name: str, **kwargs) -> nn.Module:
         return LabelSmoothingCrossEntropyLoss(**kwargs)
     if normalized in {"sord_ce", "sord"}:
         return OrdinalSoftCrossEntropyLoss(**kwargs)
+    if normalized == "dasl":
+        return DistanceAwareSeverityLoss(**kwargs)
     if normalized == "coral":
         return CoralOrdinalLoss(**kwargs)
     if normalized == "corn":

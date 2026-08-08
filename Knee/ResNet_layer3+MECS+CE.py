@@ -60,7 +60,7 @@ from sklearn.metrics import (
 # 导入 MECS 模块
 # =======================================================
 from MECS_old import MECS_VersionA
-from medical_losses import OrdinalSoftCrossEntropyLoss
+from medical_losses import DistanceAwareSeverityLoss, OrdinalSoftCrossEntropyLoss
 
 warnings.filterwarnings("ignore")
 
@@ -177,8 +177,10 @@ def build_criterion():
         if SORD_TAU <= 0:
             raise ValueError("KNEE_SORD_TAU must be > 0.")
         return OrdinalSoftCrossEntropyLoss(num_classes=NUM_CLASSES, tau=SORD_TAU)
+    if MESC_LOSS == "dasl":
+        return DistanceAwareSeverityLoss(num_classes=NUM_CLASSES)
     raise ValueError(
-        f"Unsupported KNEE_MESC_LOSS={MESC_LOSS!r}. Choose from: ce, sord_ce."
+        f"Unsupported KNEE_MESC_LOSS={MESC_LOSS!r}. Choose from: ce, sord_ce, dasl."
     )
 
 
@@ -476,7 +478,11 @@ def evaluate(model, loader, criterion, device, topk=(1, 2, 3)):
 # Main
 # =======================
 def main():
-    display_loss = "CE" if MESC_LOSS == "ce" else "SORD"
+    display_loss = {
+        "ce": "CE",
+        "sord_ce": "SORD",
+        "dasl": "DASL",
+    }.get(MESC_LOSS, MESC_LOSS.upper())
     print(f"Starting ResNet(layer3)+MECS+{display_loss} Knee Osteoarthritis Baseline...")
     print(f"Using device: {device}")
     if torch.cuda.is_available():
@@ -508,8 +514,10 @@ def main():
     print(f"\n[INFO] Class counts in training set: {class_counts}")
     if MESC_LOSS == "ce":
         print("[INFO] Using Standard CrossEntropyLoss (No class weights).")
-    else:
+    elif MESC_LOSS == "sord_ce":
         print(f"[INFO] Using SORD soft-target cross-entropy (tau={SORD_TAU:.4f}, gamma=0).")
+    else:
+        print("[INFO] Using DASL (no tunable loss hyperparameters).")
 
     criterion = build_criterion().to(device)
 

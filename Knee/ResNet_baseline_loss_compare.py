@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""KOA ResNet50 baseline runner for CE/LS/SORD-CE/DAST loss comparison.
+"""KOA ResNet50 baseline runner for CE/LS/SORD-CE/DAST/DASL comparison.
 
 This file intentionally reuses the existing KOA baseline DAST script utilities
 for data loading, metrics, training, evaluation, checkpointing, and summaries.
-Set KNEE_LOSS to one of: ce, label_smoothing_ce, sord_ce, dast.
+Set KNEE_LOSS to one of: ce, label_smoothing_ce, sord_ce, dast, dasl.
 """
 
 from __future__ import annotations
@@ -29,6 +29,7 @@ for path in (PROJECT_ROOT, THIS_DIR):
 
 from medical_losses import (  # noqa: E402
     DistanceAwareSoftTargetLoss,
+    DistanceAwareSeverityLoss,
     LabelSmoothingCrossEntropyLoss,
     OrdinalSoftCrossEntropyLoss,
 )
@@ -46,7 +47,7 @@ def _load_knee_baseline_module():
 
 base = _load_knee_baseline_module()
 
-SUPPORTED_LOSSES = ("ce", "label_smoothing_ce", "sord_ce", "dast")
+SUPPORTED_LOSSES = ("ce", "label_smoothing_ce", "sord_ce", "dast", "dasl")
 LOSS_ALIASES = {
     "cross_entropy": "ce",
     "ls": "label_smoothing_ce",
@@ -63,6 +64,7 @@ DISPLAY_NAMES = {
     "label_smoothing_ce": "Label Smoothing CE",
     "sord_ce": "SORD-CE",
     "dast": "DAST",
+    "dasl": "DASL",
 }
 
 
@@ -102,13 +104,16 @@ def build_criterion(loss_name: str, device: torch.device):
     elif loss_name == "sord_ce":
         criterion = OrdinalSoftCrossEntropyLoss(num_classes=base.NUM_CLASSES, tau=sord_tau)
         hparams = {"dast_tau": sord_tau, "dast_gamma": 0.0, "label_smoothing": None}
-    else:
+    elif loss_name == "dast":
         criterion = DistanceAwareSoftTargetLoss(
             num_classes=base.NUM_CLASSES,
             tau=dast_tau,
             gamma=dast_gamma,
         )
         hparams = {"dast_tau": dast_tau, "dast_gamma": dast_gamma, "label_smoothing": None}
+    else:
+        criterion = DistanceAwareSeverityLoss(num_classes=base.NUM_CLASSES)
+        hparams = {"dast_tau": None, "dast_gamma": None, "label_smoothing": None}
 
     return criterion.to(device), hparams
 
@@ -183,6 +188,8 @@ def main() -> None:
         print(f"       tau={hparams['dast_tau']:.4f}, gamma=0.0000")
     elif loss_name == "dast":
         print(f"       tau={hparams['dast_tau']:.4f}, gamma={hparams['dast_gamma']:.4f}")
+    elif loss_name == "dasl":
+        print("       no tunable loss hyperparameters")
 
     backbone_params = []
     head_params = []
