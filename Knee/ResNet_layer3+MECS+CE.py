@@ -60,7 +60,11 @@ from sklearn.metrics import (
 # 导入 MECS 模块
 # =======================================================
 from MECS_old import MECS_VersionA
-from medical_losses import DistanceAwareSeverityLoss, OrdinalSoftCrossEntropyLoss
+from medical_losses import (
+    DistanceAwareSeverityLoss,
+    KLModulatedOrdinalSoftTargetLoss,
+    OrdinalSoftCrossEntropyLoss,
+)
 
 warnings.filterwarnings("ignore")
 
@@ -179,8 +183,11 @@ def build_criterion():
         return OrdinalSoftCrossEntropyLoss(num_classes=NUM_CLASSES, tau=SORD_TAU)
     if MESC_LOSS == "dasl":
         return DistanceAwareSeverityLoss(num_classes=NUM_CLASSES)
+    if MESC_LOSS == "kl_match_ce":
+        return KLModulatedOrdinalSoftTargetLoss(num_classes=NUM_CLASSES)
     raise ValueError(
-        f"Unsupported KNEE_MESC_LOSS={MESC_LOSS!r}. Choose from: ce, sord_ce, dasl."
+        f"Unsupported KNEE_MESC_LOSS={MESC_LOSS!r}. "
+        "Choose from: ce, sord_ce, dasl, kl_match_ce."
     )
 
 
@@ -482,6 +489,7 @@ def main():
         "ce": "CE",
         "sord_ce": "SORD",
         "dasl": "DASL",
+        "kl_match_ce": "KL-Match Soft CE",
     }.get(MESC_LOSS, MESC_LOSS.upper())
     print(f"Starting ResNet(layer3)+MECS+{display_loss} Knee Osteoarthritis Baseline...")
     print(f"Using device: {device}")
@@ -516,8 +524,10 @@ def main():
         print("[INFO] Using Standard CrossEntropyLoss (No class weights).")
     elif MESC_LOSS == "sord_ce":
         print(f"[INFO] Using SORD soft-target cross-entropy (tau={SORD_TAU:.4f}, gamma=0).")
-    else:
+    elif MESC_LOSS == "dasl":
         print("[INFO] Using DASL (no tunable loss hyperparameters).")
+    else:
+        print("[INFO] Using KL-Match Soft CE (no tunable loss hyperparameters).")
 
     criterion = build_criterion().to(device)
 

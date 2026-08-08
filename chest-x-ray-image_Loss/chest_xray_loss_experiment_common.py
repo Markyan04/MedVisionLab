@@ -58,6 +58,7 @@ from medical_losses import (  # noqa: E402
     GeneralizedCrossEntropyLoss,
     DistanceAwareSoftTargetLoss,
     DistanceAwareSeverityLoss,
+    KLModulatedOrdinalSoftTargetLoss,
     LabelSmoothingCrossEntropyLoss,
     OrdinalSoftCrossEntropyLoss,
     PrototypeConsistencyOrdinalLoss,
@@ -82,6 +83,7 @@ SUPPORTED_LOSS_ORDER = tuple(dict.fromkeys((
     "label_smoothing_ce",
     "sord_ce",
     "dasl",
+    "kl_match_ce",
 )))
 
 
@@ -438,6 +440,8 @@ def create_medical_loss(
         criterion = DistanceAwareSoftTargetLoss(num_classes=num_classes, tau=1.0, gamma=1.5)
     elif loss_name == "dasl":
         criterion = DistanceAwareSeverityLoss(num_classes=num_classes)
+    elif loss_name == "kl_match_ce":
+        criterion = KLModulatedOrdinalSoftTargetLoss(num_classes=num_classes)
     elif loss_name == "pcol":
         criterion = PrototypeConsistencyOrdinalLoss(
             num_classes=num_classes,

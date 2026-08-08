@@ -141,6 +141,76 @@ class DistanceAwareSeverityLoss(nn.Module):
         return per_sample.mean()
 
 
+class KLModulatedOrdinalSoftTargetLoss(nn.Module):
+    """Fixed ordinal soft targets with KL-based difficulty modulation.
+
+    For a target grade ``y``, the soft target distribution is fixed as
+
+    ``q_k = exp(-|k-y|) / sum_j exp(-|j-y|)``.
+
+    Given ``p = softmax(logits)``, the per-sample loss is
+
+    ``(1 - exp(-KL(q || p))) * CE(q, p)``.
+
+    The distance temperature and modulation shape are fixed by the formula,
+    so this loss exposes no tunable loss hyperparameters.
+    """
+
+    def __init__(self, num_classes: int):
+        super().__init__()
+        if num_classes < 2:
+            raise ValueError("num_classes must be >= 2.")
+        self.num_classes = num_classes
+
+        # Build the fixed table once in float64, then cast to the logits dtype
+        # in forward.  This preserves reference-level accuracy in float64
+        # tests without changing float32 or mixed-precision training behavior.
+        class_ids = torch.arange(num_classes, dtype=torch.double)
+        distances = torch.abs(class_ids.unsqueeze(0) - class_ids.unsqueeze(1))
+        soft_target_table = torch.exp(-distances)
+        soft_target_table = soft_target_table / soft_target_table.sum(
+            dim=1,
+            keepdim=True,
+        )
+        self.register_buffer("soft_target_table", soft_target_table)
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        target: torch.Tensor,
+    ) -> torch.Tensor:
+        if logits.ndim != 2 or logits.size(1) != self.num_classes:
+            raise ValueError(
+                f"KL-match logits must have shape [B, {self.num_classes}], "
+                f"got {tuple(logits.shape)}."
+            )
+        if target.ndim != 1 or target.size(0) != logits.size(0):
+            raise ValueError("KL-match target must have shape [B].")
+
+        target_long = target.long()
+        if torch.any(target_long < 0) or torch.any(target_long >= self.num_classes):
+            raise ValueError("KL-match target contains an out-of-range class index.")
+
+        # Keep probability-space calculations in float32 under mixed precision.
+        working_logits = (
+            logits.float()
+            if logits.dtype in (torch.float16, torch.bfloat16)
+            else logits
+        )
+        log_probs = F.log_softmax(working_logits, dim=1)
+        soft_targets = self.soft_target_table.to(log_probs.dtype)[target_long]
+        log_soft_targets = torch.log(soft_targets)
+
+        soft_target_ce = -(soft_targets * log_probs).sum(dim=1)
+        kl_divergence = (
+            soft_targets * (log_soft_targets - log_probs)
+        ).sum(dim=1).clamp_min(0.0)
+
+        # -expm1(-x) is the stable form of 1 - exp(-x) when KL is small.
+        difficulty = -torch.expm1(-kl_divergence)
+        return (difficulty * soft_target_ce).mean()
+
+
 class CoralOrdinalLoss(nn.Module):
     """CORAL loss over the ``K - 1`` cumulative ordinal thresholds.
 
@@ -513,6 +583,8 @@ def build_loss(name: str, **kwargs) -> nn.Module:
         return OrdinalSoftCrossEntropyLoss(**kwargs)
     if normalized == "dasl":
         return DistanceAwareSeverityLoss(**kwargs)
+    if normalized in {"kl_match_ce", "kl_match"}:
+        return KLModulatedOrdinalSoftTargetLoss(**kwargs)
     if normalized == "coral":
         return CoralOrdinalLoss(**kwargs)
     if normalized == "corn":

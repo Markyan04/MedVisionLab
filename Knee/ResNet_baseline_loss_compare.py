@@ -5,7 +5,8 @@
 
 This file intentionally reuses the existing KOA baseline DAST script utilities
 for data loading, metrics, training, evaluation, checkpointing, and summaries.
-Set KNEE_LOSS to one of: ce, label_smoothing_ce, sord_ce, dast, dasl.
+Set KNEE_LOSS to one of: ce, label_smoothing_ce, sord_ce, dast, dasl,
+kl_match_ce.
 """
 
 from __future__ import annotations
@@ -30,6 +31,7 @@ for path in (PROJECT_ROOT, THIS_DIR):
 from medical_losses import (  # noqa: E402
     DistanceAwareSoftTargetLoss,
     DistanceAwareSeverityLoss,
+    KLModulatedOrdinalSoftTargetLoss,
     LabelSmoothingCrossEntropyLoss,
     OrdinalSoftCrossEntropyLoss,
 )
@@ -47,7 +49,14 @@ def _load_knee_baseline_module():
 
 base = _load_knee_baseline_module()
 
-SUPPORTED_LOSSES = ("ce", "label_smoothing_ce", "sord_ce", "dast", "dasl")
+SUPPORTED_LOSSES = (
+    "ce",
+    "label_smoothing_ce",
+    "sord_ce",
+    "dast",
+    "dasl",
+    "kl_match_ce",
+)
 LOSS_ALIASES = {
     "cross_entropy": "ce",
     "ls": "label_smoothing_ce",
@@ -65,6 +74,7 @@ DISPLAY_NAMES = {
     "sord_ce": "SORD-CE",
     "dast": "DAST",
     "dasl": "DASL",
+    "kl_match_ce": "KL-Match Soft CE",
 }
 
 
@@ -111,8 +121,11 @@ def build_criterion(loss_name: str, device: torch.device):
             gamma=dast_gamma,
         )
         hparams = {"dast_tau": dast_tau, "dast_gamma": dast_gamma, "label_smoothing": None}
-    else:
+    elif loss_name == "dasl":
         criterion = DistanceAwareSeverityLoss(num_classes=base.NUM_CLASSES)
+        hparams = {"dast_tau": None, "dast_gamma": None, "label_smoothing": None}
+    else:
+        criterion = KLModulatedOrdinalSoftTargetLoss(num_classes=base.NUM_CLASSES)
         hparams = {"dast_tau": None, "dast_gamma": None, "label_smoothing": None}
 
     return criterion.to(device), hparams
@@ -188,7 +201,7 @@ def main() -> None:
         print(f"       tau={hparams['dast_tau']:.4f}, gamma=0.0000")
     elif loss_name == "dast":
         print(f"       tau={hparams['dast_tau']:.4f}, gamma={hparams['dast_gamma']:.4f}")
-    elif loss_name == "dasl":
+    elif loss_name in {"dasl", "kl_match_ce"}:
         print("       no tunable loss hyperparameters")
 
     backbone_params = []

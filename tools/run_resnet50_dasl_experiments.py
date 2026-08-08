@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-"""Run the ResNet50 DASL experiments on KOA and Alzheimer MRI.
+"""Run fixed-form ResNet50 loss experiments on KOA and Alzheimer MRI.
 
-DASL has no tunable loss hyperparameters.  The runner reuses the established
-ResNet50 data splits, augmentation, optimizer schedules, validation monitors,
-and early stopping.  It stores final Test rows only in the result CSV, while
-keeping the complete child output and best checkpoints for auditing.
+The supported losses have no tunable loss hyperparameters.  The runner reuses
+the established ResNet50 data splits, augmentation, optimizer schedules,
+validation monitors, and early stopping.  It stores final standard Test rows
+only in the result CSV, while keeping complete child output and best
+checkpoints for auditing.
 """
 
 from __future__ import annotations
@@ -55,41 +56,35 @@ class Experiment:
     launcher: str
 
 
-EXPERIMENTS = {
-    "baseline_dasl": Experiment(
-        "baseline_dasl",
-        "ResNet50 + DASL",
-        "none",
-        "direct",
+@dataclass(frozen=True)
+class LossProfile:
+    key: str
+    criterion: str
+    display: str
+    checkpoint_slug: str
+    formula: str
+
+
+LOSS_PROFILES = {
+    "dasl": LossProfile(
+        key="dasl",
+        criterion="DASL",
+        display="DASL",
+        checkpoint_slug="dasl",
+        formula="-log(p_y)-log(1-E_p[|k-y|/(K-1)]+eps)",
     ),
-    "mesc_equal_dasl": Experiment(
-        "mesc_equal_dasl",
-        "ResNet50 + MESC-Equal + DASL",
-        "MECS_VersionA",
-        "direct",
-    ),
-    "mesc_direct_dasl": Experiment(
-        "mesc_direct_dasl",
-        "ResNet50 + MESC-Direct + DASL",
-        "MECS_RawRouting",
-        "raw",
-    ),
-    "mesc_dasl": Experiment(
-        "mesc_dasl",
-        "ResNet50 + MESC (Ours) + DASL",
-        "MECS_VersionB",
-        "median",
+    "kl_match_ce": LossProfile(
+        key="kl_match_ce",
+        criterion="KL-Match Soft CE",
+        display="KL-Match Soft CE",
+        checkpoint_slug="kl_match_ce",
+        formula="(1-exp(-KL(q||p)))*CE(q,p), q_k=exp(-|k-y|)/sum_j exp(-|j-y|)",
     ),
 }
-SUITES = {
-    "core": ("baseline_dasl", "mesc_dasl"),
-    "routing": ("mesc_equal_dasl", "mesc_direct_dasl", "mesc_dasl"),
-    "full": (
-        "baseline_dasl",
-        "mesc_equal_dasl",
-        "mesc_direct_dasl",
-        "mesc_dasl",
-    ),
+SUITE_ROLES = {
+    "core": ("baseline", "mesc"),
+    "routing": ("mesc_equal", "mesc_direct", "mesc"),
+    "full": ("baseline", "mesc_equal", "mesc_direct", "mesc"),
 }
 TRAIN_SCRIPTS = {
     "koa": {
@@ -134,6 +129,40 @@ CSV_FIELDS = (
 )
 
 
+def build_experiments(profile: LossProfile) -> dict[str, Experiment]:
+    suffix = profile.key
+    return {
+        f"baseline_{suffix}": Experiment(
+            f"baseline_{suffix}",
+            f"ResNet50 + {profile.display}",
+            "none",
+            "direct",
+        ),
+        f"mesc_equal_{suffix}": Experiment(
+            f"mesc_equal_{suffix}",
+            f"ResNet50 + MESC-Equal + {profile.display}",
+            "MECS_VersionA",
+            "direct",
+        ),
+        f"mesc_direct_{suffix}": Experiment(
+            f"mesc_direct_{suffix}",
+            f"ResNet50 + MESC-Direct + {profile.display}",
+            "MECS_RawRouting",
+            "raw",
+        ),
+        f"mesc_{suffix}": Experiment(
+            f"mesc_{suffix}",
+            f"ResNet50 + MESC (Ours) + {profile.display}",
+            "MECS_VersionB",
+            "median",
+        ),
+    }
+
+
+def is_baseline(experiment: Experiment) -> bool:
+    return experiment.attention == "none"
+
+
 def comma_list(raw: str) -> list[str]:
     return [part.strip().lower() for part in raw.split(",") if part.strip()]
 
@@ -156,7 +185,8 @@ def sanitize_tag(value: str) -> str:
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--suite", choices=tuple(SUITES), default="core")
+    parser.add_argument("--loss", choices=tuple(LOSS_PROFILES), default="dasl")
+    parser.add_argument("--suite", choices=tuple(SUITE_ROLES), default="core")
     parser.add_argument(
         "--experiments",
         default="",
@@ -198,13 +228,21 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     if len(args.dataset_values) != len(set(args.dataset_values)):
         parser.error("datasets contain duplicates")
 
-    experiment_keys = comma_list(args.experiments) if args.experiments else list(SUITES[args.suite])
-    unknown = [key for key in experiment_keys if key not in EXPERIMENTS]
+    args.loss_profile = LOSS_PROFILES[args.loss]
+    experiments = build_experiments(args.loss_profile)
+    if args.experiments:
+        experiment_keys = comma_list(args.experiments)
+    else:
+        experiment_keys = [
+            f"{role}_{args.loss_profile.key}"
+            for role in SUITE_ROLES[args.suite]
+        ]
+    unknown = [key for key in experiment_keys if key not in experiments]
     if unknown:
-        parser.error(f"unknown experiments: {unknown}; choices: {list(EXPERIMENTS)}")
+        parser.error(f"unknown experiments: {unknown}; choices: {list(experiments)}")
     if len(experiment_keys) != len(set(experiment_keys)):
         parser.error("experiments contain duplicates")
-    args.experiment_values = [EXPERIMENTS[key] for key in experiment_keys]
+    args.experiment_values = [experiments[key] for key in experiment_keys]
 
     positive = (
         args.epochs,
@@ -254,7 +292,7 @@ def python_prefix(args: argparse.Namespace) -> list[str]:
 
 
 def training_script(dataset: str, experiment: Experiment) -> Path:
-    model_type = "baseline" if experiment.key == "baseline_dasl" else "mesc"
+    model_type = "baseline" if is_baseline(experiment) else "mesc"
     return TRAIN_SCRIPTS[dataset][model_type]
 
 
@@ -307,12 +345,12 @@ def build_environment(
         env["KNEE_LR_BACKBONE"] = str(args.koa_backbone_lr)
         env["KNEE_LR_HEAD"] = str(args.koa_head_lr)
         env["KNEE_WEIGHT_DECAY"] = str(args.weight_decay)
-        if experiment.key == "baseline_dasl":
-            env["KNEE_LOSS"] = "dasl"
+        if is_baseline(experiment):
+            env["KNEE_LOSS"] = args.loss_profile.key
         else:
-            env["KNEE_MESC_LOSS"] = "dasl"
+            env["KNEE_MESC_LOSS"] = args.loss_profile.key
     else:
-        env["ALZHEIMER_LOSSES"] = "dasl"
+        env["ALZHEIMER_LOSSES"] = args.loss_profile.key
         env["ALZHEIMER_BASE_LR"] = str(args.adni_base_lr)
         env["ALZHEIMER_TEST_RATIO"] = str(args.adni_test_ratio)
         env["ALZHEIMER_VAL_RATIO"] = str(args.adni_val_ratio)
@@ -330,19 +368,25 @@ def parse_metrics(line: str) -> dict[str, float]:
     return metrics
 
 
-def expected_checkpoint(dataset: str, experiment: Experiment, run_tag: str) -> Path:
+def expected_checkpoint(
+    args: argparse.Namespace,
+    dataset: str,
+    experiment: Experiment,
+    run_tag: str,
+) -> Path:
+    loss_slug = args.loss_profile.checkpoint_slug
     if dataset == "koa":
-        if experiment.key == "baseline_dasl":
-            filename = f"best_resnet50_knee_oa_dasl_{run_tag}.pt"
+        if is_baseline(experiment):
+            filename = f"best_resnet50_knee_oa_{loss_slug}_{run_tag}.pt"
         else:
-            filename = f"best_resnet50_mecs_layer3_knee_oa_dasl_{run_tag}.pt"
+            filename = f"best_resnet50_mecs_layer3_knee_oa_{loss_slug}_{run_tag}.pt"
         return PROJECT_ROOT / "Knee" / "checkpoints" / filename
-    stem = "ResNet_baseline" if experiment.key == "baseline_dasl" else "ResNet_layer3+MECS"
+    stem = "ResNet_baseline" if is_baseline(experiment) else "ResNet_layer3+MECS"
     return (
         PROJECT_ROOT
         / "Alzheimer_MRI_Loss"
         / "checkpoints"
-        / f"best_{stem}_dasl_{run_tag}.pt"
+        / f"best_{stem}_{loss_slug}_{run_tag}.pt"
     )
 
 
@@ -365,7 +409,7 @@ def validate_resume_rows(
 ) -> None:
     common_expected = {
         "backbone": "ResNet50",
-        "criterion": "DASL",
+        "criterion": args.loss_profile.criterion,
         "loss_hyperparameters": "none",
         "epochs": str(args.epochs),
         "patience": str(args.patience),
@@ -465,7 +509,7 @@ def run_one(
         return None
 
     if not checkpoint:
-        checkpoint = str(expected_checkpoint(dataset, experiment, run_tag))
+        checkpoint = str(expected_checkpoint(args, dataset, experiment, run_tag))
     workers = args.num_workers if args.num_workers is not None else (4 if dataset == "koa" else 2)
     row: dict[str, object] = {
         "dataset": dataset.upper(),
@@ -473,9 +517,9 @@ def run_one(
         "experiment": experiment.key,
         "method": experiment.method,
         "attention": experiment.attention,
-        "insertion_point": "after_layer3" if experiment.key != "baseline_dasl" else "none",
-        "criterion": "DASL",
-        "loss_formula": "-log(p_y)-log(1-E_p[|k-y|/(K-1)]+eps)",
+        "insertion_point": "none" if is_baseline(experiment) else "after_layer3",
+        "criterion": args.loss_profile.criterion,
+        "loss_formula": args.loss_profile.formula,
         "loss_hyperparameters": "none",
         "seed": seed,
         "epochs": args.epochs,
@@ -528,7 +572,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             validate_data_root(dataset, getattr(args, f"{dataset}_data_root"))
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    fallback_prefix = f"resnet50_dasl_{args.suite}_{timestamp}"
+    fallback_prefix = f"resnet50_{args.loss_profile.key}_{args.suite}_{timestamp}"
     prefix = sanitize_tag(args.tag_prefix) or fallback_prefix
     output = args.output or PROJECT_ROOT / "analysis_tables" / f"{prefix}_test_results.csv"
     if not output.is_absolute():
@@ -559,7 +603,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     for dataset, _, _ in schedule:
         counts[dataset] += 1
     print("Backbone    : ResNet50")
-    print("Loss        : DASL (no tunable hyperparameters)")
+    print(f"Loss        : {args.loss_profile.display} (no tunable hyperparameters)")
     print(f"Suite       : {args.suite}")
     print(f"Experiments : {[experiment.key for experiment in args.experiment_values]}")
     print(f"Datasets    : {args.dataset_values}")

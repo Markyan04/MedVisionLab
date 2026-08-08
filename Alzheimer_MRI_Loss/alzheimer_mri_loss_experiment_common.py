@@ -451,6 +451,8 @@ def run_alzheimer_mri_medical_losses_experiments(
                     log(f"Criterion hparams | tau={sord_tau:.4f}, gamma=0.0000")
                 elif loss_name == "label_smoothing_ce":
                     log(f"Criterion hparams | epsilon={label_smoothing:.4f}")
+                elif loss_name in {"dasl", "kl_match_ce"}:
+                    log("Criterion hparams | none")
 
                 extra_modules = None
                 if has_trainable_parameters(criterion):
