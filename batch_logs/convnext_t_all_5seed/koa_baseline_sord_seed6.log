@@ -1,0 +1,150 @@
+COMMAND: /root/miniconda3/envs/medvision/bin/python -u /root/autodl-tmp/MedVisionLab/tools/train_convnext_t_experiment.py --dataset koa --data-root /root/autodl-tmp/Knee_Osteoarthritis --attention none --loss sord_ce --seed 6 --epochs 60 --patience 15 --batch-size 32 --image-size 224 --num-workers 4 --early-delta 0.0001 --base-lr 0.0001 --koa-backbone-lr 0.0001 --koa-head-lr 0.001 --weight-decay 0.0001 --dast-tau 1.0 --dast-gamma 1.5 --sord-tau 1.0 --label-smoothing 0.1 --run-tag convnext_t_all_5seed_koa_baseline_sord_seed6
+==========================================================================================
+Starting ConvNeXt-T experiment on KOA...
+Using device: cuda
+CUDA device: NVIDIA GeForce RTX 3090
+Config | seed=6, attention=none, loss=sord_ce, epochs=60, patience=15, batch_size=32, image_size=224, pretrained=True
+Backbone: ConvNeXt-T | stage3=features[5] | stage3_channels=384
+Data root: /root/autodl-tmp/Knee_Osteoarthritis
+Class order: ['0_Normal', '1_Doubtful', '2_Mild', '3_Moderate', '4_Severe']
+Split sizes | train=5778, valid=826, test=1656
+Train class counts: [2286, 1046, 1516, 757, 173]
+Optimizer: AdamW | backbone=0.0001, attention+head=0.001, weight_decay=0.0001
+Trainable parameters: 27,823,973
+
+Epoch 01/60 | Time 0m 49s
+  Train | loss=1.4878 | top1=41.26% | top2=64.57% | top3=84.91%
+  Valid | loss=1.4246 | top1=45.76% | top2=73.12% | top3=92.01% | acc=45.76% | bal_acc=33.13% | macro_f1=0.3390 | qwk=0.5434 | mae=0.7324 | weighted_f1=0.4446 | precision_macro=0.5172 | recall_macro=0.3313
+ Validation improved. Saved best model (qwk=0.5434)
+
+Epoch 02/60 | Time 0m 49s
+  Train | loss=1.3865 | top1=53.69% | top2=78.40% | top3=95.14%
+  Valid | loss=1.3714 | top1=56.30% | top2=80.99% | top3=97.22% | acc=56.30% | bal_acc=45.85% | macro_f1=0.4744 | qwk=0.6781 | mae=0.6017 | weighted_f1=0.5101 | precision_macro=0.5854 | recall_macro=0.4585
+ Validation improved. Saved best model (qwk=0.6781)
+
+Epoch 03/60 | Time 0m 49s
+  Train | loss=1.3310 | top1=62.50% | top2=86.40% | top3=98.08%
+  Valid | loss=1.3229 | top1=64.77% | top2=86.32% | top3=96.97% | acc=64.77% | bal_acc=63.56% | macro_f1=0.6348 | qwk=0.7556 | mae=0.4697 | weighted_f1=0.6203 | precision_macro=0.6603 | recall_macro=0.6356
+ Validation improved. Saved best model (qwk=0.7556)
+
+Epoch 04/60 | Time 0m 49s
+  Train | loss=1.3125 | top1=66.08% | top2=88.91% | top3=98.22%
+  Valid | loss=1.3179 | top1=67.07% | top2=88.50% | top3=98.06% | acc=67.07% | bal_acc=64.74% | macro_f1=0.6462 | qwk=0.7800 | mae=0.4358 | weighted_f1=0.6228 | precision_macro=0.6934 | recall_macro=0.6474
+ Validation improved. Saved best model (qwk=0.7800)
+
+Epoch 05/60 | Time 0m 49s
+  Train | loss=1.2997 | top1=67.76% | top2=89.96% | top3=98.89%
+  Valid | loss=1.3033 | top1=68.04% | top2=89.59% | top3=98.67% | acc=68.04% | bal_acc=66.38% | macro_f1=0.6531 | qwk=0.8042 | mae=0.4092 | weighted_f1=0.6260 | precision_macro=0.7075 | recall_macro=0.6638
+ Validation improved. Saved best model (qwk=0.8042)
+
+Epoch 06/60 | Time 0m 49s
+  Train | loss=1.2912 | top1=68.80% | top2=91.19% | top3=99.13%
+  Valid | loss=1.3077 | top1=66.22% | top2=88.38% | top3=97.34% | acc=66.22% | bal_acc=62.28% | macro_f1=0.6423 | qwk=0.7943 | mae=0.4177 | weighted_f1=0.6447 | precision_macro=0.6955 | recall_macro=0.6228
+ No improvement. Bad epochs: 1/15
+
+Epoch 07/60 | Time 0m 49s
+  Train | loss=1.2834 | top1=70.77% | top2=91.50% | top3=99.19%
+  Valid | loss=1.3062 | top1=67.43% | top2=90.19% | top3=98.67% | acc=67.43% | bal_acc=66.86% | macro_f1=0.6742 | qwk=0.8163 | mae=0.3898 | weighted_f1=0.6642 | precision_macro=0.7009 | recall_macro=0.6686
+ Validation improved. Saved best model (qwk=0.8163)
+
+Epoch 08/60 | Time 0m 49s
+  Train | loss=1.2765 | top1=72.41% | top2=92.32% | top3=99.22%
+  Valid | loss=1.2986 | top1=67.55% | top2=89.35% | top3=98.67% | acc=67.55% | bal_acc=67.08% | macro_f1=0.6904 | qwk=0.8142 | mae=0.3910 | weighted_f1=0.6635 | precision_macro=0.7208 | recall_macro=0.6708
+ No improvement. Bad epochs: 1/15
+
+Epoch 09/60 | Time 0m 49s
+  Train | loss=1.2674 | top1=73.94% | top2=93.99% | top3=99.50%
+  Valid | loss=1.3071 | top1=68.04% | top2=88.98% | top3=97.34% | acc=68.04% | bal_acc=68.58% | macro_f1=0.6842 | qwk=0.8023 | mae=0.4044 | weighted_f1=0.6605 | precision_macro=0.6999 | recall_macro=0.6858
+ No improvement. Bad epochs: 2/15
+
+Epoch 10/60 | Time 0m 49s
+  Train | loss=1.2642 | top1=74.97% | top2=94.38% | top3=99.52%
+  Valid | loss=1.3062 | top1=69.13% | top2=89.71% | top3=98.55% | acc=69.13% | bal_acc=66.62% | macro_f1=0.6743 | qwk=0.8084 | mae=0.3886 | weighted_f1=0.6668 | precision_macro=0.7102 | recall_macro=0.6662
+ No improvement. Bad epochs: 3/15
+
+Epoch 11/60 | Time 0m 49s
+  Train | loss=1.2612 | top1=75.39% | top2=94.65% | top3=99.53%
+  Valid | loss=1.2986 | top1=69.49% | top2=90.80% | top3=98.55% | acc=69.49% | bal_acc=70.67% | macro_f1=0.7118 | qwk=0.8358 | mae=0.3620 | weighted_f1=0.6850 | precision_macro=0.7228 | recall_macro=0.7067
+ Validation improved. Saved best model (qwk=0.8358)
+
+Epoch 12/60 | Time 0m 49s
+  Train | loss=1.2524 | top1=77.59% | top2=95.24% | top3=99.78%
+  Valid | loss=1.3037 | top1=68.16% | top2=88.74% | top3=97.46% | acc=68.16% | bal_acc=69.78% | macro_f1=0.6733 | qwk=0.8167 | mae=0.3886 | weighted_f1=0.6684 | precision_macro=0.6691 | recall_macro=0.6978
+ No improvement. Bad epochs: 1/15
+
+Epoch 13/60 | Time 0m 49s
+  Train | loss=1.2470 | top1=78.99% | top2=96.19% | top3=99.65%
+  Valid | loss=1.3090 | top1=68.64% | top2=88.62% | top3=98.06% | acc=68.64% | bal_acc=68.65% | macro_f1=0.6992 | qwk=0.8050 | mae=0.3923 | weighted_f1=0.6744 | precision_macro=0.7236 | recall_macro=0.6865
+ No improvement. Bad epochs: 2/15
+
+Epoch 14/60 | Time 0m 49s
+  Train | loss=1.2395 | top1=80.70% | top2=96.56% | top3=99.79%
+  Valid | loss=1.3183 | top1=65.01% | top2=88.62% | top3=97.58% | acc=65.01% | bal_acc=68.49% | macro_f1=0.6712 | qwk=0.8170 | mae=0.4080 | weighted_f1=0.6523 | precision_macro=0.6623 | recall_macro=0.6849
+ No improvement. Bad epochs: 3/15
+
+Epoch 15/60 | Time 0m 49s
+  Train | loss=1.2354 | top1=82.07% | top2=96.99% | top3=99.79%
+  Valid | loss=1.3080 | top1=66.59% | top2=89.83% | top3=97.94% | acc=66.59% | bal_acc=68.20% | macro_f1=0.6900 | qwk=0.8213 | mae=0.3923 | weighted_f1=0.6625 | precision_macro=0.7042 | recall_macro=0.6820
+ No improvement. Bad epochs: 4/15
+
+Epoch 16/60 | Time 0m 49s
+  Train | loss=1.2276 | top1=84.13% | top2=97.72% | top3=99.90%
+  Valid | loss=1.3101 | top1=66.83% | top2=89.35% | top3=98.91% | acc=66.83% | bal_acc=66.57% | macro_f1=0.6521 | qwk=0.8153 | mae=0.4068 | weighted_f1=0.6459 | precision_macro=0.6604 | recall_macro=0.6657
+ No improvement. Bad epochs: 5/15
+
+Epoch 17/60 | Time 0m 49s
+  Train | loss=1.2226 | top1=85.76% | top2=98.10% | top3=99.86%
+  Valid | loss=1.3302 | top1=64.29% | top2=86.92% | top3=97.70% | acc=64.29% | bal_acc=69.87% | macro_f1=0.7045 | qwk=0.8191 | mae=0.3923 | weighted_f1=0.6628 | precision_macro=0.7445 | recall_macro=0.6987
+ No improvement. Bad epochs: 6/15
+
+Epoch 18/60 | Time 0m 49s
+  Train | loss=1.2181 | top1=86.57% | top2=98.36% | top3=99.91%
+  Valid | loss=1.3227 | top1=64.16% | top2=86.80% | top3=97.34% | acc=64.16% | bal_acc=66.86% | macro_f1=0.6679 | qwk=0.8004 | mae=0.4213 | weighted_f1=0.6458 | precision_macro=0.6742 | recall_macro=0.6686
+ No improvement. Bad epochs: 7/15
+
+Epoch 19/60 | Time 0m 49s
+  Train | loss=1.2111 | top1=89.44% | top2=98.86% | top3=99.98%
+  Valid | loss=1.3263 | top1=65.13% | top2=87.77% | top3=98.06% | acc=65.13% | bal_acc=66.89% | macro_f1=0.6842 | qwk=0.8014 | mae=0.4153 | weighted_f1=0.6541 | precision_macro=0.7039 | recall_macro=0.6689
+ No improvement. Bad epochs: 8/15
+
+Epoch 20/60 | Time 0m 49s
+  Train | loss=1.2094 | top1=89.53% | top2=98.84% | top3=99.97%
+  Valid | loss=1.3436 | top1=63.56% | top2=87.41% | top3=98.31% | acc=63.56% | bal_acc=62.34% | macro_f1=0.6459 | qwk=0.7797 | mae=0.4504 | weighted_f1=0.6212 | precision_macro=0.6921 | recall_macro=0.6234
+ No improvement. Bad epochs: 9/15
+
+Epoch 21/60 | Time 0m 49s
+  Train | loss=1.2038 | top1=90.98% | top2=99.17% | top3=100.00%
+  Valid | loss=1.3085 | top1=66.34% | top2=88.98% | top3=98.31% | acc=66.34% | bal_acc=67.75% | macro_f1=0.6896 | qwk=0.8220 | mae=0.3886 | weighted_f1=0.6644 | precision_macro=0.7036 | recall_macro=0.6775
+ No improvement. Bad epochs: 10/15
+
+Epoch 22/60 | Time 0m 49s
+  Train | loss=1.2003 | top1=92.40% | top2=99.33% | top3=99.90%
+  Valid | loss=1.3171 | top1=67.31% | top2=88.86% | top3=97.70% | acc=67.31% | bal_acc=69.32% | macro_f1=0.7052 | qwk=0.8275 | mae=0.3753 | weighted_f1=0.6806 | precision_macro=0.7238 | recall_macro=0.6932
+ No improvement. Bad epochs: 11/15
+
+Epoch 23/60 | Time 0m 49s
+  Train | loss=1.1975 | top1=92.90% | top2=99.50% | top3=99.95%
+  Valid | loss=1.3209 | top1=66.95% | top2=88.98% | top3=97.34% | acc=66.95% | bal_acc=69.12% | macro_f1=0.6831 | qwk=0.8135 | mae=0.3983 | weighted_f1=0.6618 | precision_macro=0.6797 | recall_macro=0.6912
+ No improvement. Bad epochs: 12/15
+
+Epoch 24/60 | Time 0m 49s
+  Train | loss=1.1941 | top1=94.12% | top2=99.45% | top3=99.98%
+  Valid | loss=1.3230 | top1=65.25% | top2=89.23% | top3=98.06% | acc=65.25% | bal_acc=69.26% | macro_f1=0.6707 | qwk=0.8171 | mae=0.4031 | weighted_f1=0.6574 | precision_macro=0.6685 | recall_macro=0.6926
+ No improvement. Bad epochs: 13/15
+
+Epoch 25/60 | Time 0m 49s
+  Train | loss=1.1903 | top1=95.10% | top2=99.69% | top3=100.00%
+  Valid | loss=1.3245 | top1=65.50% | top2=88.62% | top3=97.94% | acc=65.50% | bal_acc=66.77% | macro_f1=0.6809 | qwk=0.8129 | mae=0.4044 | weighted_f1=0.6564 | precision_macro=0.6997 | recall_macro=0.6677
+ No improvement. Bad epochs: 14/15
+
+Epoch 26/60 | Time 0m 49s
+  Train | loss=1.1903 | top1=95.24% | top2=99.67% | top3=99.97%
+  Valid | loss=1.3393 | top1=66.34% | top2=85.59% | top3=95.76% | acc=66.34% | bal_acc=69.04% | macro_f1=0.6908 | qwk=0.7799 | mae=0.4274 | weighted_f1=0.6613 | precision_macro=0.6954 | recall_macro=0.6904
+ No improvement. Bad epochs: 15/15
+ Early stopping triggered at epoch 26.
+
+Loading best model (epoch=11, qwk=0.8358)
+
+Test | loss=1.2871 | top1=70.59% | top2=91.97% | top3=99.52% | acc=70.59% | bal_acc=69.74% | macro_f1=0.6981 | qwk=0.8560 | mae=0.3382 | weighted_f1=0.6898 | precision_macro=0.7111 | recall_macro=0.6974
+     ovr_roc_auc_macro=0.9110 | ovr_pr_auc_macro=0.7633
+Checkpoint: /root/autodl-tmp/MedVisionLab/Knee/checkpoints/best_convnext_t_none_sord_ce_convnext_t_all_5seed_koa_baseline_sord_seed6.pt
